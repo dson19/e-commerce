@@ -3,10 +3,19 @@ import MainLayout from './layouts/MainLayout';
 import ProductCard from './components/ProductCard';
 import { PRODUCTS, CATEGORIES } from './data/mockData';
 import { ChevronRight } from 'lucide-react';
-
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 function App() {
+
   return (
     <MainLayout>
+      <header>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+      </header>
       <div className="flex gap-4">
         {/* Sidebar đơn giản */}
         <aside className="w-[220px] bg-white rounded-lg shadow-sm h-fit hidden lg:block overflow-hidden">
