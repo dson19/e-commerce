@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { SignupForm } from '@/components/auth/signup-form';
-function RegisterPage() {
+import { SigninForm } from '@/components/auth/signin-form';
+function SigninPage() {
   return (
     <div className="min-h-screen w-full bg-white relative text-gray-800">
   {/* Crosshatch Art - Light Pattern */}
@@ -18,10 +18,10 @@ function RegisterPage() {
   {/* Your Content/Components */}
   <div className="flex min-h-svh flex-col items-center justify-center p-6 md:p-10 relative z-10">
       <div className="w-full max-w-sm md:max-w-4xl">
-        <SignupForm />
+        <SigninForm />
       </div>
     </div>
 </div>
   );
 }
-export default RegisterPage;
+export default SigninPage;
