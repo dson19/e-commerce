@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, ShoppingBag, User } from 'lucide-react'; // Đã bỏ MapPin
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -32,12 +33,12 @@ const Header = () => {
           <div className="flex items-center gap-4 text-sm font-medium text-primary">
             
             {/* Nút Tài khoản - Đã chỉnh lại size icon = 20 và p-2 cho cân với giỏ hàng */}
-            <a href="#" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <div className="border border-primary rounded-full p-2"> 
-                <User size={20} /> 
-              </div>
-              <span className="hidden sm:block">Tài khoản</span>
-            </a>
+            <Link to="/login" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="border border-primary rounded-full p-2"> 
+            <User size={20} /> 
+            </div>
+            <span className="hidden sm:block">Tài khoản</span>
+            </Link>
 
             {/* Nút Giỏ hàng */}
             <a href="#" className="bg-orange-100 p-2 rounded-full text-primary hover:opacity-80 relative transition-opacity">
