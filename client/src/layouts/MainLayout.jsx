@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './Header';
+import Footer from './Footer';
 // import Footer from './Footer'; (Làm sau)
 
 const MainLayout = ({ children }) => {
@@ -9,7 +10,7 @@ const MainLayout = ({ children }) => {
       <main className="flex-1 container mx-auto px-4 max-w-[1200px] py-4">
         {children}
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

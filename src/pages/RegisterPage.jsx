@@ -1,7 +1,6 @@
-import React from 'react';
-import { SignupForm } from '../components/auth/signup-form';
-
-const RegisterPage = () => {
+import { Link } from 'react-router-dom';
+import { SignupForm } from '@/components/auth/signup-form';
+function RegisterPage() {
   return (
     <div className="min-h-screen w-full bg-white relative text-gray-800">
   {/* Crosshatch Art - Light Pattern */}
@@ -24,6 +23,5 @@ const RegisterPage = () => {
     </div>
 </div>
   );
-};
-
+}
 export default RegisterPage;
