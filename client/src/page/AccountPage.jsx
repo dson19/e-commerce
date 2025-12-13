@@ -2,35 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import { toast } from 'sonner';
+import { useAuth } from '../context/AuthContext';
 
 const AccountPage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    // 1. Kiểm tra xem có user trong kho không
-    const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser)); // Biến chuỗi JSON thành Object để dùng
-    } else {
-      setUser(null);
-    }
-  }, []);
+  const {user, signOut, loading} = useAuth();
 
   // --- HÀM ĐĂNG XUẤT (Logic chính) ---
-  const handleLogout = () => {
-    // 1. Xóa sạch dấu vết trong LocalStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
 
-    // 2. Cập nhật state để giao diện render lại ngay lập tức
-    setUser(null);
-
-    // 3. Thông báo và chuyển hướng
-    toast.success('Đăng xuất thành công!');
-    navigate('/login'); // Hoặc navigate('/') tùy bạn
+    await signOut();
+    navigate('/');
   };
 
   // --- GIAO DIỆN ---
@@ -68,10 +51,10 @@ const AccountPage = () => {
             <p className="text-gray-500 mb-8">Vui lòng đăng nhập để xem thông tin tài khoản.</p>
             
             <div className="flex gap-4 justify-center">
-              <Link to="/login" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+              <Link to="/signIn" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
                 Đăng nhập
               </Link>
-              <Link to="/register" className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
+              <Link to="/signUp" className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
                 Đăng ký
               </Link>
             </div>

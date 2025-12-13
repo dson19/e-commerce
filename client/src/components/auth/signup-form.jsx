@@ -41,7 +41,7 @@ export function SignupForm({ className, ...props }) {
     try {
       // Gọi API Backend
       // Lưu ý: Backend hiện tại nhận { username, email, password }
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await axios.post("http://localhost:5000/api/auth/signUp", {
         username: data.username,
         email: data.email,
         password: data.password,

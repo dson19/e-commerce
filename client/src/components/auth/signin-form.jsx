@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // Import useState để hiện lỗi API
-import { toast } from "sonner";
+import { useAuth } from '../../context/authContext'; 
 
 // 3. Sửa Schema: Đăng nhập bằng Email chứ không phải Username
 const signinSchema = z.object({
@@ -20,6 +20,7 @@ const signinSchema = z.object({
 export function SigninForm({ className, ...props }) {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState(""); // State để lưu lỗi từ Backend
+  const { signIn } = useAuth(); // Lấy hàm signIn từ AuthContext
 
   const {
     register,
@@ -39,21 +40,17 @@ export function SigninForm({ className, ...props }) {
 
     try {
       // Gọi API Backend
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("http://localhost:5000/api/auth/signIn", {
         email: data.email,
         password: data.password,
       });
 
       // Lưu Token và User vào LocalStorage
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      // Thông báo và chuyển trang
-      toast.success("Đăng nhập thành công!Chuyển đến trang chủ.");
+      const user = response.data.user;
+      signIn(user); // Gọi hàm signIn từ context để cập nhật user toàn cục
       navigate("/"); 
     } catch (error) {
-      console.error(error);
+      console.log("Lỗi chi tiết:", error)
       // Hiển thị lỗi từ server (ví dụ: Sai mật khẩu)
       const msg = error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại!";
       setApiError(msg);

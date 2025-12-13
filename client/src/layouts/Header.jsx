@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { use } from 'react';
 import { Search, ShoppingBag, User } from 'lucide-react'; 
 import { Link } from "react-router-dom";
+import { useAuth } from '../context/authContext';
 
 const Header = () => {
+  const { user } = useAuth();
+  const username = user ? user.username : null; 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 border-t-4 border-primary">
       <div className="container mx-auto px-4 max-w-[1200px]">
@@ -37,7 +40,7 @@ const Header = () => {
               <div className="border border-primary rounded-full p-2"> 
                 <User size={20} /> 
               </div>
-              <span className="hidden sm:block">Tài khoản</span>
+              <span className="hidden sm:block">{username || "Tài Khoản"}</span>
             </Link>
 
             {/* Nút Giỏ hàng */}

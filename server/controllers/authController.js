@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import { generateToken } from "../utils/generateToken.js";
-
 export const signUp = async (req, res) => {
     try {
         const {username,email, password} = req.body;
@@ -48,9 +47,15 @@ export const signIn = async (req, res) => {
         }
         //generate token
         const token = generateToken(user.id);
+        // Set token in HttpOnly cookie
+        res.cookie("token", token, {
+            httpOnly: true,  // Quan trọng: Chống XSS
+            secure: false,   // localhost để false
+            sameSite: "lax", // fe và be khác domain 
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+        });
         res.status(200).json({
             message: "Đăng nhập thành công",
-            token,
             user: {
                 id: user.id,
                 username: user.username,
@@ -60,6 +65,33 @@ export const signIn = async (req, res) => {
         }
     catch (error) {
         console.error("Error during sign in:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+export const signOut = async (req, res) => {
+        res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: false
+    });
+    res.status(200).json({ message: "Đăng xuất thành công" });
+}
+export const getMe = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const user = await User.findByIdNoPassword(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({
+            user: { 
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching user data:", error);
         res.status(500).json({ message: "Server error" });
     }
 }

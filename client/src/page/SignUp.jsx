@@ -1,7 +1,7 @@
 import React from 'react';
 import { SignupForm } from '../components/auth/signup-form';
 
-const RegisterPage = () => {
+const SignUpPage = () => {
   return (
     <div className="min-h-screen w-full bg-white relative text-gray-800">
   {/* Crosshatch Art - Light Pattern */}
@@ -26,4 +26,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default SignUpPage;
