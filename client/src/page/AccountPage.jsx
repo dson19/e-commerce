@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
+import { toast } from 'sonner';
 
 const AccountPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const AccountPage = () => {
     setUser(null);
 
     // 3. Thông báo và chuyển hướng
-    alert("Đã đăng xuất thành công!");
+    toast.success('Đăng xuất thành công!');
     navigate('/login'); // Hoặc navigate('/') tùy bạn
   };
 

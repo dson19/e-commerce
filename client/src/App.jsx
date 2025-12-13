@@ -7,10 +7,12 @@ import AccountPage from './page/AccountPage';
 import RegisterPage from './page/RegisterPage';
 import SignInPage from './page/SignInPage';
 import NotFoundPage from './page/NotFoundPage';
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-center" richColors />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/account" element={<AccountPage />} />

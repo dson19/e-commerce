@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // Import useState để hiện lỗi API
+import { toast } from "sonner";
 
 // 3. Sửa Schema: Đăng nhập bằng Email chứ không phải Username
 const signinSchema = z.object({
@@ -49,9 +50,8 @@ export function SigninForm({ className, ...props }) {
       localStorage.setItem("user", JSON.stringify(user));
 
       // Thông báo và chuyển trang
-      alert("Đăng nhập thành công! Chào mừng " + user.username);
+      toast.success("Đăng nhập thành công!Chuyển đến trang chủ.");
       navigate("/"); 
-
     } catch (error) {
       console.error(error);
       // Hiển thị lỗi từ server (ví dụ: Sai mật khẩu)
@@ -83,12 +83,7 @@ export function SigninForm({ className, ...props }) {
                 </p>
               </div>
 
-              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
-              {apiError && (
-                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
-                  {apiError}
-                </div>
-              )}
+              
 
               {/* Email Field (Đã đổi từ Username -> Email) */}
               <div className="flex flex-col gap-3">
@@ -129,7 +124,12 @@ export function SigninForm({ className, ...props }) {
                   </p>
                 )}
               </div>
-
+              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
+              {apiError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
+                  {apiError}
+                </div>
+              )}
               {/* Nút đăng nhập */}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
