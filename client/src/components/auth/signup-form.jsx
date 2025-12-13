@@ -13,7 +13,6 @@ import { useState } from "react"; // 3. Import useState
 const signupSchema = z.object({
   firstName: z.string().min(1, "Tên bắt buộc phải có"),
   lastName: z.string().min(1, "Họ bắt buộc phải có"),
-  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
@@ -31,7 +30,6 @@ export function SignupForm({ className, ...props }) {
     defaultValues: {
       firstName: "",
       lastName: "",
-      username: "",
       email: "",
       password: "",
     },
@@ -44,8 +42,7 @@ export function SignupForm({ className, ...props }) {
     try {
       // Gọi API Backend
       // Lưu ý: Backend hiện tại nhận { username, email, password }
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
-        username: data.username,
+      await axios.post("http://localhost:5000/api/auth/register", {
         email: data.email,
         password: data.password,
         // firstName, lastName: Tạm thời Backend chưa lưu 2 trường này, 
@@ -113,17 +110,6 @@ export function SignupForm({ className, ...props }) {
                 </div>
               </div>
 
-              {/* Username */}
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="username" className="block text-sm">
-                  Username
-                </Label>
-                <Input id="username" type="text" {...register("username")} />
-                {errors.username && (
-                  <p className="text-sm text-red-500">{errors.username.message}</p>
-                )}
-              </div>
-
               {/* Email */}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="email" className="block text-sm">
@@ -171,7 +157,7 @@ export function SignupForm({ className, ...props }) {
 
           {/* Ảnh Placeholder */}
           <div className="relative hidden md:block bg-gray-100">
-             {/* Sửa đường dẫn ảnh: Bỏ /public và thêm class full để đẹp hơn */}
+            {/* Sửa đường dẫn ảnh: Bỏ /public và thêm class full để đẹp hơn */}
             <img
               src="/placeholderSignUp.png"
               alt="Image"

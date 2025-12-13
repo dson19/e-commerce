@@ -13,7 +13,7 @@ import { useState } from "react"; // Import useState để hiện lỗi API
 // 3. Sửa Schema: Đăng nhập bằng Email chứ không phải Username
 const signinSchema = z.object({
   email: z.string().email("Email không hợp lệ"), 
-  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 });
 
 export function SigninForm({ className, ...props }) {
@@ -47,9 +47,7 @@ export function SigninForm({ className, ...props }) {
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // Thông báo và chuyển trang
-      alert("Đăng nhập thành công! Chào mừng " + user.username);
+      // Chuyển hướng về trang chủ
       navigate("/"); 
 
     } catch (error) {

@@ -4,31 +4,32 @@ import { generateToken } from "../utils/generateToken.js";
 
 export const signUp = async (req, res) => {
     try {
-        const {username,email, password} = req.body;
-        // Check null fields
-        if (!username || !email || !password) {
+        const { email, password } = req.body; 
+
+        if (!email || !password) {
             return res.status(400).json({message: "All fields are required"});
         }
-        // Check if user already exists
-        const duplicate = await User.findByEmail({email});
+
+        // Check duplicate
+        const duplicate = await User.findByEmail(email); 
         if (duplicate) {
             return res.status(409).json({message: "User with this email already exists"});
         }
-        // Hash password
+
+        // Hash password (giữ nguyên)
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // 3. Create user
+        await User.create(email, hashedPassword);
+        
+        res.status(201).json({message: "User registered successfully"});
 
-        // Create new user
-        await User.create(email, username, hashedPassword);
-        res.status(204).json({message: "User registered successfully"});
-        // Return success response
-
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error during sign up:", error);
         res.status(500).json({message: "Server error"});
     }
 }
+
 export const signIn = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -53,7 +54,6 @@ export const signIn = async (req, res) => {
             token,
             user: {
                 id: user.id,
-                username: user.username,
                 email: user.email
             }
         });
