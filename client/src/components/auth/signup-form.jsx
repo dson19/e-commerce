@@ -9,18 +9,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
+import OtpModal from "./otp-modal";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "Tên bắt buộc phải có"),
   lastName: z.string().min(1, "Họ bắt buộc phải có"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),
+  gender: z.string().optional(),
 });
 
 export function SignupForm({ className, ...props }) {
   const navigate = useNavigate(); // Hook chuyển trang
   const [apiError, setApiError] = useState(""); // State lưu lỗi từ Backend
-
+  const [showOtpModal, setShowOtpModal] = useState(false); // State hiển thị Modal
+  const [registeredEmail, setRegisteredEmail] = useState(""); // Lưu email để xác thực
   const {
     register,
     handleSubmit,
@@ -32,6 +36,8 @@ export function SignupForm({ className, ...props }) {
       lastName: "",
       email: "",
       password: "",
+      phoneNumber: "", 
+      gender: "male", 
     },
   });
 
@@ -41,17 +47,20 @@ export function SignupForm({ className, ...props }) {
 
     try {
       // Gọi API Backend
-      // Lưu ý: Backend hiện tại nhận { username, email, password }
       await axios.post("http://localhost:5000/api/auth/register", {
+        firstName: data.firstName,
+        lastName: data.lastName,
         email: data.email,
         password: data.password,
+        phoneNumber: data.phoneNumber,
+        gender: data.gender,
         // firstName, lastName: Tạm thời Backend chưa lưu 2 trường này, 
         // nhưng gửi kèm cũng không sao, Backend sẽ bỏ qua.
       });
 
-      // Nếu thành công (Status 201)
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
-      navigate("/login"); // Chuyển sang trang đăng nhập
+      setRegisteredEmail(data.email);
+      setShowOtpModal(true);
+
 
     } catch (error) {
       console.error(error);
@@ -63,6 +72,14 @@ export function SignupForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      
+      {showOtpModal && (
+        <OtpModal 
+          isOpen={true} // Lúc nào render thì cũng là đang mở
+          email={registeredEmail} 
+          onClose={() => setShowOtpModal(false)}
+        />
+      )}
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
@@ -124,6 +141,38 @@ export function SignupForm({ className, ...props }) {
                 {errors.email && (
                   <p className="text-sm text-red-500">{errors.email.message}</p>
                 )}
+              </div>
+
+              {/* Số điện thoại */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="phoneNumber" className="block text-sm">
+                  Số điện thoại
+                </Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  placeholder="0123456789"
+                  {...register("phoneNumber")}
+                />
+                {errors.phoneNumber && (
+                  <p className="text-sm text-red-500">{errors.phoneNumber.message}</p>
+                )}
+              </div>
+
+              {/* Giới tính */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="gender" className="block text-sm">
+                  Giới tính
+                </Label>
+                <select
+                  id="gender"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  {...register("gender")}
+                >
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
               </div>
 
               {/* Password */}
