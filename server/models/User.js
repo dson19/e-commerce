@@ -20,4 +20,23 @@ const findByEmail = async(email) => {
   return res.rows[0];
 }
 
-export default { create, findByEmail };
+const findByPhone = async(phoneNumber) => {
+  const query = 'SELECT * FROM users WHERE phone_number = $1';
+  const values = [phoneNumber];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+
+const findById = async(id) => {
+  const query = 'SELECT * FROM users WHERE id = $1';
+  const values = [id];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+const findByIdNoPassword = async(id) => {
+  const query = 'SELECT id, email, username FROM users WHERE id = $1';
+  const values = [id];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword };

@@ -18,6 +18,11 @@ export const signUp = async (req, res) => {
             return res.status(409).json({message: "Email này đã được sử dụng"});
         }
 
+        const phoneDuplicate = await User.findByPhone(phoneNumber);
+        if (phoneDuplicate) {
+            return res.status(409).json({message: "Số điện thoại này đã được sử dụng"});
+        }
+
         // 2. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -75,9 +80,8 @@ export const verifyAccount = async (req, res) => {
             return res.status(400).json({message: "Mã OTP không chính xác"});
         }
 
-        // 3. OTP Đúng -> BẮT ĐẦU LƯU VÀO POSTGRESQL
+        // 3. OTP Đúng THÌ LƯU VÀO POSTGRESQL
         // Lúc này mới gọi hàm create của Model
-        // Lưu ý: Hàm User.create của bạn cần trả về user mới tạo
         const newUser = await User.create(
             tempData.firstName, 
             tempData.lastName, 
@@ -87,13 +91,11 @@ export const verifyAccount = async (req, res) => {
             tempData.phoneNumber
         );
 
-        // (Tùy chọn) Cập nhật luôn trạng thái verified nếu model có cột này
-        // Hoặc mặc định hàm create nên set is_verified = true luôn
-
-        // 4. Xóa dữ liệu tạm trong Redis
+        // Xóa dữ liệu tạm trong Redis
         await redisClient.del(`temp_register:${email}`);
 
-        res.status(200).json({message: "Đăng ký thành công! Bạn có thể đăng nhập."});
+        // Nếu thành công (Status 201)
+        res.status(201).json({message: "Tài khoản đã được xác thực và tạo thành công"});
 
     } catch (error) {
         console.error("Error verify:", error);
@@ -119,9 +121,15 @@ export const signIn = async (req, res) => {
         }
         //generate token
         const token = generateToken(user.id);
+        // Set token in HttpOnly cookie
+        res.cookie("token", token, {
+            httpOnly: true,  // Quan trọng: Chống XSS
+            secure: false,   // localhost để false
+            sameSite: "lax", // fe và be khác domain 
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+        });
         res.status(200).json({
             message: "Đăng nhập thành công",
-            token,
             user: {
                 id: user.id,
                 email: user.email
@@ -130,6 +138,33 @@ export const signIn = async (req, res) => {
         }
     catch (error) {
         console.error("Error during sign in:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+export const signOut = async (req, res) => {
+        res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: false
+    });
+    res.status(200).json({ message: "Đăng xuất thành công" });
+}
+export const getMe = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const user = await User.findByIdNoPassword(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({
+            user: { 
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching user data:", error);
         res.status(500).json({ message: "Server error" });
     }
 }

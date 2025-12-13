@@ -9,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
+import { toast } from "sonner"; // 4. Import sonner để hiển thị thông báo
 import OtpModal from "./otp-modal";
-
 const signupSchema = z.object({
   firstName: z.string().min(1, "Tên bắt buộc phải có"),
   lastName: z.string().min(1, "Họ bắt buộc phải có"),
@@ -47,7 +47,7 @@ export function SignupForm({ className, ...props }) {
 
     try {
       // Gọi API Backend
-      await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("http://localhost:5000/api/auth/signUp", {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -97,12 +97,7 @@ export function SignupForm({ className, ...props }) {
                 </p>
               </div>
 
-              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
-              {apiError && (
-                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
-                  {apiError}
-                </div>
-              )}
+              
 
               {/* Họ và Tên */}
               <div className="grid grid-cols-2 gap-3">
@@ -189,7 +184,12 @@ export function SignupForm({ className, ...props }) {
                   <p className="text-sm text-red-500">{errors.password.message}</p>
                 )}
               </div>
-
+              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
+              {apiError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
+                  {apiError}
+                </div>
+              )}
               {/* Nút Đăng ký */}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Đang xử lý..." : "Tạo tài khoản"}

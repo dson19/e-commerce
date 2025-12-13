@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function OtpModal({ email, isOpen, onClose }) {
   const [otp, setOtp] = useState("");
@@ -18,8 +19,9 @@ export default function OtpModal({ email, isOpen, onClose }) {
         email,
         otp,
       });
-      alert("Xác thực thành công!");
-      navigate("/login");
+            // Nếu thành công (Status 201)
+      toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+      navigate("/signIn"); // Chuyển sang trang đăng nhập
     } catch (err) {
       setError(err.response?.data?.message || "Xác thực thất bại");
     } finally {
