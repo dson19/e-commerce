@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
+import { toast } from "sonner";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "Tên bắt buộc phải có"),
@@ -53,7 +54,10 @@ export function SignupForm({ className, ...props }) {
       });
 
       // Nếu thành công (Status 201)
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      toast.success("Tạo tài khoản thành công!", {
+        description: "Vui lòng đăng nhập để tiếp tục.",
+        duration: 3000, // Hiện trong 3 giây
+      });
       navigate("/login"); // Chuyển sang trang đăng nhập
 
     } catch (error) {
