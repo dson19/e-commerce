@@ -6,9 +6,17 @@ import { ChevronRight } from 'lucide-react';
 function Homepage() {
 
   return (
+    <div className="min-h-screen w-full relative">
+  {/* Radial Gradient Background from Bottom */}
+  <div
+    className="absolute inset-0 z-0"
+    style={{
+      background: "radial-gradient(125% 125% at 50% 90%, #fff 40%, #475569 100%)",
+    }}
+  />
+  {/* Your Content/Components */}
     <MainLayout>
-    
-      <div className="flex gap-4">
+      <div className="flex gap-4 relative z-10">
         {/* Sidebar đơn giản */}
         <aside className="w-[220px] bg-white rounded-lg shadow-sm h-fit hidden lg:block overflow-hidden">
           <div className="bg-gray-100 px-4 py-2 font-bold text-gray-700 text-sm uppercase">Danh mục</div>
@@ -46,6 +54,7 @@ function Homepage() {
         </div>
       </div>
     </MainLayout>
+</div>
   );
 }
 

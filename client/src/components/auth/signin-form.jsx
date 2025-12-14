@@ -108,7 +108,7 @@ export function SigninForm({ className, ...props }) {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Mật khẩu</Label>
-                  <button type="button" onClick={() => setIsForgotPasswordOpen(true)} className="text-sm text-blue-600 hover:underline">
+                  <button type="button" onClick={() => setIsForgotPasswordOpen(true)} className="text-sm hover:underline">
                     Quên mật khẩu?
                   </button>
                 </div>
@@ -129,7 +129,7 @@ export function SigninForm({ className, ...props }) {
                <div className="text-sm text-center">
                 Chưa có tài khoản?{" "}
                 {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
-                <Link to="/signUp" className="text-blue-600 hover:underline">
+                <Link to="/signUp" className="hover:underline">
                   Đăng ký
                 </Link>
               </div>
