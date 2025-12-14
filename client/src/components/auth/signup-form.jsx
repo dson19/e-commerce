@@ -11,6 +11,9 @@ import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
 import { toast } from "sonner"; // 4. Import sonner để hiển thị thông báo
 import OtpModal from "./otp-modal";
+import { Link } from "react-router-dom";
+
+
 const signupSchema = z.object({
   username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
@@ -93,7 +96,6 @@ export function SignupForm({ className, ...props }) {
               </div>
 
               
-
               {/* Tên người dùng */}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="username" className="block text-sm">
@@ -184,11 +186,12 @@ export function SignupForm({ className, ...props }) {
               </Button>
 
               <div className="text-sm text-center">
-                Đã có tài khoản?{" "}
-                <a href="/login" className="text-primary hover:underline">
-                  Đăng nhập
-                </a>
-              </div>
+              Đã có tài khoản?{" "}
+              {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
+              <Link to="/signIn" className="text-blue-600 hover:underline">
+                Đăng nhập
+              </Link>
+            </div>
             </div>
           </form>
 

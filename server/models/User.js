@@ -39,4 +39,12 @@ const findByIdNoPassword = async(id) => {
   const res = await pool.query(query, values);
   return res.rows[0];
 }
-export default { create, findByEmail, findByPhone, findById, findByIdNoPassword };
+
+const updatePassword = async (email, newPassword) => {
+  const query = 'UPDATE users SET password = $1 WHERE email = $2 RETURNING *';
+  const values = [newPassword, email];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword }; // Nhớ export thêm updatePassword

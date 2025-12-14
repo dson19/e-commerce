@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import SignUpPage from './page/SignUp';
 import { useState } from 'react';
 import { AuthProvider } from './context/authContext';
-
+import ResetPasswordPage from './page/ResetPasswordPage';
 function App() {
   const [user, setUser] = useState(null);
 
@@ -24,6 +24,7 @@ function App() {
           <Route path="/signUp" element={<SignUpPage />}  />
           <Route path ="/signIn" element={<SignInPage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
