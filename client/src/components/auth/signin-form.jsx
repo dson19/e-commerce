@@ -137,7 +137,7 @@ export function SigninForm({ className, ...props }) {
           </form>
           <div className="relative hidden md:block bg-gray-100">
              {/* Đảm bảo ảnh tồn tại trong thư mục public */}
-            <img src="/placeholderSignUp.png" alt="Image" className="absolute inset-0 h-full w-full object-cover" />
+            <img src="/placeholderSignIn.png" alt="Image" className="absolute inset-0 h-full w-full object-cover" />
           </div>
         </CardContent>
       </Card>
