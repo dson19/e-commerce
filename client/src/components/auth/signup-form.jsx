@@ -9,20 +9,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
 import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
-import { toast } from "sonner";
+import { toast } from "sonner"; // 4. Import sonner để hiển thị thông báo
+import OtpModal from "./otp-modal";
+import { Link } from "react-router-dom";
+
 
 const signupSchema = z.object({
-  firstName: z.string().min(1, "Tên bắt buộc phải có"),
-  lastName: z.string().min(1, "Họ bắt buộc phải có"),
   username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),
+  gender: z.string().optional(),
 });
 
 export function SignupForm({ className, ...props }) {
   const navigate = useNavigate(); // Hook chuyển trang
   const [apiError, setApiError] = useState(""); // State lưu lỗi từ Backend
-
+  const [showOtpModal, setShowOtpModal] = useState(false); // State hiển thị Modal
+  const [registeredEmail, setRegisteredEmail] = useState(""); // Lưu email để xác thực
   const {
     register,
     handleSubmit,
@@ -30,11 +34,11 @@ export function SignupForm({ className, ...props }) {
   } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
       username: "",
       email: "",
       password: "",
+      phoneNumber: "", 
+      gender: "male", 
     },
   });
 
@@ -44,21 +48,17 @@ export function SignupForm({ className, ...props }) {
 
     try {
       // Gọi API Backend
-      // Lưu ý: Backend hiện tại nhận { username, email, password }
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("http://localhost:5000/api/auth/signUp", {
         username: data.username,
         email: data.email,
         password: data.password,
-        // firstName, lastName: Tạm thời Backend chưa lưu 2 trường này, 
-        // nhưng gửi kèm cũng không sao, Backend sẽ bỏ qua.
+        phoneNumber: data.phoneNumber,
+        gender: data.gender,
       });
 
-      // Nếu thành công (Status 201)
-      toast.success("Tạo tài khoản thành công!", {
-        description: "Vui lòng đăng nhập để tiếp tục.",
-        duration: 3000, // Hiện trong 3 giây
-      });
-      navigate("/login"); // Chuyển sang trang đăng nhập
+      setRegisteredEmail(data.email);
+      setShowOtpModal(true);
+
 
     } catch (error) {
       console.error(error);
@@ -70,6 +70,14 @@ export function SignupForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      
+      {showOtpModal && (
+        <OtpModal 
+          isOpen={true} // Lúc nào render thì cũng là đang mở
+          email={registeredEmail} 
+          onClose={() => setShowOtpModal(false)}
+        />
+      )}
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
@@ -87,42 +95,18 @@ export function SignupForm({ className, ...props }) {
                 </p>
               </div>
 
-              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
-              {apiError && (
-                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
-                  {apiError}
-                </div>
-              )}
-
-              {/* Họ và Tên */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="lastname" className="block text-sm">
-                    Họ
-                  </Label>
-                  <Input id="lastname" type="text" {...register("lastName")} />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="firstname" className="block text-sm">
-                    Tên
-                  </Label>
-                  <Input id="firstname" type="text" {...register("firstName")} />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Username */}
+              
+              {/* Tên người dùng */}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="username" className="block text-sm">
-                  Username
+                  Tên người dùng
                 </Label>
-                <Input id="username" type="text" {...register("username")} />
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="ví dụ: nguyenvana"
+                  {...register("username")}
+                />
                 {errors.username && (
                   <p className="text-sm text-red-500">{errors.username.message}</p>
                 )}
@@ -144,6 +128,38 @@ export function SignupForm({ className, ...props }) {
                 )}
               </div>
 
+              {/* Số điện thoại */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="phoneNumber" className="block text-sm">
+                  Số điện thoại
+                </Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  placeholder="0123456789"
+                  {...register("phoneNumber")}
+                />
+                {errors.phoneNumber && (
+                  <p className="text-sm text-red-500">{errors.phoneNumber.message}</p>
+                )}
+              </div>
+
+              {/* Giới tính */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="gender" className="block text-sm">
+                  Giới tính
+                </Label>
+                <select
+                  id="gender"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  {...register("gender")}
+                >
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+
               {/* Password */}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="password" className="block text-sm">
@@ -158,28 +174,34 @@ export function SignupForm({ className, ...props }) {
                   <p className="text-sm text-red-500">{errors.password.message}</p>
                 )}
               </div>
-
+              {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}
+              {apiError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
+                  {apiError}
+                </div>
+              )}
               {/* Nút Đăng ký */}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Đang xử lý..." : "Tạo tài khoản"}
               </Button>
 
               <div className="text-sm text-center">
-                Đã có tài khoản?{" "}
-                <a href="/login" className="text-primary hover:underline">
-                  Đăng nhập
-                </a>
-              </div>
+              Đã có tài khoản?{" "}
+              {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
+              <Link to="/signIn" className="text-blue-600 hover:underline">
+                Đăng nhập
+              </Link>
+            </div>
             </div>
           </form>
 
           {/* Ảnh Placeholder */}
           <div className="relative hidden md:block bg-gray-100">
-             {/* Sửa đường dẫn ảnh: Bỏ /public và thêm class full để đẹp hơn */}
+            {/* Sửa đường dẫn ảnh: Bỏ /public và thêm class full để đẹp hơn */}
             <img
               src="/placeholderSignUp.png"
               alt="Image"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-full"
+              className="absolute top-1/2 -translate-y-1/2 object-cover"
             />
           </div>
         </CardContent>

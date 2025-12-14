@@ -15,7 +15,7 @@ export const generateToken = (userId) => {
   // - Tham số 2: Secret Key (lấy từ .env)
   // - Tham số 3: Cấu hình (Hết hạn sau 7 ngày)
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1d" 
+    expiresIn: "7d" 
   });
 
   return token;

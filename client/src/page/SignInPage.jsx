@@ -1,5 +1,13 @@
 import { SigninForm } from '@/components/auth/signin-form';
+import { useAuth } from '@/context/authContext';
+import { useNavigate } from 'react-router-dom';
+
 function SigninPage() {
+  const navigate = useNavigate();
+  const {user} = useAuth();
+  if (user){
+    navigate('/');
+  }
   return (
     <div className="min-h-screen w-full bg-white relative text-gray-800">
   {/* Crosshatch Art - Light Pattern */}
