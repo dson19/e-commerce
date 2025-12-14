@@ -6,9 +6,9 @@ import redisClient from "../config/redis.js";
 
 export const signUp = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, gender, phoneNumber } = req.body; 
+        const { username, email, password, gender, phoneNumber } = req.body; 
 
-        if (!email || !password) {
+        if (!username || !email || !password) {
             return res.status(400).json({message: "Vui lòng nhập đủ thông tin"});
         }
 
@@ -31,8 +31,7 @@ export const signUp = async (req, res) => {
 
         // 4. Gói dữ liệu đăng ký vào Object tạm
         const tempUserData = {
-            firstName,
-            lastName,
+            username,
             email,
             password: hashedPassword,
             gender,
@@ -83,8 +82,7 @@ export const verifyAccount = async (req, res) => {
         // 3. OTP Đúng THÌ LƯU VÀO POSTGRESQL
         // Lúc này mới gọi hàm create của Model
         const newUser = await User.create(
-            tempData.firstName, 
-            tempData.lastName, 
+            tempData.username,
             tempData.email, 
             tempData.password, 
             tempData.gender, 
