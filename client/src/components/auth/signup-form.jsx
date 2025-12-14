@@ -188,7 +188,7 @@ export function SignupForm({ className, ...props }) {
               <div className="text-sm text-center">
               Đã có tài khoản?{" "}
               {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
-              <Link to="/signIn" className="text-blue-600 hover:underline">
+              <Link to="/signIn" className="hover:underline">
                 Đăng nhập
               </Link>
             </div>
