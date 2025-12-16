@@ -104,17 +104,20 @@ export const signIn = async (req, res) => {
         const { email, password } = req.body;
         // Check null fields
         if (!email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
+            return res.status(400).json({ message: "Điền thông tin còn thiếu" });
         }
-        // Find user by email
-        const user = await User.findByEmail(email);
-        if (!user) {
-            return res.status(401).json({ message: "Invalid email or password" });
-        }
+        // Find user by email or username
+        if (!email.includes('@')) {
+            // username login
+            var user = await User.findByUsername(email);
+        } else {
+            // email login
+            var user =  await User.findByEmail(email);
+        } 
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Thông tin không hợp lệ" });
         }
         //generate token
         const token = generateToken(user.id);

@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 
 
 const signupSchema = z.object({
-  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự"),
+  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự").regex(/^[a-zA-Z0-9_]+$/, "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),

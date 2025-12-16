@@ -20,6 +20,13 @@ const findByEmail = async(email) => {
   return res.rows[0];
 }
 
+const findByUsername = async(username) => {
+  const query = 'SELECT * FROM users WHERE username = $1';
+  const values = [username];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+
 const findByPhone = async(phoneNumber) => {
   const query = 'SELECT * FROM users WHERE phone_number = $1';
   const values = [phoneNumber];
@@ -47,4 +54,4 @@ const updatePassword = async (email, newPassword) => {
   return res.rows[0];
 }
 
-export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword }; // Nhớ export thêm updatePassword
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, findByUsername, updatePassword }; // Nhớ export thêm updatePassword

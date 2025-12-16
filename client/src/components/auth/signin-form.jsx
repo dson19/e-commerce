@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { set, z } from "zod";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const signinSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
+  email: z.string().min(1, "Vui lòng nhập email hoặc username"),
   password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 });
 
@@ -83,6 +83,7 @@ export function SigninForm({ className, ...props }) {
       });
       setShowForgotOtp(false);
       navigate("/reset-password", { state: { email: forgotEmail, otp: otpValue } });
+      
     } catch (error) {
       toast.success("Mã OTP đã được gửi! Vui lòng kiểm tra email.");
     }
@@ -99,9 +100,15 @@ export function SigninForm({ className, ...props }) {
                 <p className="text-sm text-gray-500">Nhập thông tin để đăng nhập</p>
               </div>
 
+              {/* INPUT EMAIL / USERNAME */}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="email" className="block text-sm">Email</Label>
-                <Input id="email" type="email" placeholder="name@example.com" {...register("email")} />
+                <Label htmlFor="email" className="block text-sm">Email / Username</Label>
+                <Input 
+                  id="email" 
+                  type="text" 
+                  placeholder="Username hoặc name@example.com" 
+                  {...register("email")} 
+                />
                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
               </div>
 
