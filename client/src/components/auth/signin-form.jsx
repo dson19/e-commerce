@@ -83,9 +83,9 @@ export function SigninForm({ className, ...props }) {
       });
       setShowForgotOtp(false);
       navigate("/reset-password", { state: { email: forgotEmail, otp: otpValue } });
-      
+      toast.success("Xác thực OTP thành công! Vui lòng đặt lại mật khẩu.");
     } catch (error) {
-      toast.success("Mã OTP đã được gửi! Vui lòng kiểm tra email.");
+      toast.error("Mã OTP không hợp lệ hoặc đã hết hạn.");
     }
   };
 
