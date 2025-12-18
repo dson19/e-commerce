@@ -47,7 +47,7 @@ const AccountPage = () => {
               {/* Nút Đăng xuất */}
               <button 
                 onClick={handleLogout}
-                className="w-full py-3 px-4 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 font-bold transition"
+                className="w-full py-3 px-4 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 font-bold transition cursor-pointer"
               >
                 Đăng xuất
               </button>
