@@ -3,6 +3,8 @@ import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/ProductCard';
 import { PRODUCTS, CATEGORIES } from '../data/mockData';
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 function Homepage() {
 
   return (
@@ -15,9 +17,9 @@ function Homepage() {
           <ul>
             {CATEGORIES.map(cat => (
               <li key={cat.id} className="hover:bg-gray-50 border-b border-gray-50 last:border-0">
-                <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-primary hover:font-medium transition-all">
+                <Link to={`/category/${cat.id}`} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-primary hover:font-medium transition-all">
                   {cat.icon} {cat.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

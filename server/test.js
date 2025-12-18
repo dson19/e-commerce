@@ -9,5 +9,14 @@ async function testConnection() {
     console.error("❌ Lỗi kết nối:", err.message);
   }
 }
+async function testRedisConnection() {
+  try {
+    const redisClient = (await import('./config/redis.js')).default;
+    await redisClient.ping();
+    console.log("✅ KẾT NỐI REDIS THÀNH CÔNG!");
+  } catch (err) {
+    console.error("❌ Lỗi kết nối Redis:", err.message);
+  }
+}
 
-testConnection();
+testRedisConnection();
