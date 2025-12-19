@@ -110,7 +110,7 @@ const ProductDetail = () => {
             <div className="container mx-auto max-w-7xl">
                 
                 {/* Breadcrumbs */}
-                <div className="text-sm text-gray-500 mb-6">
+                <div className="flex text-sm text-gray-500 mb-6 gap-4 pl-5">
                     <Link to="/" className="hover:text-primary">Trang chủ</Link> / 
                     <Link to={`/category/${extendedProduct.category}`} className="hover:text-primary">{extendedProduct.category.toUpperCase()}</Link> / 
                     <span className="font-semibold text-gray-800">{extendedProduct.name}</span>

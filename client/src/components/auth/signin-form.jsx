@@ -129,7 +129,7 @@ export function SigninForm({ className, ...props }) {
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
                 {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
               </Button>
 
