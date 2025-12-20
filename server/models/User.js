@@ -35,13 +35,13 @@ const findByPhone = async(phoneNumber) => {
 }
 
 const findById = async(id) => {
-  const query = 'SELECT * FROM users WHERE id = $1';
+  const query = 'SELECT * FROM users WHERE user_id = $1';
   const values = [id];
   const res = await pool.query(query, values);
   return res.rows[0];
 }
 const findByIdNoPassword = async(id) => {
-  const query = 'SELECT id, email, username FROM users WHERE id = $1';
+  const query = 'SELECT user_id, email, username FROM users WHERE user_id = $1';
   const values = [id];
   const res = await pool.query(query, values);
   return res.rows[0];

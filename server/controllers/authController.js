@@ -106,21 +106,27 @@ export const signIn = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "Điền thông tin còn thiếu" });
         }
+
+        let user;
         // Find user by email or username
         if (!email.includes('@')) {
             // username login
-            var user = await User.findByUsername(email);
+            user = await User.findByUsername(email);
         } else {
             // email login
-            var user =  await User.findByEmail(email);
+            user =  await User.findByEmail(email);
         } 
+
+        if (!user) {
+            return  res.status(401).json({ message: "Thông tin không hợp lệ" });
+        }
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: "Thông tin không hợp lệ" });
         }
         //generate token
-        const token = generateToken(user.id);
+        const token = generateToken(user.user_id);
         // Set token in HttpOnly cookie
         res.cookie("token", token, {
             httpOnly: true,  // Quan trọng: Chống XSS
@@ -131,8 +137,10 @@ export const signIn = async (req, res) => {
         res.status(200).json({
             message: "Đăng nhập thành công",
             user: {
-                id: user.id,
-                email: user.email
+                id: user.user_id,
+                email: user.email,
+                username: user.username,
+                // them sau
             }
         });
         }
@@ -158,7 +166,7 @@ export const getMe = async (req, res) => {
         }
         res.status(200).json({
             user: { 
-                id: user.id,
+                id: user.user_id,
                 username: user.username,
                 email: user.email
             }
