@@ -1,61 +1,201 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import { toast } from 'sonner';
 import { 
-  User, 
-  Package, 
-  Ticket, 
-  History, 
-  LayoutDashboard, 
-  Camera, 
-  Save 
+  User, Package, Ticket, History, LayoutDashboard, 
+  Camera, TicketPercent 
 } from 'lucide-react';
 
 const ProfilePage = () => {
+  const { user, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Danh sách menu bên trái (Giống hệt ảnh 1)
+  // State quản lý dữ liệu form
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+  });
+
+  // Load dữ liệu user vào form khi trang vừa tải
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address || '',
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      // Sửa lại đường dẫn API cho đúng với backend của bạn
+      const res = await axios.put(
+        'http://localhost:5000/api/users/profile', 
+        formData, 
+        { withCredentials: true }
+      );
+      updateUser(res.data.user || formData); 
+      toast.success("Cập nhật hồ sơ thành công!");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Cập nhật thất bại");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const menuItems = [
-    { id: 'profile', label: 'Thông tin cá nhân', icon: <User size={20} /> },
     { id: 'overview', label: 'Tổng quan', icon: <LayoutDashboard size={20} /> },
     { id: 'orders', label: 'Đơn hàng của bạn', icon: <Package size={20} /> },
-    { id: 'vouchers', label: 'Trung tâm voucher', icon: <Ticket size={20} /> },
+    { id: 'vouchers', label: 'Trung tâm voucher', icon: <TicketPercent size={20} /> },
     { id: 'history', label: 'Lịch sử mua hàng', icon: <History size={20} /> },
-    
+    { id: 'profile', label: 'Thông tin cá nhân', icon: <User size={20} /> },
   ];
+
+  // --- HÀM RENDER NỘI DUNG (SỬA LỖI Ở ĐÂY) ---
+  const renderContent = () => {
+    // 1. Tab TỔNG QUAN
+    if (activeTab === 'overview') {
+      return (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-[#004535] to-[#00654e] rounded-xl p-6 text-white flex justify-between items-center shadow-lg">
+            <div>
+              <p className="text-white/80 text-sm mb-1">Thành viên {user?.rank || 'Bạc'}</p>
+              <h2 className="text-2xl font-bold">Xin chào, {user?.name}</h2>
+              <p className="text-white/60 text-xs mt-2">Điểm tích lũy: {user?.points || 0} điểm</p>
+            </div>
+            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
+              <span className="text-2xl font-bold">{user?.name?.charAt(0).toUpperCase()}</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+             {/* Demo stats */}
+             <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold">2</span><span className="text-xs text-gray-500">Đơn hàng</span></div>
+             <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold text-green-600">0</span><span className="text-xs text-gray-500">Voucher</span></div>
+          </div>
+        </div>
+      );
+    }
+
+    // 2. Tab THÔNG TIN CÁ NHÂN (Form)
+    if (activeTab === 'profile') {
+      return (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6 border-b border-gray-100 pb-4">
+            <h1 className="text-xl font-bold text-gray-800">Thông tin cá nhân</h1>
+            <p className="text-gray-500 text-sm mt-1">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+          </div>
+
+          <div className="flex flex-col-reverse md:flex-row gap-10">
+            {/* Form Fields */}
+            <div className="flex-1 space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Họ và tên</label>
+                <input 
+                  type="text" name="name"
+                  value={formData.name} onChange={handleChange}
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] focus:ring-1 focus:ring-[#004535] outline-none" 
+                  placeholder="Nhập họ tên"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                  <input type="email" value={formData.email} disabled className="w-full px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-500 cursor-not-allowed" />
+                  <p className="text-xs text-gray-400 mt-1">*Email không thể thay đổi</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
+                  <input 
+                    type="text" name="phone"
+                    value={formData.phone} onChange={handleChange}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none" 
+                    placeholder="Nhập số điện thoại"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ</label>
+                <input 
+                  type="text" name="address"
+                  value={formData.address} onChange={handleChange}
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none" 
+                  placeholder="Nhập địa chỉ"
+                />
+              </div>
+
+              <div className="pt-4">
+                <button type="submit" disabled={isLoading} className={`bg-[#004535] text-white px-8 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#004535]/30 flex items-center gap-2 transition-all ${isLoading ? 'opacity-70 cursor-wait' : 'hover:bg-[#003528]'}`}>
+                  {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
+                </button>
+              </div>
+            </div>
+
+            {/* Avatar Section */}
+            <div className="w-full md:w-[240px] flex flex-col items-center border-l border-gray-100 pl-0 md:pl-10">
+              <div className="relative group cursor-pointer mb-4">
+                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-[#004535] flex items-center justify-center text-white text-4xl font-bold">
+                   {user?.name?.charAt(0).toUpperCase()}
+                </div>
+                <div className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-gray-200 text-gray-600 hover:text-[#004535]">
+                    <Camera size={18} />
+                </div>
+              </div>
+              <button type="button" className="text-sm font-medium text-[#004535] hover:underline">Chọn ảnh</button>
+            </div>
+          </div>
+        </form>
+      );
+    }
+
+    return <div className="text-center py-20 text-gray-400">Chức năng đang phát triển</div>;
+  };
 
   return (
     <MainLayout>
-      <div className="flex flex-col md:flex-row gap-6 items-start my-8">
-        
-        {/* --- 1. SIDEBAR (BÊN TRÁI - Style giống ảnh 1) --- */}
+      <div className="flex items-center gap-2 text-sm text-gray-500 mt-4 mb-2">
+        <Link to="/" className="hover:text-[#004535] transition-colors">Trang chủ</Link>
+        <span>/</span>
+        <span className="text-gray-900 font-medium">Tài khoản của tôi</span>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6 items-start mt-4 mb-10">
         <aside className="w-full md:w-[280px] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden shrink-0">
-          
-          {/* Header User nhỏ */}
           <div className="p-5 border-b border-gray-100 flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden border border-gray-100">
-               <img src="https://ui-avatars.com/api/?name=User&background=004535&color=fff" alt="Avatar" />
+            <div className="w-12 h-12 rounded-full bg-[#004535] flex items-center justify-center text-white font-bold text-lg">
+               {user?.name?.charAt(0).toUpperCase()}
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-xs text-gray-500">Xin chào,</p>
-              <h3 className="font-bold text-gray-800">Nguyễn Văn A</h3>
+              <h3 className="font-bold text-gray-800 truncate max-w-[150px]">{user?.name}</h3>
             </div>
           </div>
-
-          {/* Menu Items */}
           <ul className="p-3 space-y-1">
             {menuItems.map((item) => (
               <li key={item.id}>
                 <button
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === item.id 
-                      ? 'bg-[#E5F2F0] text-[#004535]' // Active: Nền xanh nhạt, chữ xanh đậm (Chuẩn ảnh mẫu)
-                      : 'text-gray-600 hover:bg-gray-50'
+                    activeTab === item.id ? 'bg-[#E5F2F0] text-[#004535]' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  <span className={activeTab === item.id ? 'text-[#004535]' : 'text-gray-400'}>
-                    {item.icon}
-                  </span>
+                  <span className={activeTab === item.id ? 'text-[#004535]' : 'text-gray-400'}>{item.icon}</span>
                   {item.label}
                 </button>
               </li>
@@ -63,124 +203,9 @@ const ProfilePage = () => {
           </ul>
         </aside>
 
-        {/* --- 2. NỘI DUNG CHÍNH (BÊN PHẢI - Style giống ảnh 2) --- */}
-        <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-10">
-          
-          {/* Header Form */}
-          <div className="mb-8">
-            <h1 className="text-xl font-bold text-gray-800">Thông tin cá nhân</h1>
-            <p className="text-gray-500 text-sm mt-1">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
-          </div>
-
-          {/* Form Content */}
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col-reverse md:flex-row gap-10">
-              
-              {/* Cột Trái: Các trường nhập liệu */}
-              <div className="flex-1 space-y-6">
-                
-                {/* Họ & Tên (2 cột) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Họ (Last Name)</label>
-                    <input 
-                      type="text" 
-                      defaultValue="Nguyễn"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-[#004535] focus:ring-1 focus:ring-[#004535] transition-all" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Tên (First Name)</label>
-                    <input 
-                      type="text" 
-                      defaultValue="Văn A"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-[#004535] focus:ring-1 focus:ring-[#004535] transition-all" 
-                    />
-                  </div>
-                </div>
-
-                {/* Email & Phone */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                    <input type="email" defaultValue="email@example.com" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
-                    <input type="text" defaultValue="0987654321" className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" />
-                  </div>
-                </div>
-
-                {/* Địa chỉ */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ</label>
-                  <input 
-                    type="text" 
-                    defaultValue="89 Láng Hạ, Đống Đa, Hà Nội"
-                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" 
-                  />
-                </div>
-
-                {/* Khu vực đổi mật khẩu (Password Changes) */}
-                <div className="pt-4 border-t border-gray-100">
-                  <h3 className="font-bold text-gray-800 mb-4">Đổi mật khẩu</h3>
-                  <div className="space-y-4">
-                    <input 
-                      type="password" 
-                      placeholder="Mật khẩu hiện tại"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" 
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Mật khẩu mới"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" 
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Xác nhận mật khẩu mới"
-                      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none transition-all" 
-                    />
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-4 pt-4">
-                  <button className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-                    Hủy bỏ
-                  </button>
-                  <button className="bg-[#004535] text-white px-8 py-2.5 rounded-lg text-sm font-bold hover:bg-[#003528] transition-colors shadow-lg shadow-[#004535]/30">
-                    Lưu thay đổi
-                  </button>
-                </div>
-              </div>
-
-              {/* Cột Phải: Avatar (Cho cân đối layout) */}
-              <div className="w-full md:w-[240px] flex flex-col items-center border-l border-gray-100 pl-0 md:pl-10">
-                <div className="relative group cursor-pointer mb-4">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                    <img 
-                      src="https://ui-avatars.com/api/?name=User&background=004535&color=fff&size=200" 
-                      alt="Avatar" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {/* Overlay icon máy ảnh */}
-                  <div className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-gray-200 text-gray-600 hover:text-[#004535]">
-                     <Camera size={18} />
-                  </div>
-                </div>
-                <button className="text-sm font-medium text-[#004535] hover:underline">
-                  Chọn ảnh đại diện
-                </button>
-                <p className="text-xs text-gray-400 mt-2 text-center px-4">
-                  Dụng lượng file tối đa 1 MB. Định dạng: .JPEG, .PNG
-                </p>
-              </div>
-
-            </div>
-          </form>
+        <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 min-h-[500px]">
+          {renderContent()}
         </div>
-
       </div>
     </MainLayout>
   );
