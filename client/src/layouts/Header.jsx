@@ -18,7 +18,7 @@ const Header = () => {
   const handleLogout = async () => {
     setIsDropdownOpen(false); // Đóng menu
     await signOut(); // Gọi hàm signOut từ AuthContext (để gọi API xóa cookie)
-    navigate('/signin'); // Chuyển về trang login
+    navigate('/signIn'); // Chuyển về trang login
   };
 
   // Click outside để đóng menu
@@ -71,7 +71,7 @@ return (
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center gap-2 focus:outline-none">
                 <div className="w-9 h-9 rounded-full bg-[#1a5d1a] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-2 ring-gray-100 hover:ring-[#1a5d1a] transition-all">
-                  {getAvatarLetter(user.full_name || user.username)} 
+                  {getAvatarLetter(user.fullname)} 
                 </div>
               </button>
 
@@ -81,11 +81,11 @@ return (
                   {/* Header Dropdown */}
                   <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
                     <div className="w-10 h-10 rounded-full bg-[#1a5d1a] text-white flex items-center justify-center font-bold text-lg">
-                      {getAvatarLetter(user.full_name || user.username)}
+                      {getAvatarLetter(user.fullname)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-gray-800 text-sm truncate">
-                        {user.full_name || user.username || "Người dùng"}
+                        {user.fullname || "Người dùng"}
                       </h4>
                       <p className="text-gray-500 text-xs truncate">
                         {user.email || "Chưa cập nhật email"}
@@ -112,7 +112,7 @@ return (
           ) : (
             // TRƯỜNG HỢP 2: CHƯA ĐĂNG NHẬP -> Hiện nút "Đăng nhập"
             <Link 
-              to="/signin" 
+              to="/signIn" 
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#004535] text-white hover:bg-[#003528] transition-colors text-sm font-bold shadow-md"
             >
               <LogIn size={18} />

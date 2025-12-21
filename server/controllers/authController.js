@@ -6,9 +6,9 @@ import redisClient from "../config/redis.js";
 
 export const signUp = async (req, res) => {
     try {
-        const { username, email, password, gender, phoneNumber } = req.body; 
+        const { email, fullname, password, gender, phoneNumber } = req.body; 
 
-        if (!username || !email || !password) {
+        if (!email || !fullname || !password) {
             return res.status(400).json({message: "Vui lòng nhập đủ thông tin"});
         }
 
@@ -31,8 +31,8 @@ export const signUp = async (req, res) => {
 
         // 4. Gói dữ liệu đăng ký vào Object tạm
         const tempUserData = {
-            username,
             email,
+            fullname,
             password: hashedPassword,
             gender,
             phoneNumber,
@@ -81,8 +81,8 @@ export const verifyAccount = async (req, res) => {
 
         // 3. OTP Đúng THÌ LƯU VÀO POSTGRESQL
         const newUser = await User.create(
-            tempData.username,
             tempData.email, 
+            tempData.fullname,
             tempData.password, 
             tempData.gender, 
             tempData.phoneNumber
@@ -108,10 +108,10 @@ export const signIn = async (req, res) => {
         }
 
         let user;
-        // Find user by email or username
+        // Find user by email or phone
         if (!email.includes('@')) {
-            // username login
-            user = await User.findByUsername(email);
+            // phone login
+            user = await User.findByPhone(email);
         } else {
             // email login
             user =  await User.findByEmail(email);
@@ -139,8 +139,8 @@ export const signIn = async (req, res) => {
             user: {
                 id: user.user_id,
                 email: user.email,
-                username: user.username,
-                // them sau
+                fullname: user.fullname,
+                phone_number: user.phone_number,
             }
         });
         }
@@ -167,8 +167,11 @@ export const getMe = async (req, res) => {
         res.status(200).json({
             user: { 
                 id: user.user_id,
-                username: user.username,
-                email: user.email
+                email: user.email,
+                fullname: user.fullname,
+                phone_number: user.phone_number,
+                gender: user.gender,
+                // Thêm các trường khác nếu cần
             }
         });
     } catch (error) {
@@ -265,5 +268,24 @@ export const resetPassword = async (req, res) => {
     } catch (error) {
         console.error("Reset Password Error:", error);
         res.status(500).json({ message: "Lỗi server khi đổi mật khẩu" });
+    }
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { fullname } = req.body;
+
+        const updatedUser = await User.updateProfile(userId, fullname);
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+        res.status(200).json({
+            message: "Cập nhật hồ sơ thành công",
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({ message: "Lỗi server khi cập nhật hồ sơ" });
     }
 };

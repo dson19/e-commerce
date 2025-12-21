@@ -29,7 +29,7 @@ export const AuthProvider = ({children}) => {
 
     const signOut = async () => {
         try {
-            await axios.post('http://localhost:5000/api/auth/signout', {}, {withCredentials: true});
+            await axios.post('http://localhost:5000/api/auth/signOut', {}, {withCredentials: true});
             setUser(null);
             toast.success("Đăng xuất thành công");
         } catch (error) {

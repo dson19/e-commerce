@@ -44,6 +44,7 @@ export function SigninForm({ className, ...props }) {
     try {
       const response = await axios.post("http://localhost:5000/api/auth/signIn", {
         email: data.email,
+        fullname: data.fullname,
         password: data.password,
       });
       const user = response.data.user;
@@ -102,11 +103,11 @@ export function SigninForm({ className, ...props }) {
 
               {/* INPUT EMAIL / USERNAME */}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="email" className="block text-sm">Email / Username</Label>
+                <Label htmlFor="email" className="block text-sm">Email hoặc Số điện thoại </Label>
                 <Input 
                   id="email" 
                   type="text" 
-                  placeholder="Username hoặc name@example.com" 
+                  placeholder="" 
                   {...register("email")} 
                 />
                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}

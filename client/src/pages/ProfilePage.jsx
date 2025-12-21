@@ -16,9 +16,9 @@ const ProfilePage = () => {
 
   // State quản lý dữ liệu form
   const [formData, setFormData] = useState({
-    name: '',
+    fullname: '',
     email: '',
-    phone: '',
+    phone_number: '',
     address: '',
   });
 
@@ -26,14 +26,15 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        name: user.name || '',
+        fullname: user.fullname || '',
         email: user.email || '',
-        phone: user.phone || '',
+        phone_number: user.phone_number || '',
         address: user.address || '',
       });
     }
   }, [user]);
 
+  // Hàm xử lý thay đổi input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -44,7 +45,7 @@ const ProfilePage = () => {
     try {
       // Sửa lại đường dẫn API cho đúng với backend của bạn
       const res = await axios.put(
-        'http://localhost:5000/api/users/profile', 
+        'http://localhost:5000/api/auth/profile', 
         formData, 
         { withCredentials: true }
       );
@@ -106,8 +107,8 @@ const ProfilePage = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Họ và tên</label>
                 <input 
-                  type="text" name="name"
-                  value={formData.name} onChange={handleChange}
+                  type="text" name="fullname"
+                  value={formData.fullname} onChange={handleChange}
                   className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] focus:ring-1 focus:ring-[#004535] outline-none" 
                   placeholder="Nhập họ tên"
                 />
@@ -122,11 +123,13 @@ const ProfilePage = () => {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
                   <input 
-                    type="text" name="phone"
-                    value={formData.phone} onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none" 
+                    type="text" name="phone_number"
+                    value={formData.phone_number}
+                    disabled
                     placeholder="Nhập số điện thoại"
+                    className="w-full px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-500 cursor-not-allowed outline-none"
                   />
+                  <p className="text-xs text-gray-400 mt-1">*Số điện thoại không thể thay đổi</p>
                 </div>
               </div>
 
@@ -151,7 +154,7 @@ const ProfilePage = () => {
             <div className="w-full md:w-[240px] flex flex-col items-center border-l border-gray-100 pl-0 md:pl-10">
               <div className="relative group cursor-pointer mb-4">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-[#004535] flex items-center justify-center text-white text-4xl font-bold">
-                   {user?.name?.charAt(0).toUpperCase()}
+                   {user?.fullname?.charAt(0).toUpperCase()}
                 </div>
                 <div className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-gray-200 text-gray-600 hover:text-[#004535]">
                     <Camera size={18} />
@@ -179,11 +182,11 @@ const ProfilePage = () => {
         <aside className="w-full md:w-[280px] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden shrink-0">
           <div className="p-5 border-b border-gray-100 flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#004535] flex items-center justify-center text-white font-bold text-lg">
-               {user?.name?.charAt(0).toUpperCase()}
+               {user?.fullname?.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
               <p className="text-xs text-gray-500">Xin chào,</p>
-              <h3 className="font-bold text-gray-800 truncate max-w-[150px]">{user?.name}</h3>
+              <h3 className="font-bold text-gray-800 truncate max-w-[150px]">{user?.fullname}</h3>
             </div>
           </div>
           <ul className="p-3 space-y-1">
