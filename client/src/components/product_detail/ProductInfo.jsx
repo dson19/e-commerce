@@ -1,114 +1,123 @@
-import React, { useState } from 'react'; // 1. Import useState
-import { Button } from "@/components/ui/button";
-import { Star, Truck, Shield, ShoppingBag, CreditCard, Minus, Plus } from 'lucide-react'; // 2. Import icon Minus, Plus
+import React, { useState } from 'react';
+import { Star, CheckCircle, Minus, Plus, ShoppingCart, Heart, Share2 } from 'lucide-react';
 
-const ProductInfo = ({ 
-  product, 
-  selectedOptions, 
-  handleOptionSelect, 
-  handleAddToCart 
-}) => {
-  
-  // 3. State quản lý số lượng (Mặc định là 1)
+const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
 
-  // Hàm render sao (Helper nội bộ)
-  const renderRating = (r) => {
-    return Array(5).fill(0).map((_, i) => (
-      <Star key={i} className={`h-4 w-4 ${i < r ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`} />
-    ));
+  const handleQuantityChange = (type) => {
+    if (type === 'decrease' && quantity > 1) setQuantity(quantity - 1);
+    if (type === 'increase') setQuantity(quantity + 1);
   };
 
-  // Hàm xử lý thay đổi số lượng
-  const decreaseQty = () => setQuantity(prev => Math.max(1, prev - 1));
-  const increaseQty = () => setQuantity(prev => prev + 1);
-
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+    <div className="flex flex-col h-full">
+      {/* Header Info */}
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
+        {product.name}
+      </h1>
       
-      <div className="flex items-center space-x-2 mb-6 border-b pb-4 border-gray-100">
-        <div className="flex">{renderRating(product.rating)}</div>
-        <span className="text-sm text-gray-600">({product.reviewsCount} Đánh giá)</span>
-      </div>
-
-      {/* Giá */}
-      <div className="mb-8">
-        <span className="text-5xl font-extrabold text-red-600 block">{product.price}</span>
-        <span className="text-xl text-gray-400 line-through mr-3">{product.oldPrice}</span>
-        <span className="text-lg font-semibold text-green-600">({product.discount})</span>
-      </div>
-
-      {/* Tùy chọn (Màu sắc, Dung lượng...) */}
-      {product.options.map(option => (
-        <div key={option.name} className="mb-6">
-          <p className="font-semibold mb-2">{option.name}: <span className="text-primary font-bold">{selectedOptions[option.name] || 'Chưa chọn'}</span></p>
-          <div className="flex flex-wrap gap-2">
-            {option.variants.map(variant => (
-              <button
-                key={variant}
-                onClick={() => handleOptionSelect(option.name, variant)}
-                className={`px-4 py-2 border rounded-full text-sm transition-all ${
-                  selectedOptions[option.name] === variant
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                {variant}
-              </button>
+      <div className="flex flex-wrap items-center gap-4 mb-6">
+        <div className="flex items-center gap-1">
+          <div className="flex text-yellow-400">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={16} fill="currentColor" className={i < Math.floor(product.rating) ? "" : "text-gray-200"} />
             ))}
           </div>
+          <span className="text-sm text-gray-500 ml-1">({product.reviewsCount} đánh giá)</span>
         </div>
-      ))}
+        <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
+        <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+          <CheckCircle size={14} /> Còn hàng
+        </span>
+        <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
+        <span className="text-sm text-gray-500">SKU: {product.sku || `SP-${product.id}`}</span>
+      </div>
 
-      {/* --- KHU VỰC CHỌN SỐ LƯỢNG & NÚT MUA --- */}
-      <div className="mt-8 border-t border-gray-100 pt-6">
-        
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* 4. Bộ chọn số lượng */}
-          <div className="w-32 h-14 border border-gray-300 rounded-lg flex items-center justify-between px-3 shrink-0">
-             <button 
-                onClick={decreaseQty}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#004535] hover:bg-gray-100 rounded transition-colors"
-             >
-                <Minus size={16} />
-             </button>
-             <span className="font-bold text-gray-800 text-lg">{quantity}</span>
-             <button 
-                onClick={increaseQty}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#004535] hover:bg-gray-100 rounded transition-colors"
-             >
-                <Plus size={16} />
-             </button>
+      {/* Giá tiền */}
+      <div className="bg-gray-50 p-4 rounded-xl mb-6">
+        <div className="flex items-end gap-3">
+            <span className="text-3xl font-bold text-[#004535]">{product.price}</span>
+            {product.oldPrice && (
+            <span className="text-lg text-gray-400 line-through mb-1">
+                {product.oldPrice}
+            </span>
+            )}
+            {product.discount && (
+                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded mb-2">
+                    {product.discount}
+                </span>
+            )}
+        </div>
+      </div>
+
+      {/* Mô tả ngắn */}
+      <p className="text-gray-600 mb-6 text-sm leading-relaxed border-b border-gray-100 pb-6">
+        {product.description}
+      </p>
+
+      {/* Tùy chọn (Màu/Size) */}
+      <div className="space-y-6 mb-8">
+        {product.options.map((option, idx) => (
+          <div key={idx}>
+            <div className="flex justify-between mb-3">
+                <span className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                {option.name}: <span className="text-[#004535] ml-1">{selectedOptions[option.name]}</span>
+                </span>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {option.variants.map((variant) => {
+                const isSelected = selectedOptions[option.name] === variant;
+                return (
+                  <button
+                    key={variant}
+                    onClick={() => handleOptionSelect(option.name, variant)}
+                    className={`min-w-[80px] px-4 py-2 text-sm rounded-lg border transition-all ${
+                      isSelected
+                        ? "border-[#004535] text-[#004535] bg-[#004535]/5 font-bold ring-1 ring-[#004535]"
+                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-white"
+                    }`}
+                  >
+                    {variant}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+        ))}
+      </div>
 
-          {/* 5. Nút CTA (Gọi hàm handleAddToCart kèm số lượng) */}
-          <Button 
-            onClick={() => handleAddToCart(quantity)} 
-            className="flex-1 h-14 text-lg font-bold bg-primary hover:bg-primary/90 transition-colors shadow-lg"
-          >
-            <ShoppingBag className="w-5 h-5 mr-3" />
-            THÊM VÀO GIỎ HÀNG
-          </Button>
+      {/* Hành động (Số lượng + Nút mua) */}
+      <div className="flex flex-col sm:flex-row gap-4 mt-auto">
+        {/* Bộ đếm */}
+        <div className="flex items-center border border-gray-300 rounded-lg h-12 w-fit bg-white">
+          <button onClick={() => handleQuantityChange('decrease')} className="w-10 h-full flex items-center justify-center hover:bg-gray-100 rounded-l-lg text-gray-600"><Minus size={16} /></button>
+          <span className="w-12 text-center font-bold text-gray-800">{quantity}</span>
+          <button onClick={() => handleQuantityChange('increase')} className="w-10 h-full flex items-center justify-center hover:bg-gray-100 rounded-r-lg text-gray-600"><Plus size={16} /></button>
         </div>
+
+        {/* Nút Thêm giỏ hàng */}
+        <button
+          onClick={() => handleAddToCart(quantity)}
+          className="flex-1 bg-[#004535] text-white h-12 rounded-lg font-bold hover:bg-[#003528] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#004535]/20 active:scale-[0.98]"
+        >
+          <ShoppingCart size={20} />
+          Thêm vào giỏ hàng
+        </button>
+
+        {/* Nút Yêu thích */}
+        <button className="h-12 w-12 border border-gray-300 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all">
+          <Heart size={20} />
+        </button>
       </div>
-      
-      {/* Trust Factors */}
-      <div className="space-y-3 pt-8 mt-4">
-        <TrustBadge icon={<Truck className="w-5 h-5 text-green-500" />} text="Miễn phí vận chuyển cho đơn hàng trên 5 triệu VNĐ" />
-        <TrustBadge icon={<Shield className="w-5 h-5 text-green-500" />} text="Bảo hành chính hãng 12 tháng" />
-        <TrustBadge icon={<CreditCard className="w-5 h-5 text-green-500" />} text="Thanh toán an toàn qua VNPAY, Momo, Visa/Mastercard" />
-      </div>
+
+       {/* Footer nhỏ */}
+       <div className="mt-6 flex items-center gap-4 text-xs text-gray-500 font-medium">
+            <button className="flex items-center gap-1 hover:text-[#004535]"><Share2 size={14}/> Chia sẻ</button>
+            <span>•</span>
+            <span>Cam kết chính hãng 100%</span>
+       </div>
     </div>
   );
 };
-
-// Component con nhỏ để hiển thị Trust Factor cho gọn
-const TrustBadge = ({ icon, text }) => (
-  <div className="flex items-center space-x-3 text-gray-700">
-    {icon}
-    <span>{text}</span>
-  </div>
-);
 
 export default ProductInfo;

@@ -99,10 +99,7 @@ const ProductsPage = () => {
             <main className="lg:col-span-9">
                
                {/* Banner danh mục (Giữ nguyên) */}
-               <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Điện thoại nổi bật</h2>
-                  {/* ... (Phần list icon banner giữ nguyên như cũ) ... */}
-               </div>
+               
 
                {/* Thanh sắp xếp */}
                <SortBar 

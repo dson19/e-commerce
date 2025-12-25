@@ -1,49 +1,78 @@
-// src/components/product/ProductTabs.jsx
 import React from 'react';
 
 const ProductTabs = ({ activeTab, setActiveTab, description, reviewsCount }) => {
   return (
-    <div className="mt-4 bg-white shadow-xl rounded-b-xl p-6 md:p-8">
-      <div className="flex space-x-8 border-b border-gray-200 mb-6">
-        <TabButton name="Mô tả chi tiết" tabId="description" activeTab={activeTab} setActiveTab={setActiveTab} />
-        <TabButton name="Thông số kỹ thuật" tabId="specs" activeTab={activeTab} setActiveTab={setActiveTab} />
-        <TabButton name={`Đánh giá (${reviewsCount})`} tabId="reviews" activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div>
+      {/* Tab Headers */}
+      <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
+        <button
+          onClick={() => setActiveTab('description')}
+          className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${
+            activeTab === 'description'
+              ? 'border-[#004535] text-[#004535]'
+              : 'border-transparent text-gray-500 hover:text-gray-800'
+          }`}
+        >
+          Mô tả sản phẩm
+        </button>
+        <button
+          onClick={() => setActiveTab('reviews')}
+          className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${
+            activeTab === 'reviews'
+              ? 'border-[#004535] text-[#004535]'
+              : 'border-transparent text-gray-500 hover:text-gray-800'
+          }`}
+        >
+          Đánh giá ({reviewsCount})
+        </button>
+        <button
+           onClick={() => setActiveTab('policy')}
+           className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${
+             activeTab === 'policy'
+               ? 'border-[#004535] text-[#004535]'
+               : 'border-transparent text-gray-500 hover:text-gray-800'
+           }`}
+        >
+           Chính sách bảo hành
+        </button>
       </div>
 
-      <div className="py-4 text-gray-700 leading-relaxed">
+      {/* Tab Content */}
+      <div className="text-gray-700 leading-relaxed text-sm md:text-base min-h-[200px]">
         {activeTab === 'description' && (
-          <div>
-            <h3 className="text-xl font-bold mb-3">Thông tin chi tiết</h3>
-            <p>{description}</p>
+          <div className="animate-in fade-in duration-300">
+             <p className="mb-4">{description}</p>
+             <p>Nội dung mô tả chi tiết hơn sẽ nằm ở đây. Bạn có thể render HTML hoặc các đoạn văn bản dài.</p>
+             {/* Giả lập nội dung dài */}
+             <ul className="list-disc pl-5 space-y-2 mt-4 text-gray-600">
+                <li>Màn hình Super Retina XDR sắc nét.</li>
+                <li>Chip xử lý mạnh mẽ nhất thế giới smartphone.</li>
+                <li>Camera chuyên nghiệp chuẩn studio.</li>
+                <li>Thời lượng pin cả ngày dài.</li>
+             </ul>
           </div>
         )}
-        {activeTab === 'specs' && (
-          <table className="w-full text-left border-collapse">
-            <tbody>
-              <tr><th className="py-2 border-b">Màn hình</th><td className="py-2 border-b">Super Retina XDR, 6.7 inch</td></tr>
-              <tr><th className="py-2 border-b">Chip</th><td className="py-2 border-b">A17 Pro</td></tr>
-              <tr><th className="py-2 border-b">Camera sau</th><td className="py-2 border-b">48MP + 12MP + 12MP (Zoom quang 5x)</td></tr>
-              <tr><th className="py-2">Pin</th><td className="py-2">Hỗ trợ sạc nhanh 27W</td></tr>
-            </tbody>
-          </table>
-        )}
+        
         {activeTab === 'reviews' && (
-          <p>Đây là nơi hiển thị danh sách đánh giá của khách hàng.</p>
+          <div className="animate-in fade-in duration-300">
+             <div className="flex flex-col items-center justify-center py-10 text-center">
+                <p className="text-gray-500 mb-4">Chưa có đánh giá nào cho sản phẩm này.</p>
+                <button className="px-6 py-2 border border-[#004535] text-[#004535] rounded-full hover:bg-[#004535] hover:text-white transition-all font-medium text-sm">
+                   Viết đánh giá ngay
+                </button>
+             </div>
+          </div>
+        )}
+
+        {activeTab === 'policy' && (
+           <div className="animate-in fade-in duration-300 space-y-4">
+              <p><strong>Bảo hành chính hãng:</strong> 12 tháng tại trung tâm bảo hành ủy quyền.</p>
+              <p><strong>Đổi trả:</strong> 1 đổi 1 trong 30 ngày nếu có lỗi phần cứng từ nhà sản xuất.</p>
+           </div>
         )}
       </div>
     </div>
   );
 };
-
-const TabButton = ({ name, tabId, activeTab, setActiveTab }) => (
-  <button
-    className={`pb-3 text-lg font-medium transition-colors ${
-      activeTab === tabId ? 'text-primary border-b-2 border-primary' : 'text-gray-500 hover:text-gray-700'
-    }`}
-    onClick={() => setActiveTab(tabId)}
-  >
-    {name}
-  </button>
-);
 
 export default ProductTabs;
