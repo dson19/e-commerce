@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const signinSchema = z.object({
   email: z.string().min(1, "Vui lòng nhập email hoặc username"),
-  password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
 export function SigninForm({ className, ...props }) {

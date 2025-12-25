@@ -55,17 +55,20 @@ const ProductDetail = () => {
     setSelectedOptions((prev) => ({ ...prev, [optionName]: variant }));
   };
 
-  const handleAddToCart = (quantity) => {
+  const handleAddToCart = async (quantity) => {
     if (productData.options.length > 0 && Object.keys(selectedOptions).length < productData.options.length) {
       toast.error("Vui lòng chọn đầy đủ các tùy chọn (Màu sắc, Bộ nhớ)!");
       return;
     }
     const selectedVariant = productData.options.length > 0 ? ` (${Object.values(selectedOptions).join(", ")})` : "";
     
-    addToCart(productData, quantity);
-    toast.success(`Đã thêm ${productData.name}${selectedVariant} vào giỏ!`, {
-      action: { label: "Xem giỏ", onClick: () => navigate("/cart") },
-    });
+    const success = await addToCart(productData, quantity);
+    
+    if (success) {
+      toast.success(`Đã thêm ${productData.name}${selectedVariant} vào giỏ!`, {
+        action: { label: "Xem giỏ", onClick: () => navigate("/cart") },
+      });
+    }
   };
 
   if (!productData) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
