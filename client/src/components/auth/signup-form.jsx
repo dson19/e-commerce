@@ -15,10 +15,10 @@ import { Link } from "react-router-dom";
 
 
 const signupSchema = z.object({
-  email: z.string().min(1, "Vui lòng nhập email").email("Email không hợp lệ"),
+  email: z.email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   fullname: z.string().min(1, "Vui lòng nhập họ và tên"),
-  phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),
+  phoneNumber: z.string().length(10, "Số điện thoại phải đủ 10 chữ số"),
   gender: z.string().optional(),
 });
 
