@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const signinSchema = z.object({
   email: z.string().min(1, "Vui lòng nhập email hoặc username"),
-  password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
 export function SigninForm({ className, ...props }) {
@@ -44,6 +44,7 @@ export function SigninForm({ className, ...props }) {
     try {
       const response = await axios.post("http://localhost:5000/api/auth/signIn", {
         email: data.email,
+        fullname: data.fullname,
         password: data.password,
       });
       const user = response.data.user;
@@ -102,11 +103,11 @@ export function SigninForm({ className, ...props }) {
 
               {/* INPUT EMAIL / USERNAME */}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="email" className="block text-sm">Email / Username</Label>
+                <Label htmlFor="email" className="block text-sm">Email hoặc Số điện thoại </Label>
                 <Input 
                   id="email" 
                   type="text" 
-                  placeholder="Username hoặc name@example.com" 
+                  placeholder="" 
                   {...register("email")} 
                 />
                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
@@ -129,14 +130,14 @@ export function SigninForm({ className, ...props }) {
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full cursor-pointer" disabled={isSubmitting}>
                 {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
               </Button>
 
                <div className="text-sm text-center">
                 Chưa có tài khoản?{" "}
                 {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
-                <Link to="/signUp" className="hover:underline">
+                <Link to="/signUp" className="hover:underline cursor-pointer">
                   Đăng ký
                 </Link>
               </div>

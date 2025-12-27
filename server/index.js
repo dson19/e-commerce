@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 //đọc file .env
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 //public route
 app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server đang chạy ở http://localhost:${PORT}`);

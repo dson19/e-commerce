@@ -3,43 +3,52 @@ import axios from 'axios';
 import {toast} from 'sonner';
 
 const AuthContext = createContext();
+
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    // 
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 const res = await axios.get('http://localhost:5000/api/auth/me', {withCredentials: true});
                 setUser(res.data.user);
-            }
-            catch (error) {
+            } catch (error) {
                 setUser(null);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
         checkAuth();
     }, []);
+
     const signIn = async (user) => {
         setUser(user);
-        toast.success("Đăng nhập thành công, chuyển đến trang chủ");
+        toast.success("Đăng nhập thành công");
     }
+
     const signOut = async () => {
-        try{
-            await axios.post('http://localhost:5000/api/auth/signout', {}, {withCredentials: true});
+        try {
+            await axios.post('http://localhost:5000/api/auth/signOut', {}, {withCredentials: true});
             setUser(null);
             toast.success("Đăng xuất thành công");
-        }
-        catch (error) {
+        } catch (error) {
             toast.error("Đăng xuất thất bại");
         }
     };
+
+    // --- THÊM HÀM NÀY ---
+    // Hàm này giúp cập nhật state User mà không hiện thông báo "Đăng nhập thành công"
+    const updateUser = (userData) => {
+        setUser(prev => ({...prev, ...userData})); 
+    };
+
     return (
-        <AuthContext.Provider value={{user, loading, signIn, signOut}}>
+        // Nhớ thêm updateUser vào value
+        <AuthContext.Provider value={{user, loading, signIn, signOut, updateUser}}>
             {children}
         </AuthContext.Provider>
     );
 }
+
 export const useAuth = () => useContext(AuthContext);

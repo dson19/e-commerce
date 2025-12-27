@@ -6,9 +6,9 @@ import redisClient from "../config/redisClient.js";
 
 export const signUp = async (req, res) => {
     try {
-        const { username, email, password, gender, phoneNumber } = req.body; 
+        const { email, fullname, password, gender, phoneNumber } = req.body; 
 
-        if (!username || !email || !password) {
+        if (!email || !fullname || !password) {
             return res.status(400).json({message: "Vui lòng nhập đủ thông tin"});
         }
 
@@ -31,8 +31,8 @@ export const signUp = async (req, res) => {
 
         // 4. Gói dữ liệu đăng ký vào Object tạm
         const tempUserData = {
-            username,
             email,
+            fullname,
             password: hashedPassword,
             gender,
             phoneNumber,
@@ -81,8 +81,8 @@ export const verifyAccount = async (req, res) => {
 
         // 3. OTP Đúng THÌ LƯU VÀO POSTGRESQL
         const newUser = await User.create(
-            tempData.username,
             tempData.email, 
+            tempData.fullname,
             tempData.password, 
             tempData.gender, 
             tempData.phoneNumber
@@ -106,21 +106,27 @@ export const signIn = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "Điền thông tin còn thiếu" });
         }
-        // Find user by email or username
+
+        let user;
+        // Find user by email or phone
         if (!email.includes('@')) {
-            // username login
-            var user = await User.findByUsername(email);
+            // phone login
+            user = await User.findByPhone(email);
         } else {
             // email login
-            var user =  await User.findByEmail(email);
+            user =  await User.findByEmail(email);
         } 
+
+        if (!user) {
+            return  res.status(401).json({ message: "Thông tin không hợp lệ" });
+        }
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: "Thông tin không hợp lệ" });
         }
         //generate token
-        const token = generateToken(user.id);
+        const token = generateToken(user.user_id);
         // Set token in HttpOnly cookie
         res.cookie("token", token, {
             httpOnly: true,  // Quan trọng: Chống XSS
@@ -131,8 +137,10 @@ export const signIn = async (req, res) => {
         res.status(200).json({
             message: "Đăng nhập thành công",
             user: {
-                id: user.id,
-                email: user.email
+                id: user.user_id,
+                email: user.email,
+                fullname: user.fullname,
+                phone_number: user.phone_number,
             }
         });
         }
@@ -158,9 +166,12 @@ export const getMe = async (req, res) => {
         }
         res.status(200).json({
             user: { 
-                id: user.id,
-                username: user.username,
-                email: user.email
+                id: user.user_id,
+                email: user.email,
+                fullname: user.fullname,
+                phone_number: user.phone_number,
+                gender: user.gender,
+                // Thêm các trường khác nếu cần
             }
         });
     } catch (error) {
@@ -257,5 +268,24 @@ export const resetPassword = async (req, res) => {
     } catch (error) {
         console.error("Reset Password Error:", error);
         res.status(500).json({ message: "Lỗi server khi đổi mật khẩu" });
+    }
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { fullname } = req.body;
+
+        const updatedUser = await User.updateProfile(userId, fullname);
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+        res.status(200).json({
+            message: "Cập nhật hồ sơ thành công",
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({ message: "Lỗi server khi cập nhật hồ sơ" });
     }
 };

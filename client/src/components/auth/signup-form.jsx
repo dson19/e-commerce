@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label"; // Sửa lại import cho chuẩn Alias @
-import { z } from "zod";
+import { email, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
@@ -15,10 +15,10 @@ import { Link } from "react-router-dom";
 
 
 const signupSchema = z.object({
-  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự").regex(/^[a-zA-Z0-9_]+$/, "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới"),
-  email: z.string().email("Địa chỉ email không hợp lệ"),
+  email: z.email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-  phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),
+  fullname: z.string().min(1, "Vui lòng nhập họ và tên"),
+  phoneNumber: z.string().length(10, "Số điện thoại phải đủ 10 chữ số"),
   gender: z.string().optional(),
 });
 
@@ -34,8 +34,8 @@ export function SignupForm({ className, ...props }) {
   } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      username: "",
       email: "",
+      fullname: "",
       password: "",
       phoneNumber: "", 
       gender: "male", 
@@ -49,8 +49,8 @@ export function SignupForm({ className, ...props }) {
     try {
       // Gọi API Backend
       await axios.post("http://localhost:5000/api/auth/signUp", {
-        username: data.username,
         email: data.email,
+        fullname: data.fullname,
         password: data.password,
         phoneNumber: data.phoneNumber,
         gender: data.gender,
@@ -96,19 +96,19 @@ export function SignupForm({ className, ...props }) {
               </div>
 
               
-              {/* Tên người dùng */}
+              {/* Họ và tên*/}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="username" className="block text-sm">
-                  Tên người dùng
+                <Label htmlFor="fullname" className="block text-sm">
+                  Họ và tên
                 </Label>
                 <Input
-                  id="username"
+                  id="fullname"
                   type="text"
-                  placeholder="ví dụ: nguyenvana"
-                  {...register("username")}
+                  placeholder="Nguyễn Văn A"
+                  {...register("fullname")}
                 />
-                {errors.username && (
-                  <p className="text-sm text-red-500">{errors.username.message}</p>
+                {errors.fullname && (
+                  <p className="text-sm text-red-500">{errors.fullname.message}</p>
                 )}
               </div>
 
