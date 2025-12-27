@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from './authContext'; // Import context authentication
 import axios from 'axios';
@@ -7,30 +7,74 @@ import { useNavigate } from 'react-router-dom';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth(); // Lấy thông tin user
-  const [cartItems, setCartItems] = useState([]);
+  const { user } = useAuth(); 
   const navigate = useNavigate();
+
+  const initialState = {
+    items: [],
+    loading: false,
+    error: null
+  };
+
+  const cartReducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_CART':
+        return { ...state, items: action.payload, loading: false, error: null };
+      case 'ADD_ITEM': {
+        const existingItemIndex = state.items.findIndex(item => item.id === action.payload.id);
+        if (existingItemIndex > -1) {
+          const newItems = [...state.items];
+          newItems[existingItemIndex].quantity += action.payload.quantity;
+          return { ...state, items: newItems };
+        }
+        return { ...state, items: [...state.items, action.payload] };
+      }
+      case 'REMOVE_ITEM':
+        return { ...state, items: state.items.filter(item => item.id !== action.payload) };
+      case 'UPDATE_QUANTITY':
+        return {
+          ...state,
+          items: state.items.map(item => 
+            item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item
+          )
+        };
+      case 'CLEAR_CART':
+        return { ...state, items: [] };
+      case 'SET_LOADING':
+        return { ...state, loading: true };
+      case 'SET_ERROR':
+        return { ...state, loading: false, error: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = React.useReducer(cartReducer, initialState);
+
+  // Helper to sanitize product data for Cart
+   const sanitizeCartItem = (item) => ({
+      ...item,
+      id: Number(item.id),
+      quantity: Number(item.quantity) || 1,
+      price: Number(item.price) || 0,
+      oldPrice: Number(item.oldPrice) || 0
+   });
 
   // Sync Cart khi User thay đổi
   useEffect(() => {
     const fetchCart = async () => {
       if (user) {
-        // Nếu đã đăng nhập -> Gọi API lấy giỏ hàng từ DB
+        dispatch({ type: 'SET_LOADING' });
         try {
           const res = await axios.get('http://localhost:5000/api/cart', { withCredentials: true });
-          const mappedCart = res.data.map(item => ({
-            ...item,
-            id: item.id, // product id
-            quantity: item.quantity
-          }));
-          setCartItems(mappedCart);
+          const mappedCart = res.data.map(item => sanitizeCartItem(item));
+          dispatch({ type: 'SET_CART', payload: mappedCart });
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
-          toast.error("Không thể tải giỏ hàng của bạn");
+          dispatch({ type: 'SET_ERROR', payload: error.message });
         }
       } else {
-        // Nếu chưa đăng nhập -> Cart rỗng
-        setCartItems([]);
+        dispatch({ type: 'SET_CART', payload: [] });
       }
     };
 
@@ -45,38 +89,33 @@ export const CartProvider = ({ children }) => {
        return false;
     }
 
-    // Logic cho User (API)
     try {
+        // Optimistic Update
+        dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
+
         await axios.post('http://localhost:5000/api/cart/add', {
           productId: product.id,
           quantity
         }, { withCredentials: true });
         
-        
-        setCartItems(prev => {
-           const existingItem = prev.find(item => item.id === product.id);
-           if (existingItem) {
-             return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
-           }
-           return [...prev, { ...product, quantity }];
-        });
         return true;
 
       } catch (error) {
         console.error(error);
         toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
+        // Revert or fetch cart again on error? For now simple toast.
         return false;
       }
   };
 
   // 2. Hàm xóa sản phẩm
   const removeFromCart = async (id) => {
-    if (!user) return; // Should not happen usually if UI hides button
+    if (!user) return;
 
     if (window.confirm('Bạn muốn xóa sản phẩm này?')) {
         try {
             await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, { withCredentials: true });
-            setCartItems(prev => prev.filter(item => item.id !== id));
+            dispatch({ type: 'REMOVE_ITEM', payload: id });
             toast.success('Đã xóa sản phẩm');
         } catch (error) {
             console.error(error);
@@ -89,17 +128,14 @@ export const CartProvider = ({ children }) => {
   const updateQuantity = async (id, change) => {
     if (!user) return;
 
-    // Tính toán số lượng mới trước
-    const currentItem = cartItems.find(item => item.id === id);
+    const currentItem = state.items.find(item => item.id === id);
     if (!currentItem) return;
     const newQty = currentItem.quantity + change;
     if (newQty < 1) return;
 
     try {
         await axios.put('http://localhost:5000/api/cart/update', { productId: id, quantity: newQty }, { withCredentials: true });
-            setCartItems(prev =>
-            prev.map(item => item.id === id ? { ...item, quantity: newQty } : item)
-        );
+        dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
     } catch (error) {
         console.error(error);
         toast.error("Lỗi cập nhật số lượng");
@@ -109,12 +145,12 @@ export const CartProvider = ({ children }) => {
   // 4. Hàm xóa sạch giỏ hàng
   const clearCart = async () => {
     if (!user) {
-        setCartItems([]);
+        dispatch({ type: 'CLEAR_CART' });
         return;
     }
     try {
         await axios.delete('http://localhost:5000/api/cart/clear', { withCredentials: true });
-        setCartItems([]);
+        dispatch({ type: 'CLEAR_CART' });
     } catch (error) {
         console.error(error);
         toast.error("Lỗi xóa giỏ hàng");
@@ -122,7 +158,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cartItems: state.items, loading: state.loading, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
