@@ -1,14 +1,14 @@
 import pool from '../config/db.js';
 
 // Nhận thêm gender và phoneNumber
-const create = async (firstName, lastName, email, password, gender, phoneNumber) => {
+const create = async (username, email, password, gender, phoneNumber) => {
   const query = `
-    INSERT INTO users (firstname, lastname, email, password, gender, phone_number) 
-    VALUES ($1, $2, $3, $4, $5, $6) 
+    INSERT INTO users (username, email, password, gender, phone_number) 
+    VALUES ($1, $2, $3, $4, $5) 
     RETURNING *
   `;
 
-  const values = [firstName, lastName, email, password, gender, phoneNumber];
+  const values = [username, email, password, gender, phoneNumber];
   const res = await pool.query(query, values);
   return res.rows[0];
 }
@@ -16,6 +16,13 @@ const create = async (firstName, lastName, email, password, gender, phoneNumber)
 const findByEmail = async(email) => {
   const query = 'SELECT * FROM users WHERE email = $1';
   const values = [email];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+
+const findByUsername = async(username) => {
+  const query = 'SELECT * FROM users WHERE username = $1';
+  const values = [username];
   const res = await pool.query(query, values);
   return res.rows[0];
 }
@@ -39,4 +46,12 @@ const findByIdNoPassword = async(id) => {
   const res = await pool.query(query, values);
   return res.rows[0];
 }
-export default { create, findByEmail, findByPhone, findById, findByIdNoPassword };
+
+const updatePassword = async (email, newPassword) => {
+  const query = 'UPDATE users SET password = $1 WHERE email = $2 RETURNING *';
+  const values = [newPassword, email];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, findByUsername, updatePassword }; // Nhớ export thêm updatePassword

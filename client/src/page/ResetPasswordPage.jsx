@@ -1,10 +1,8 @@
-import React from 'react';
-import { SignupForm } from '../components/auth/signup-form';
-
-const SignUpPage = () => {
+import ResetPassword from "@/components/auth/reset-password";
+function ResetPasswordPage() {
   return (
-    <div className="min-h-screen w-full bg-white relative text-gray-800">
-  {/* Crosshatch Art - Light Pattern */}
+    <div className="min-h-screen w-full relative">
+  {/* Radial Gradient Background from Bottom */}
   <div
     className="absolute inset-0 z-0"
     style={{
@@ -14,11 +12,10 @@ const SignUpPage = () => {
   {/* Your Content/Components */}
   <div className="flex min-h-svh flex-col items-center justify-center p-6 md:p-10 relative z-10">
       <div className="w-full max-w-sm md:max-w-4xl">
-        <SignupForm />
+        <ResetPassword />
       </div>
     </div>
 </div>
   );
-};
-
-export default SignUpPage;
+}
+export default ResetPasswordPage;

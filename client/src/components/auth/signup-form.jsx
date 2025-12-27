@@ -11,9 +11,11 @@ import axios from "axios"; // 2. Import axios
 import { useState } from "react"; // 3. Import useState
 import { toast } from "sonner"; // 4. Import sonner để hiển thị thông báo
 import OtpModal from "./otp-modal";
+import { Link } from "react-router-dom";
+
+
 const signupSchema = z.object({
-  firstName: z.string().min(1, "Tên bắt buộc phải có"),
-  lastName: z.string().min(1, "Họ bắt buộc phải có"),
+  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự").regex(/^[a-zA-Z0-9_]+$/, "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới"),
   email: z.string().email("Địa chỉ email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   phoneNumber: z.string().min(10, "Số điện thoại không hợp lệ"),
@@ -32,8 +34,7 @@ export function SignupForm({ className, ...props }) {
   } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      username: "",
       email: "",
       password: "",
       phoneNumber: "", 
@@ -48,14 +49,11 @@ export function SignupForm({ className, ...props }) {
     try {
       // Gọi API Backend
       await axios.post("http://localhost:5000/api/auth/signUp", {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        username: data.username,
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
         gender: data.gender,
-        // firstName, lastName: Tạm thời Backend chưa lưu 2 trường này, 
-        // nhưng gửi kèm cũng không sao, Backend sẽ bỏ qua.
       });
 
       setRegisteredEmail(data.email);
@@ -98,28 +96,20 @@ export function SignupForm({ className, ...props }) {
               </div>
 
               
-
-              {/* Họ và Tên */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="lastname" className="block text-sm">
-                    Họ
-                  </Label>
-                  <Input id="lastname" type="text" {...register("lastName")} />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-500">{errors.lastName.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="firstname" className="block text-sm">
-                    Tên
-                  </Label>
-                  <Input id="firstname" type="text" {...register("firstName")} />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-500">{errors.firstName.message}</p>
-                  )}
-                </div>
+              {/* Tên người dùng */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="username" className="block text-sm">
+                  Tên người dùng
+                </Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="ví dụ: nguyenvana"
+                  {...register("username")}
+                />
+                {errors.username && (
+                  <p className="text-sm text-red-500">{errors.username.message}</p>
+                )}
               </div>
 
               {/* Email */}
@@ -196,11 +186,12 @@ export function SignupForm({ className, ...props }) {
               </Button>
 
               <div className="text-sm text-center">
-                Đã có tài khoản?{" "}
-                <a href="/login" className="text-primary hover:underline">
-                  Đăng nhập
-                </a>
-              </div>
+              Đã có tài khoản?{" "}
+              {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
+              <Link to="/signIn" className="hover:underline">
+                Đăng nhập
+              </Link>
+            </div>
             </div>
           </form>
 
@@ -210,7 +201,7 @@ export function SignupForm({ className, ...props }) {
             <img
               src="/placeholderSignUp.png"
               alt="Image"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-full"
+              className="absolute top-1/2 -translate-y-1/2 object-cover"
             />
           </div>
         </CardContent>

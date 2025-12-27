@@ -18,8 +18,17 @@ const AccountPage = () => {
 
   // --- GIAO DIỆN ---
   return (
-    <MainLayout>
-      <div className="max-w-2xl mx-auto p-8 mt-10">
+    <div className="min-h-screen w-full relative">
+  {/* Radial Gradient Background from Bottom */}
+  <div
+    className="absolute inset-0 z-0"
+    style={{
+      background: "radial-gradient(125% 125% at 50% 90%, #fff 40%, #475569 100%)",
+    }}
+  />
+  {/* Your Content/Components */}
+  <MainLayout>
+      <div className="max-w-2xl mx-auto p-8 mt-10 relative z-10">
         {user ? (
           // TRƯỜNG HỢP 1: ĐÃ ĐĂNG NHẬP
           <div className="bg-white rounded-xl shadow-md p-8 border border-gray-100 text-center">
@@ -62,7 +71,7 @@ const AccountPage = () => {
         )}
       </div>
     </MainLayout>
+  </div>
   );
-};
-
+}
 export default AccountPage;
