@@ -191,7 +191,7 @@ const ProductsPage = () => {
                      {/* Danh sách sản phẩm */}
                      <div className="bg-white p-4 rounded-lg shadow-sm min-h-[500px]">
                         <h1 className="text-lg font-bold text-gray-800 mb-2">
-                           {searchQuery ? `Kết quả tìm kiếm cho "${searchQuery}"` : selectedBrand ? `Điện thoại ${selectedBrand.toUpperCase()}` : 'Tất cả điện thoại'}
+                           {searchQuery ? `Kết quả tìm kiếm cho "${searchQuery}"` : selectedBrand ? `Điện thoại ${selectedBrand.toUpperCase()}` : `Tất cả ${selectedCategory || 'sản phẩm'}`}
                         </h1>
 
                         {loading ? (
