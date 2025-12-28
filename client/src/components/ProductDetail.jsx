@@ -119,6 +119,17 @@ const ProductDetail = () => {
             });
           }
         }
+
+        // Fallback: If no SKU matched (or no SKU provided), select the first variant by default
+        if (Object.keys(initialOptions).length === 0 && extendedProduct.variants && extendedProduct.variants.length > 0) {
+          const firstVariant = extendedProduct.variants[0];
+          if (firstVariant.color) {
+            initialOptions["Màu sắc"] = firstVariant.color;
+            // Also update main image
+            const vImg = firstVariant.img || firstVariant.image_url;
+            if (vImg) setMainImage(vImg.split(';')[0]);
+          }
+        }
         setSelectedOptions(initialOptions);
 
         setActiveTab("description");
@@ -144,7 +155,9 @@ const ProductDetail = () => {
         // Filter by same brand/category but not self
         const related = all.filter(p => p.id != currentId).slice(0, 5).map(p => ({
           ...p,
-          price: p.min_price || "0"
+          price: p.min_price || "0",
+          oldPrice: p.old_price || null,
+          img: p.img || "https://via.placeholder.com/150"
         }));
         setRelatedProducts(related);
       } catch (error) {
@@ -221,7 +234,7 @@ const ProductDetail = () => {
       <div className="container mx-auto px-4 max-w-7xl">
 
         {/* Breadcrumb */}
-        <ProductBreadcrumb category={productData.category} name={productData.name} />
+        <ProductBreadcrumb category={productData.category} brand={productData.brand_name} name={productData.name} />
 
         {/* Main Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6 md:p-8">
@@ -263,9 +276,6 @@ const ProductDetail = () => {
                 <span className="w-1.5 h-7 bg-[#004535] rounded-full block"></span>
                 Sản phẩm tương tự
               </h2>
-              <button onClick={() => navigate(`/all-products`)} className="text-sm font-medium text-[#004535] hover:underline flex items-center gap-1">
-                Xem tất cả <ChevronRight size={16} />
-              </button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {relatedProducts.map((p) => (

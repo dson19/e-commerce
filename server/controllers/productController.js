@@ -129,8 +129,8 @@ const getProductById = async (req, res) => {
         // Fetch variants and map to camelCase, excluding old_price and internal IDs if needed
         const variantsRes = await pool.query('SELECT * FROM product_variants WHERE product_id = $1', [product.id]);
         product.variants = variantsRes.rows.map(v => {
-            // Destructure to exclude unwanted fields
-            const { old_price, id, variant_id, created_at, ...rest } = v; 
+            // Destructure to exclude unwanted fields but keep old_price
+            const { id, variant_id, created_at, ...rest } = v; 
             return {
                 ...rest,
                 id: variant_id, // Ensure frontend has an ID for keys

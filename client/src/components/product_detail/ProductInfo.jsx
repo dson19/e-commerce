@@ -20,7 +20,7 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
     if (variant) {
       // Use bestPrice/lastPrice from API (camelCase)
       displayPrice = variant.bestPrice || variant.price || displayPrice;
-      displayOldPrice = variant.lastPrice || displayOldPrice;
+      displayOldPrice = variant.old_price || variant.lastPrice || displayOldPrice;
     }
   }
 
