@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Import các trang
 import HomePage from './pages/HomePage'; // File Homepage của bạn
-import AccountPage from './pages/AccountPage';
 import SignInPage from './pages/SignInPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { Toaster } from "@/components/ui/sonner";
@@ -42,7 +41,6 @@ function App() {
             <Route path="/:parentCategory/:category/:slug" element={<ProductDetailPage />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/account" element={<AccountPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/cart" element={<CartPage />} />

@@ -1,3 +1,4 @@
+import * as Slider from '@radix-ui/react-slider';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -112,9 +113,28 @@ const ProductFilter = ({
          <div className="bg-white p-4 rounded-lg shadow-sm">
             <h3 className="font-bold text-gray-800 mb-3 text-sm">Mức giá</h3>
 
-            {/* Slider trang trí */}
-            <div className="relative h-1 bg-gray-200 rounded mb-6 mt-2 mx-1">
-               <div className="absolute left-0 w-full h-full bg-[#004535] rounded opacity-20"></div>
+            {/* Slider Functional */}
+            <div className="flex items-center px-1 mb-6 mt-2">
+               <Slider.Root
+                  className="relative flex items-center select-none touch-none w-full h-5"
+                  value={[tempPriceRange[0], Math.min(tempPriceRange[1], 50000000)]} // Cap visual max at 50M
+                  max={50000000}
+                  step={500000}
+                  minStepsBetweenThumbs={1}
+                  onValueChange={(val) => setTempPriceRange(val)}
+               >
+                  <Slider.Track className="bg-gray-200 relative grow rounded-full h-[3px]">
+                     <Slider.Range className="absolute bg-[#004535] rounded-full h-full" />
+                  </Slider.Track>
+                  <Slider.Thumb
+                     className="block w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
+                     aria-label="Minimum Price"
+                  />
+                  <Slider.Thumb
+                     className="block w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
+                     aria-label="Maximum Price"
+                  />
+               </Slider.Root>
             </div>
 
             {/* Input nhập giá thủ công */}
@@ -124,8 +144,8 @@ const ProductFilter = ({
                   placeholder="Min"
                   value={tempPriceRange[0] === 0 ? '' : new Intl.NumberFormat('vi-VN').format(tempPriceRange[0])}
                   onChange={(e) => {
-                     const val = e.target.value.replace(/\D/g, '');
-                     setTempPriceRange([Number(val), tempPriceRange[1]]);
+                     const val = Number(e.target.value.replace(/\D/g, ''));
+                     setTempPriceRange([val, tempPriceRange[1]]);
                   }}
                   className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1.5 text-xs text-center focus:outline-none focus:border-[#004535]"
                />
@@ -135,8 +155,8 @@ const ProductFilter = ({
                   placeholder="Max"
                   value={tempPriceRange[1] === 0 ? '' : new Intl.NumberFormat('vi-VN').format(tempPriceRange[1])}
                   onChange={(e) => {
-                     const val = e.target.value.replace(/\D/g, '');
-                     setTempPriceRange([tempPriceRange[0], Number(val)]);
+                     const val = Number(e.target.value.replace(/\D/g, ''));
+                     setTempPriceRange([tempPriceRange[0], val]);
                   }}
                   className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1.5 text-xs text-center focus:outline-none focus:border-[#004535]"
                />

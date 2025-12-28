@@ -69,10 +69,13 @@ export const CartProvider = ({ children }) => {
         dispatch({ type: 'SET_LOADING' });
         try {
           const res = await axios.get('http://localhost:5000/api/cart', { withCredentials: true });
+          console.log("[CART_CONTEXT] API Response:", res.data);
           const mappedCart = res.data.map(item => sanitizeCartItem(item));
+          console.log("[CART_CONTEXT] Mapped Cart:", mappedCart);
           dispatch({ type: 'SET_CART', payload: mappedCart });
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
+          console.error("[CART_CONTEXT] API Error Details:", error.response?.data);
           dispatch({ type: 'SET_ERROR', payload: error.message });
         }
       } else {

@@ -2,9 +2,12 @@ import Cart from '../models/Cart.js';
 
 const getCart = async (req, res) => {
     try {
+        console.log(`[GET_CART_API] Fetching cart for User ID: ${req.userId}`);
         const cart = await Cart.getCart(req.userId);
+        console.log(`[GET_CART_API] Found ${cart.length} items for User ID: ${req.userId}`);
         res.status(200).json(cart);
     } catch (error) {
+        console.error(`[GET_CART_API] Error for User ID: ${req.userId}:`, error.message);
         res.status(500).json({ message: "Failed to fetch cart", error: error.message });
     }
 };
