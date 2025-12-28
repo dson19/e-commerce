@@ -157,7 +157,10 @@ const ProductDetail = () => {
           ...p,
           price: p.min_price || "0",
           oldPrice: p.old_price || null,
-          img: p.img || "https://via.placeholder.com/150"
+          img: p.img || "https://via.placeholder.com/150",
+          category: p.category_name,
+          parentCategory: p.parent_category_name,
+          brand: p.brand_name
         }));
         setRelatedProducts(related);
       } catch (error) {

@@ -33,10 +33,12 @@ const HomePage = () => {
         // Ideally backend has /api/products/featured
         const res = await axios.get('http://localhost:5000/api/products');
         const all = res.data.data;
-        // Map price
+        // Map price and category info for ProductCard URL generation
         const mapped = all.map(p => ({
           ...p,
-          price: p.min_price || "0"
+          price: p.min_price || "0",
+          category: p.category_name,
+          parentCategory: p.parent_category_name
         }));
         // Take first 8
         setFeaturedProducts(mapped.slice(0, 12));
@@ -80,7 +82,7 @@ const HomePage = () => {
                 {brands.map((cat) => (
                   <li key={cat.category_id}>
                     <Link
-                      to={`/products?search=${cat.category_name}`}
+                      to={`/products?category=${cat.category_name}`}
                       className="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#004535] hover:pl-7 transition-all duration-300 group border-l-2 border-transparent hover:border-[#004535]"
                     >
                       <span className="text-gray-400 group-hover:text-[#004535] transition-colors">

@@ -96,7 +96,9 @@ const ProductsPage = () => {
             const mappedProducts = response.data.data.map(p => ({
                ...p,
                price: p.min_price || "0",
-               category: p.brand_name ? p.brand_name.toLowerCase() : 'other'
+               category: p.category_name,
+               parentCategory: p.parent_category_name,
+               brand: p.brand_name
             }));
 
             setProducts(mappedProducts);

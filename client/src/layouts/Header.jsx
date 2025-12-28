@@ -110,7 +110,7 @@ const Header = () => {
     e.preventDefault();
     setShowDropdown(false); // Đóng gợi ý khi enter
     if (keyword.trim()) {
-      navigate(`/search?q=${encodeURIComponent(keyword)}`);
+      navigate(`/products?category=${encodeURIComponent(keyword)}`);
     }
   };
 

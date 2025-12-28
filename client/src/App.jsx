@@ -35,14 +35,12 @@ function App() {
             <Route path="/signIn" element={<SignInPage />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/product/:productId" element={<ProductDetailPage />} />
             <Route path="/category/:categoryId" element={<SearchPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/products" element={<ProductsPage />} />
-            {/* New SEO Friendly Product Route */}
-            <Route path="/:category/:slug" element={<ProductDetailPage />} />
+            {/* SEO Friendly Product Route */}
+            <Route path="/:parentCategory/:category/:slug" element={<ProductDetailPage />} />
 
-            {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/account" element={<AccountPage />} />
               <Route path="/profile" element={<ProfilePage />} />

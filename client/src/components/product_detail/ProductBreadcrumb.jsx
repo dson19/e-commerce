@@ -14,9 +14,9 @@ const ProductBreadcrumb = ({ parentCategory, category, brand, name }) => {
       {/* Parent Category (e.g. Điện thoại) */}
       {parentCategory && (
         <>
-          <span className="hover:text-[#004535] transition-colors capitalize">
+          <Link to={`/products?category=${parentCategory}`} className="hover:text-[#004535] transition-colors capitalize">
             {parentCategory}
-          </span>
+          </Link>
           <ChevronRight size={14} className="mx-2 shrink-0" />
         </>
       )}

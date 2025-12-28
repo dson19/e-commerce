@@ -4,13 +4,13 @@ import { formatCurrency } from '../utils/currency';
 import { slugify } from '../utils/slugify';
 
 const ProductCard = ({ product }) => {
-    // Determine category slug
-    const categorySlug = product.category_slug || slugify(product.category || 'san-pham');
-    // Determine product slug
+    // Determine slugs
+    const parentSlug = slugify(product.parentCategory || 'san-pham');
+    const categorySlug = slugify(product.category || product.brand || 'khac');
     const productSlug = product.slug || slugify(product.name);
 
-    // Construct friendly URL
-    const productUrl = `/${categorySlug}/${productSlug}?sku=${product.sku || `SP-${product.id}`}`;
+    // Construct friendly URL: /parent/category/slug
+    const productUrl = `/${parentSlug}/${categorySlug}/${productSlug}?sku=${product.sku || `SP-${product.id}`}`;
 
     return (
         // 👈 BƯỚC 2: Dùng Link thay thế cho div bao ngoài cùng
