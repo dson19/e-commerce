@@ -27,12 +27,7 @@ const getCart = async (userId) => {
         JOIN products p ON pv.product_id = p.id
         WHERE c.user_id = $1
     `;
-    console.log(`[CART_MODEL] Querying database for User ID: ${userId}`);
     const res = await pool.query(query, [userId]);
-    console.log(`[CART_MODEL] Database returned ${res.rows.length} rows for User ID: ${userId}`);
-    if (res.rows.length > 0) {
-        console.log(`[CART_MODEL] Raw data from first row:`, JSON.stringify(res.rows[0], null, 2));
-    }
     return res.rows;
 };
 

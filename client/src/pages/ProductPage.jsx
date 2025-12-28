@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 // import { PRODUCTS } from '../data/mockData'; // Deprecated
-import axios from 'axios';
+import { productService } from '../services/api';
 
 // Import các component con
 import ProductFilter from '../components/product_page/ProductFilter';
@@ -90,7 +90,7 @@ const ProductsPage = () => {
                sort: sortOption !== 'default' ? sortOption : undefined
             };
 
-            const response = await axios.get('http://localhost:5000/api/products', { params });
+            const response = await productService.getProducts(params);
 
             // Map API data
             const mappedProducts = response.data.data.map(p => ({

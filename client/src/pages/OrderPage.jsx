@@ -16,7 +16,7 @@ import {
 import { useAuth } from "../context/authContext";
 
 const OrderPage = () => {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("ALL");
 
   // --- MOCK DATA ---
@@ -167,7 +167,7 @@ const OrderPage = () => {
                     <MapPin size={18} /> Địa chỉ
                   </Link>
                   <button
-                    onClick={signOut}
+                    onClick={logout}
                     className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-2"
                   >
                     <LogOut size={18} /> Đăng xuất
@@ -185,11 +185,10 @@ const OrderPage = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                        activeTab === tab.id
-                          ? "border-[#004535] text-[#004535]"
-                          : "border-transparent text-gray-500 hover:text-[#004535]"
-                      }`}
+                      className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id
+                        ? "border-[#004535] text-[#004535]"
+                        : "border-transparent text-gray-500 hover:text-[#004535]"
+                        }`}
                     >
                       {tab.label}
                     </button>

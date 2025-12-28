@@ -18,7 +18,8 @@ import { CartProvider } from './context/cartContext';
 import SearchPage from './pages/SearchPage';
 import OrderPage from './pages/OrderPage';
 import ProductsPage from './pages/ProductPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProductCard from '../components/product/ProductCard';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
 

@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { toast } from 'sonner';
-import { useAuth } from './authContext'; // Import context authentication
-import axios from 'axios';
+import { useAuth } from './authContext';
+import { cartService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const CartContext = createContext();
@@ -49,7 +49,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const [state, dispatch] = React.useReducer(cartReducer, initialState);
+  const [state, dispatch] = useReducer(cartReducer, initialState);
 
   // Helper to sanitize product data for Cart
   const sanitizeCartItem = (item) => ({
@@ -58,7 +58,6 @@ export const CartProvider = ({ children }) => {
     quantity: Number(item.quantity) || 1,
     price: Number(item.price) || 0,
     oldPrice: Number(item.oldPrice) || 0,
-    // Map flat color to options object for CartItem display
     options: item.color ? { "Màu sắc": item.color } : (item.options || {})
   });
 
@@ -68,14 +67,12 @@ export const CartProvider = ({ children }) => {
       if (user) {
         dispatch({ type: 'SET_LOADING' });
         try {
-          const res = await axios.get('http://localhost:5000/api/cart', { withCredentials: true });
-          console.log("[CART_CONTEXT] API Response:", res.data);
-          const mappedCart = res.data.map(item => sanitizeCartItem(item));
-          console.log("[CART_CONTEXT] Mapped Cart:", mappedCart);
+          const res = await cartService.getCart();
+          const cartData = res.data.data || [];
+          const mappedCart = cartData.map(item => sanitizeCartItem(item));
           dispatch({ type: 'SET_CART', payload: mappedCart });
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
-          console.error("[CART_CONTEXT] API Error Details:", error.response?.data);
           dispatch({ type: 'SET_ERROR', payload: error.message });
         }
       } else {
@@ -98,18 +95,16 @@ export const CartProvider = ({ children }) => {
       // Optimistic Update
       dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
 
-      await axios.post('http://localhost:5000/api/cart/add', {
+      await cartService.addToCart({
         productId: product.id,
         quantity,
         variantId: product.selectedVariant?.id || product.variantId
-      }, { withCredentials: true });
+      });
 
       return true;
-
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
-      // Revert or fetch cart again on error? For now simple toast.
       return false;
     }
   };
@@ -120,7 +115,7 @@ export const CartProvider = ({ children }) => {
 
     if (window.confirm('Bạn muốn xóa sản phẩm này?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, { withCredentials: true });
+        await cartService.removeFromCart(id);
         dispatch({ type: 'REMOVE_ITEM', payload: id });
         toast.success('Đã xóa sản phẩm');
       } catch (error) {
@@ -140,7 +135,7 @@ export const CartProvider = ({ children }) => {
     if (newQty < 1) return;
 
     try {
-      await axios.put('http://localhost:5000/api/cart/update', { productId: id, quantity: newQty }, { withCredentials: true });
+      await cartService.updateQuantity({ productId: id, quantity: newQty });
       dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
     } catch (error) {
       console.error(error);
@@ -155,7 +150,7 @@ export const CartProvider = ({ children }) => {
       return;
     }
     try {
-      await axios.delete('http://localhost:5000/api/cart/clear', { withCredentials: true });
+      await cartService.clearCart();
       dispatch({ type: 'CLEAR_CART' });
     } catch (error) {
       console.error(error);
@@ -170,4 +165,10 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};

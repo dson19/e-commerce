@@ -1,6 +1,6 @@
 import * as Slider from '@radix-ui/react-slider';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { productService } from '../../../services/api';
 
 const ProductFilter = ({
    selectedBrand, onBrandSelect,
@@ -15,8 +15,8 @@ const ProductFilter = ({
    useEffect(() => {
       const fetchBrands = async () => {
          try {
-            const res = await axios.get('http://localhost:5000/api/products/brands');
-            setBrands(res.data);
+            const res = await productService.getBrands();
+            setBrands(res.data.data || []);
          } catch (error) {
             console.error("Failed to fetch brands", error);
          }
@@ -24,8 +24,8 @@ const ProductFilter = ({
 
       const fetchCategories = async () => {
          try {
-            const res = await axios.get('http://localhost:5000/api/products/categories/parents');
-            setCategories(res.data);
+            const res = await productService.getParentCategories();
+            setCategories(res.data.data || []);
          } catch (error) {
             console.error("Failed to fetch categories", error);
          }

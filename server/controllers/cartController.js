@@ -1,54 +1,61 @@
-import Cart from '../models/Cart.js';
+import pool from '../config/db.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import { ErrorResponse } from '../middleware/errorMiddleware.js';
 
-const getCart = async (req, res) => {
-    try {
-        console.log(`[GET_CART_API] Fetching cart for User ID: ${req.userId}`);
-        const cart = await Cart.getCart(req.userId);
-        console.log(`[GET_CART_API] Found ${cart.length} items for User ID: ${req.userId}`);
-        res.status(200).json(cart);
-    } catch (error) {
-        console.error(`[GET_CART_API] Error for User ID: ${req.userId}:`, error.message);
-        res.status(500).json({ message: "Failed to fetch cart", error: error.message });
-    }
-};
+const getCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const query = `
+        SELECT c.*, p.name, p.img, p.min_price, 
+               pv.best_price as variant_price, pv.color as variant_color, pv.sku as variant_sku
+        FROM cart c
+        JOIN products p ON c.product_id = p.id
+        LEFT JOIN product_variants pv ON c.variant_id = pv.variant_id
+        WHERE c.user_id = $1
+    `;
+    const result = await pool.query(query, [userId]);
+    res.json({
+        success: true,
+        data: result.rows
+    });
+});
 
-const addToCart = async (req, res) => {
-    const { productId, quantity, variantId } = req.body;
-    try {
-        const item = await Cart.addToCart(req.userId, productId, quantity, variantId);
-        res.status(200).json(item);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to add to cart", error: error.message });
-    }
-};
+const addToCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { product_id, variant_id, quantity } = req.body;
 
-const removeFromCart = async (req, res) => {
-    const { productId } = req.params;
-    try {
-        await Cart.removeFromCart(req.userId, productId);
-        res.status(200).json({ message: "Item removed" });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to remove item", error: error.message });
-    }
-};
+    // Check if item already exists
+    const checkQuery = `SELECT * FROM cart WHERE user_id = $1 AND product_id = $2 AND (variant_id = $3 OR (variant_id IS NULL AND $3 IS NULL))`;
+    const checkResult = await pool.query(checkQuery, [userId, product_id, variant_id]);
 
-const updateQuantity = async (req, res) => {
-    const { productId, quantity } = req.body;
-    try {
-        const item = await Cart.updateQuantity(req.userId, productId, quantity);
-        res.status(200).json(item);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to update quantity", error: error.message });
+    if (checkResult.rows.length > 0) {
+        const updateQuery = `UPDATE cart SET quantity = quantity + $1 WHERE cart_id = $2`;
+        await pool.query(updateQuery, [quantity, checkResult.rows[0].cart_id]);
+    } else {
+        const insertQuery = `INSERT INTO cart (user_id, product_id, variant_id, quantity) VALUES ($1, $2, $3, $4)`;
+        await pool.query(insertQuery, [userId, product_id, variant_id, quantity]);
     }
-};
 
-const clearCart = async (req, res) => {
-    try {
-        await Cart.clearCart(req.userId);
-        res.status(200).json({ message: "Cart cleared" });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to clear cart", error: error.message });
-    }
-};
+    res.json({ success: true, message: "Item added to cart" });
+});
+
+const removeFromCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { cart_id } = req.params;
+    await pool.query('DELETE FROM cart WHERE cart_id = $1 AND user_id = $2', [cart_id, userId]);
+    res.json({ success: true, message: "Item removed from cart" });
+});
+
+const updateQuantity = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { cart_id, quantity } = req.body;
+    await pool.query('UPDATE cart SET quantity = $1 WHERE cart_id = $2 AND user_id = $3', [quantity, cart_id, userId]);
+    res.json({ success: true, message: "Quantity updated" });
+});
+
+const clearCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    await pool.query('DELETE FROM cart WHERE user_id = $1', [userId]);
+    res.json({ success: true, message: "Cart cleared" });
+});
 
 export default { getCart, addToCart, removeFromCart, updateQuantity, clearCart };

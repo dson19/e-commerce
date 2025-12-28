@@ -1,4 +1,0 @@
---- CART DEBUG LOG ---
-DB URL length: 146
-
-DEBUG ERROR: The server does not support SSL connections

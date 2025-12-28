@@ -7,7 +7,7 @@ import {
   ChevronRight, Truck, ShieldCheck, RefreshCw, Zap, Menu,
   Smartphone, Laptop, Tablet, Headphones, Monitor, Grid
 } from 'lucide-react';
-import axios from 'axios';
+import { productService } from '../services/api';
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -29,18 +29,14 @@ const HomePage = () => {
     const fetchFeatured = async () => {
       try {
         setLoading(true);
-        // Fetch all products and slice for featured
-        // Ideally backend has /api/products/featured
-        const res = await axios.get('http://localhost:5000/api/products');
+        const res = await productService.getProducts();
         const all = res.data.data;
-        // Map price and category info for ProductCard URL generation
         const mapped = all.map(p => ({
           ...p,
           price: p.min_price || "0",
           category: p.category_name,
           parentCategory: p.parent_category_name
         }));
-        // Take first 8
         setFeaturedProducts(mapped.slice(0, 12));
       } catch (error) {
         console.error("Failed to fetch featured products", error);
@@ -51,8 +47,8 @@ const HomePage = () => {
 
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products/categories/parents');
-        setBrands(res.data); // Keep using brands state variable to minimize diff, or rename it? Let's keep it but it holds categories now.
+        const res = await productService.getParentCategories();
+        setBrands(res.data);
       } catch (error) {
         console.error("Failed to fetch categories", error);
       }

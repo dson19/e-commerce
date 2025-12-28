@@ -13,33 +13,32 @@ import {
 import { useCart } from "../context/cartContext";
 import { useAuth } from "../context/authContext";
 import { formatCurrency } from "../utils/currency";
-// import { PRODUCTS } from "../data/mockData"; // Deprecated
-import axios from 'axios';
+import { productService } from "../services/api";
 
 const Header = () => {
   const navigate = useNavigate();
 
   // State tìm kiếm & Gợi ý
   const [keyword, setKeyword] = useState("");
-  const [suggestions, setSuggestions] = useState([]); // Lưu danh sách sản phẩm gợi ý
-  const [suggestedBrands, setSuggestedBrands] = useState([]); // Lưu danh sách brands gợi ý
-  const [brands, setBrands] = useState([]); // Tất cả brands
-  const [showDropdown, setShowDropdown] = useState(false); // Ẩn/hiện dropdown
-  const searchRef = useRef(null); // Ref để bắt sự kiện click ra ngoài
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestedBrands, setSuggestedBrands] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef(null);
 
   // Auth & Cart
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { cartItems } = useCart();
-  const { user, signOut, loading } = useAuth();
+  const { user, logout, loading } = useAuth();
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   // Fetch Brands on Mount
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products/brands');
-        setBrands(res.data);
+        const res = await productService.getBrands();
+        setBrands(res.data.data || []);
       } catch (error) {
         console.error("Failed to fetch brands in Header", error);
       }
@@ -52,7 +51,6 @@ const Header = () => {
     const fetchSuggestions = async () => {
       const trimmed = keyword.trim().toLowerCase();
       if (trimmed.length > 0) {
-
         // 1. Filter Brands
         const matchedBrands = brands.filter(b =>
           b.brand_name.toLowerCase().includes(trimmed)
@@ -61,8 +59,8 @@ const Header = () => {
 
         try {
           // 2. Filter Products (API)
-          const res = await axios.get(`http://localhost:5000/api/products?search=${encodeURIComponent(keyword)}&limit=5`);
-          const matches = res.data.data ? res.data.data : []; // Handle if API structure slightly differs
+          const res = await productService.getProducts({ search: keyword, limit: 5 });
+          const matches = res.data.data || [];
 
           const mapped = Array.isArray(matches) ? matches.map(p => ({
             ...p,
@@ -82,7 +80,6 @@ const Header = () => {
       }
     };
 
-    // Debounce
     const timeoutId = setTimeout(() => {
       fetchSuggestions();
     }, 300);
@@ -93,11 +90,9 @@ const Header = () => {
   // --- LOGIC 2: CLICK RA NGOÀI ĐỂ ĐÓNG DROPDOWN ---
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Xử lý đóng search dropdown
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
-      // Xử lý đóng user dropdown
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
@@ -108,7 +103,7 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setShowDropdown(false); // Đóng gợi ý khi enter
+    setShowDropdown(false);
     if (keyword.trim()) {
       navigate(`/products?category=${encodeURIComponent(keyword)}`);
     }
@@ -116,7 +111,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     setIsDropdownOpen(false);
-    await signOut();
+    await logout();
     navigate("/signIn");
   };
 

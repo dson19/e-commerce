@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/ProductCard';
 import { SearchX } from 'lucide-react';
-import axios from 'axios';
+import { productService } from '../services/api';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -20,12 +20,8 @@ const SearchPage = () => {
       }
       try {
         setLoading(true);
-        // Call API with search param
-        // Note: backend expects 'search' param, not 'q'
-        const res = await axios.get(`http://localhost:5000/api/products?search=${encodeURIComponent(query)}`);
-        // Note: backend now returns { data: [...], pagination: {...} } or [...]
-        // Check if res.data is array or object
-        const productsData = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        const res = await productService.getProducts({ search: query });
+        const productsData = res.data.data || [];
 
         const mapped = productsData.map(p => ({
           ...p,

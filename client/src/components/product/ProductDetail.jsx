@@ -2,18 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ShoppingBag, ChevronRight } from "lucide-react";
-import { useCart } from "../context/CartContext";
-// import { PRODUCTS } from "../data/mockData"; // Deprecated
-import axios from 'axios';
-// import { formatCurrency } from "../utils/currency";
+import { useCart } from "../../context/CartContext";
+import { productService } from "../../services/api";
 
-import RelatedProductCard from "../components/RelatedProductCard";
+import RelatedProductCard from "./RelatedProductCard";
 
 // Import các component con đã tách
-import ProductBreadcrumb from "../components/product_detail/ProductBreadcrumb";
-import ProductGallery from "../components/product_detail/ProductGallery";
-import ProductInfo from "../components/product_detail/ProductInfo";
-import ProductTabs from "../components/product_detail/ProductTabs";
+import ProductBreadcrumb from "./detail/ProductBreadcrumb";
+import ProductGallery from "./detail/ProductGallery";
+import ProductInfo from "./detail/ProductInfo";
+import ProductTabs from "./detail/ProductTabs";
 
 const ProductDetail = () => {
   const { productId, slug } = useParams();
@@ -39,8 +37,8 @@ const ProductDetail = () => {
         setLoading(true);
         // Use slug if available, otherwise productId
         const identifier = slug || productId;
-        const response = await axios.get(`http://localhost:5000/api/products/${identifier}`);
-        const product = response.data;
+        const response = await productService.getProduct(identifier);
+        const product = response.data.data;
 
         // --- MAPPING DATA (Support new structure) ---
         let mappedOptions = [];
@@ -150,8 +148,8 @@ const ProductDetail = () => {
     // Let's try to fetch list and filter client side for now as partial solution
     const fetchRelatedProducts = async (cateId, currentId) => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products');
-        const all = res.data.data || res.data; // Handle both formats just in case
+        const res = await productService.getProducts();
+        const all = res.data.data;
         // Filter by same brand/category but not self
         const related = all.filter(p => p.id != currentId).slice(0, 5).map(p => ({
           ...p,

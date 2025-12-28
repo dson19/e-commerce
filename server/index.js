@@ -22,6 +22,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/products', productRoutes);
 
+// Error Handler Middleware
+import { errorHandler } from './middleware/errorMiddleware.js';
+app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`Server đang chạy ở http://localhost:${PORT}`);
 });
