@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { authService } from "@/services/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -48,7 +48,7 @@ export function SigninForm({ className, ...props }) {
       });
       const user = response.data.data;
       signIn(user);
-      navigate("/");
+      
     } catch (error) {
       console.log(error);
       const msg = error.response?.data?.message || "Đăng nhập thất bại.";

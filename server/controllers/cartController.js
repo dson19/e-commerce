@@ -4,7 +4,7 @@ import { ErrorResponse } from '../middleware/errorMiddleware.js';
 import Cart from '../models/Cart.js';
 
 const getCart = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const items = await Cart.getCart(userId);
     res.json({
         success: true,
@@ -13,7 +13,7 @@ const getCart = asyncHandler(async (req, res) => {
 });
 
 const addToCart = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const { productId, quantity, variantId } = req.body;
 
     if (!productId || !quantity) {
@@ -30,7 +30,7 @@ const addToCart = asyncHandler(async (req, res) => {
 });
 
 const removeFromCart = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const { productId } = req.params; // Route uses :productId
 
     if (!productId) {
@@ -43,7 +43,7 @@ const removeFromCart = asyncHandler(async (req, res) => {
 });
 
 const updateQuantity = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
 
     if (!productId || quantity === undefined) {
@@ -60,7 +60,7 @@ const updateQuantity = asyncHandler(async (req, res) => {
 });
 
 const clearCart = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     await Cart.clearCart(userId);
     res.json({ success: true, message: "Cart cleared" });
 });

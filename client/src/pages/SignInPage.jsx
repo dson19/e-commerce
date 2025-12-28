@@ -1,13 +1,25 @@
 import { SigninForm } from '@/components/auth/signin-form';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function SigninPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
-  if (user) {
-    navigate('/');
-  }
+  useEffect(() => {
+    if (user) {
+      const from = location.state?.from?.pathname;
+      if (from) {
+        navigate(from, { replace: true });
+      } else if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+      console.log(user);
+    }
+  }, [user, navigate, location]);
   return (
     <div className="min-h-screen w-full bg-white relative text-gray-800">
       {/* Crosshatch Art - Light Pattern */}
