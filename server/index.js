@@ -18,7 +18,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-//public route
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/products', productRoutes);
