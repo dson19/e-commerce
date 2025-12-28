@@ -70,7 +70,7 @@ let count = 0;
 
     const url = 'https://hoanghamobile.com/man-hinh?filters=%7B%7D&search=true&pmin=3%2C000%2C000&pmax=29%2C400%2C000';
     console.log(`Đang truy cập: ${url}`);
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
     console.log('Đã load hết sản phẩm, bắt đầu lấy dữ liệu...');
     await loadFullPage(page);
@@ -137,8 +137,8 @@ let count = 0;
                         const keyEl = row.querySelector('strong');
                         const valEl = row.querySelector('span');
                         if (keyEl && valEl) {
-                            key = keyEl.textContent.replace(/:/g, '').trim();
-                            value = valEl.textContent.trim();
+                            key = keyEl.innerText.replace(/:/g, '').trim();
+                            value = valEl.innerText.trim();
                         }
                         if (key && value && key.length < 50) {
                             specObj[key] = value;

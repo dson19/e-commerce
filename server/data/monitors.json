@@ -18,12 +18,12 @@
       "Tấm nền": "Fast IPS",
       "Thời gian phản hồi": "1ms (GtG)",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "1 x Cổng DP1 x Cổng HDMI 2.01 x Cổng âm thanh1 x Cổng cáp DC IN",
+      "Cổng kết nối": "1 x Cổng DP\n1 x Cổng HDMI 2.0\n1 x Cổng âm thanh\n1 x Cổng cáp DC IN",
       "Độ nghiêng": "-5°±2 ~ +15°±2",
       "Mức tiêu thụ nguồn (Tối đa)": "36W",
       "Kích thước riêng sản phẩm": "612,3 x 170 x 451,7 mm",
       "Trọng lượng sản phẩm": "3,6kg",
-      "Phụ kiện đính kèm": "1 x Màn hình1 x Chân đế1 x Giá đỡ1 x Cáp HDMI1 x Tua vít2 x Vít1 x Bộ đổi nguồn1 x Hướng dẫn sử dụng1 x Thẻ bảo hành"
+      "Phụ kiện đính kèm": "1 x Màn hình\n1 x Chân đế\n1 x Giá đỡ\n1 x Cáp HDMI\n1 x Tua vít\n2 x Vít\n1 x Bộ đổi nguồn\n1 x Hướng dẫn sử dụng\n1 x Thẻ bảo hành"
     },
     "variants": [
       {
@@ -55,7 +55,7 @@
       "Độ phân giải": "FHD (1920x1080)",
       "Kích thước màn hình": "27 inch",
       "Tính năng đặc biệt": "G-sync",
-      "Cổng kết nối": "2x HDMI (Hỗ trợ FHD@180Hz theo chuẩn HDMI 2.0)1x DP (Hỗ trợ FHD@180Hz theo chuẩn DisplayPort 1.2a với DP Overclocking)"
+      "Cổng kết nối": "2x HDMI (Hỗ trợ FHD@180Hz theo chuẩn HDMI 2.0)\n1x DP (Hỗ trợ FHD@180Hz theo chuẩn DisplayPort 1.2a với DP Overclocking)"
     },
     "variants": [
       {
@@ -83,11 +83,11 @@
       "Độ phân giải": "FHD (1920x1080)",
       "Độ sáng": "300 nits",
       "Tỷ lệ tương phản": "1000:1",
-      "Khả năng hiển thị màu sắc": "16.7M (8bits)ADOBE RGB / DCI-P3 / SRGB: 80%/76%/96%",
+      "Khả năng hiển thị màu sắc": "16.7M (8bits)\nADOBE RGB / DCI-P3 / SRGB: 80%/76%/96%",
       "Tấm nền": "IPS",
       "Kích thước màn hình": "27 inch",
       "Tính năng đặc biệt": "VESA 100 x 100 mm",
-      "Cổng kết nối": "1x Display Port (1.2a)2x HDMI™ (2.0b)"
+      "Cổng kết nối": "1x Display Port (1.2a)\n2x HDMI™ (2.0b)"
     },
     "variants": [
       {
@@ -117,15 +117,15 @@
       "Góc nhìn (H/V)": "178º(R/L), 178º(U/D)",
       "Tỷ lệ tương phản": "1000:1",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "HDR 10VESA DisplayHDR™Cân chỉnh màu sắcHiệu chỉnh phần cứngChăm sóc mắtAMD FreeSync™Gaming modeTiết kiệm điện thông minhTrue Color ProDual ControllerLoaMaxx Audio",
-      "Cổng kết nối": "2 x HDMIUSB Type-C1 x DisplayPortHeadphone Out",
+      "Tính năng đặc biệt": "HDR 10\nVESA DisplayHDR™\nCân chỉnh màu sắc\nHiệu chỉnh phần cứng\nChăm sóc mắt\nAMD FreeSync™\nGaming mode\nTiết kiệm điện thông minh\nTrue Color Pro\nDual Controller\nLoa\nMaxx Audio",
+      "Cổng kết nối": "2 x HDMI\nUSB Type-C\n1 x DisplayPort\nHeadphone Out",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Silver",
       "Mức tiêu thụ nguồn (Tối đa)": "44W",
       "Nguồn cấp điện": "100 ~240V, 50/60Hz",
       "Kích thước riêng sản phẩm": "613,5 x 363,5 x 45,4 mm",
       "Trọng lượng sản phẩm": "4.1 kg",
-      "Phụ kiện đính kèm": "1 x cáp DisplayPort1 x Bộ nguồn1 x Cáp HDMI1 x cáp USB-C"
+      "Phụ kiện đính kèm": "1 x cáp DisplayPort\n1 x Bộ nguồn\n1 x Cáp HDMI\n1 x cáp USB-C"
     },
     "variants": [
       {
@@ -157,7 +157,7 @@
       "Khả năng hiển thị màu sắc": "1,07 tỷ màu",
       "Kích thước màn hình": "27 inch",
       "Tính năng đặc biệt": "Công nghệ Adaptive-Sync, hỗ trợ HDR Ready, thiết kế cong 1500R, công nghệ chống nhấp nháy (Anti-Flicker) và giảm ánh sáng xanh (Less Blue Light)",
-      "Cổng kết nối": "1 x DisplayPort 1.4a2 x HDMI 2.0b (Hỗ trợ FHD @240Hz)1 x Cổng ra tai nghe",
+      "Cổng kết nối": "1 x DisplayPort 1.4a\n2 x HDMI 2.0b (Hỗ trợ FHD @240Hz)\n1 x Cổng ra tai nghe",
       "Dạng chân đế": "Có thể điều chỉnh độ nghiêng",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5° ~ 20°",
@@ -198,8 +198,8 @@
       "Tần số quét": "180Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Color Temp (cold/warm/normal)Low Blue Light ControlJoystick ButtonsSupport OD OptionalFreeSync , Adaptive SyncGame PlusSupport HDR OptionalEco",
-      "Cổng kết nối": "HDMI 2.0 x 2DP 1.4 x 2Audio Out x 1",
+      "Tính năng đặc biệt": "Color Temp (cold/warm/normal)\nLow Blue Light Control\nJoystick Buttons\nSupport OD Optional\nFreeSync , Adaptive Sync\nGame Plus\nSupport HDR Optional\nEco",
+      "Cổng kết nối": "HDMI 2.0 x 2\nDP 1.4 x 2\nAudio Out x 1",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "DC 12V/4A - 100-240V , 50-60Hz",
@@ -234,13 +234,13 @@
       "Tần số quét": "165 Hz",
       "Khả năng hiển thị màu sắc": "99% sRGB",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "1 x HDMIDC",
+      "Cổng kết nối": "1 x HDMI\nDC",
       "Dạng chân đế": "Chân điều chỉnh",
       "Màu sắc": "Black",
       "Kích thước (Bao gồm thùng máy)": "800 x 116 x 420mm",
       "Trọng lượng sản phẩm": "4.8 kg",
       "Trọng lượng (Bao gồm thùng máy)": "5.3 kg",
-      "Phụ kiện đính kèm": "1 x Cáp nguồn1 x Cáp HDMI"
+      "Phụ kiện đính kèm": "1 x Cáp nguồn\n1 x Cáp HDMI"
     },
     "variants": [
       {
@@ -269,14 +269,14 @@
       "Tần số quét": "60Hz",
       "Khả năng hiển thị màu sắc": "1 tỷ màu, 99% sRGB",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "1 x HDMIDC",
+      "Cổng kết nối": "1 x HDMI\nDC",
       "Độ nghiêng": "Chuẩn VESA treo tường :100x100mm",
       "Dạng chân đế": "Chân điều chỉnh",
       "Màu sắc": "Black",
       "Kích thước (Bao gồm thùng máy)": "800 x 116 x 420mm",
       "Trọng lượng sản phẩm": "4.8 kg",
       "Trọng lượng (Bao gồm thùng máy)": "5.3 kg",
-      "Phụ kiện đính kèm": "1 x Cáp nguồn1 x Cáp HDMI"
+      "Phụ kiện đính kèm": "1 x Cáp nguồn\n1 x Cáp HDMI"
     },
     "variants": [
       {
@@ -305,13 +305,13 @@
       "Tần số quét": "240Hz",
       "Khả năng hiển thị màu sắc": "99% sRGB",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "1 x HDMIDC",
+      "Cổng kết nối": "1 x HDMI\nDC",
       "Dạng chân đế": "Chân điều chỉnh",
       "Màu sắc": "Black",
       "Kích thước (Bao gồm thùng máy)": "800 x 116 x 420mm",
       "Trọng lượng sản phẩm": "4.8 kg",
       "Trọng lượng (Bao gồm thùng máy)": "5.3 kg",
-      "Phụ kiện đính kèm": "1 x Cáp nguồn1 x Cáp HDMI"
+      "Phụ kiện đính kèm": "1 x Cáp nguồn\n1 x Cáp HDMI"
     },
     "variants": [
       {
@@ -343,7 +343,7 @@
       "Khả năng hiển thị màu sắc": "1.07 tỉ màu, 10 bits (8 bits + FRC), 92% DCI-P3, 99% sRGB",
       "Kích thước màn hình": "27 inch",
       "Tính năng đặc biệt": "Anti-Glare, Hard Coating (3H)",
-      "Cổng kết nối": "VGA x1HDMI x2Display Port x1Audio x1",
+      "Cổng kết nối": "VGA x1\nHDMI x2\nDisplay Port x1\nAudio x1",
       "Độ nghiêng": "-5° ~ 20°",
       "Xoay": "-90° ~ 90°",
       "Màu sắc": "Black",
@@ -353,7 +353,7 @@
       "Kích thước (Bao gồm thùng máy)": "840 x 150 x 475 mm",
       "Trọng lượng sản phẩm": "6.3kg",
       "Trọng lượng (Bao gồm thùng máy)": "8.4kg",
-      "Thông tin khác": "Display Port: 2560 x 1440 (Up to 180Hz)HDMI 2.0b: 2560 x 1440 (Up to 144Hz)Chuẩn VESA treo tường :100x100mm"
+      "Thông tin khác": "Display Port: 2560 x 1440 (Up to 180Hz)\nHDMI 2.0b: 2560 x 1440 (Up to 144Hz)\nChuẩn VESA treo tường :100x100mm"
     },
     "variants": [
       {
@@ -382,10 +382,10 @@
       "Thời gian phản hồi": "1ms",
       "Góc nhìn (H/V)": "178 (H) / 178 (V)",
       "Tần số quét": "170Hz",
-      "Khả năng hiển thị màu sắc": "1073.7 triệu màu (10 bit)HDR10",
+      "Khả năng hiển thị màu sắc": "1073.7 triệu màu (10 bit)\nHDR10",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace freeGameVisualNhiệt độ màu. Lựa chọn (4 chế độ)GamePlusHDCP : 2.2Extreme Low Motion BlurCông nghệ VRR (Adaptive-Sync)Công nghệ GameFast InputTăng bóngDisplayWidget LiteTần suất Ánh sáng Xanh Thấp",
-      "Cổng kết nối": "1 x DisplayPort 1.22 x HDMI(v2.0)1 x Cổng âm thanh",
+      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace free\nGameVisual\nNhiệt độ màu. Lựa chọn (4 chế độ)\nGamePlus\nHDCP : 2.2\nExtreme Low Motion Blur\nCông nghệ VRR (Adaptive-Sync)\nCông nghệ GameFast Input\nTăng bóng\nDisplayWidget Lite\nTần suất Ánh sáng Xanh Thấp",
+      "Cổng kết nối": "1 x DisplayPort 1.2\n2 x HDMI(v2.0)\n1 x Cổng âm thanh",
       "Độ nghiêng": "+20° ~ -5°",
       "Xoay": "+20° ~ -20°",
       "Màu sắc": "Black",
@@ -396,7 +396,7 @@
       "Kích thước (Bao gồm thùng máy)": "689 x 194 x 510 mm",
       "Trọng lượng sản phẩm": "5.4 kg",
       "Trọng lượng (Bao gồm thùng máy)": "7.6 kg",
-      "Phụ kiện đính kèm": "Dây nguồnCáp DisplayPort (Có thể có)Sách hướng dẫnCáp HDMI (Có thể có)Phiếu bảo hànhBáo cáo hiệu chỉnh màu sắcWelcome Card",
+      "Phụ kiện đính kèm": "Dây nguồn\nCáp DisplayPort (Có thể có)\nSách hướng dẫn\nCáp HDMI (Có thể có)\nPhiếu bảo hành\nBáo cáo hiệu chỉnh màu sắc\nWelcome Card",
       "Thông tin khác": "Chuẩn VESA treo tường: 100x100mm"
     },
     "variants": [
@@ -440,7 +440,7 @@
       "Trọng lượng sản phẩm": "8.9kg",
       "Trọng lượng (Bao gồm thùng máy)": "12.7kg",
       "Phụ kiện đính kèm": "Dây nguồn; dây HDMI (optional); dây DisplayPort (optional)",
-      "Thông tin khác": "Chuẩn VESA treo tường :100x100mmKiểu màn hình Cong"
+      "Thông tin khác": "Chuẩn VESA treo tường :100x100mm\nKiểu màn hình Cong"
     },
     "variants": [
       {
@@ -471,8 +471,8 @@
       "Thời gian phản hồi": "0.5ms (MPRT) / 1ms (GtG)",
       "Độ phân giải": "FHD (1920x1080)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Delta E < 2NTSC 108% (CIE1976) / sRGB 136% (CIE1931) / DCI-P3 99% (CIE1976)",
-      "Cổng kết nối": "HDMI 2.0 x 1DisplayPort 1.4 x 1Đầu ra tai nghe x1",
+      "Tính năng đặc biệt": "Delta E < 2\nNTSC 108% (CIE1976) / sRGB 136% (CIE1931) / DCI-P3 99% (CIE1976)",
+      "Cổng kết nối": "HDMI 2.0 x 1\nDisplayPort 1.4 x 1\nĐầu ra tai nghe x1",
       "Độ nghiêng": "-5° ~ 23°",
       "Mức tiêu thụ nguồn (Tối đa)": "34W",
       "Nguồn cấp điện": "External 12VDC, 3.0A",
@@ -506,13 +506,13 @@
       "Độ sáng": "300 cd/m2 (typical)",
       "Tỷ lệ tương phản": "3000:1",
       "Tỉ lệ khung hình": "16:9",
-      "Thời gian phản hồi": "8ms GTG5ms GTG (Fast)",
+      "Thời gian phản hồi": "8ms GTG\n5ms GTG (Fast)",
       "Góc nhìn (H/V)": "178° (H) /178° (V)",
       "Tần số quét": "75Hz",
       "Khả năng hiển thị màu sắc": "16.7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Cable Lock SlotSecurity LockAnti-glareEye Comfort TechnologyArsenic-free GlassMercury-freeNarrow Bezel",
-      "Cổng kết nối": "1 x DisplayPort 1.2 connector(HDCP 1.4) (Supports up to FHD 1920 x 1080, 75 Hz as per specified in DisplayPort 1.2)1 x VGA",
+      "Tính năng đặc biệt": "Cable Lock Slot\nSecurity Lock\nAnti-glare\nEye Comfort Technology\nArsenic-free Glass\nMercury-free\nNarrow Bezel",
+      "Cổng kết nối": "1 x DisplayPort 1.2 connector(HDCP 1.4) (Supports up to FHD 1920 x 1080, 75 Hz as per specified in DisplayPort 1.2)\n1 x VGA",
       "Màu sắc": "Black",
       "Độ nghiêng": "Tilt -5° to 21°",
       "Mức tiêu thụ nguồn (Tối đa)": "30W",
@@ -550,8 +550,8 @@
       "Tần số quét": "48 to 300Hz",
       "Khả năng hiển thị màu sắc": "1.07 tỉ màu (8 bits + FRC)",
       "Kích thước màn hình": "24.5 inch",
-      "Tính năng đặc biệt": "HDR ReadyAnti-glareAdobe RGB / DCI-P3 / sRGB: 87% / 90% / 120%AMD FreeSync™ Premium",
-      "Cổng kết nối": "1 x DisplayPort 1.4a2 x HDMI™ 2.0b (FHD@240Hz)1 x Headphone-out",
+      "Tính năng đặc biệt": "HDR Ready\nAnti-glare\nAdobe RGB / DCI-P3 / sRGB: 87% / 90% / 120%\nAMD FreeSync™ Premium",
+      "Cổng kết nối": "1 x DisplayPort 1.4a\n2 x HDMI™ 2.0b (FHD@240Hz)\n1 x Headphone-out",
       "Độ nghiêng": "-5° ~ 20°",
       "Màu sắc": "Black",
       "Dạng chân đế": "Chân V",
@@ -591,8 +591,8 @@
       "Tần số quét": "144Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Anti-Glare, Hard Coating (3H)G-SYNC Compatible/FreeSync Premium",
-      "Cổng kết nối": "2x USB 3.0 Downstream1x USB 3.0 Upstream2 × HDMI1 x DisplayPort",
+      "Tính năng đặc biệt": "Anti-Glare, Hard Coating (3H)\nG-SYNC Compatible/FreeSync Premium",
+      "Cổng kết nối": "2x USB 3.0 Downstream\n1x USB 3.0 Upstream\n2 × HDMI\n1 x DisplayPort",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100 - 240 V / 50 - 60 Hz",
       "Mức tiêu thụ nguồn (Tối đa)": "55W",
@@ -629,12 +629,12 @@
       "Thời gian phản hồi": "6 ms (GTG response time)",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "DP port x1HDMI port x1DC IN power port x1Audio port x1",
+      "Cổng kết nối": "DP port x1\nHDMI port x1\nDC IN power port x1\nAudio port x1",
       "Nguồn cấp điện": "12V⎓3A",
       "Mức tiêu thụ nguồn (Tối đa)": "36W",
       "Kích thước riêng sản phẩm": "612.5 x 170.0 x 453.0 mm",
       "Trọng lượng sản phẩm": "4.2 kg",
-      "Phụ kiện đính kèm": "Display monitor x1Base (including stand) x1Screw Kit x1HDMI cable x1Power adapter x1User manual x 1"
+      "Phụ kiện đính kèm": "Display monitor x1\nBase (including stand) x1\nScrew Kit x1\nHDMI cable x1\nPower adapter x1\nUser manual x 1"
     },
     "variants": [
       {
@@ -665,12 +665,12 @@
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Độ phân giải": "WQHD (3440x1440)",
       "Tấm nền": "VA",
-      "Cổng kết nối": "Cổng DP x2Cổng HDMI x2Cổng âm thanh x1Cổng nguồn DC IN x1",
+      "Cổng kết nối": "Cổng DP x2\nCổng HDMI x2\nCổng âm thanh x1\nCổng nguồn DC IN x1",
       "Nguồn cấp điện": "24V⎓ 2.71A",
       "Mức tiêu thụ nguồn (Tối đa)": "65W",
       "Kích thước riêng sản phẩm": "811.3mm x 210mm x 510.1mm (bao gồm chân đế)",
       "Trọng lượng sản phẩm": "6,9kg (bao gồm chân đế)",
-      "Phụ kiện đính kèm": "Màn hình hiển thị x1Bộ cơ sở x1Bộ gắn đế x1Cáp DP x1Bộ đổi nguồn x1Hướng dẫn sử dụng x1Báo cáo độ chính xác màu x1Bộ vít x1Thẻ bảo hành x1"
+      "Phụ kiện đính kèm": "Màn hình hiển thị x1\nBộ cơ sở x1\nBộ gắn đế x1\nCáp DP x1\nBộ đổi nguồn x1\nHướng dẫn sử dụng x1\nBáo cáo độ chính xác màu x1\nBộ vít x1\nThẻ bảo hành x1"
     },
     "variants": [
       {
@@ -701,7 +701,7 @@
       "Tần số quét": "240Hz",
       "Khả năng hiển thị màu sắc": "1,07 tỷ màu",
       "Tỉ lệ khung hình": "16:09",
-      "Cổng kết nối": "1 x DisplayPort (1.4a)2 x HDMI™ (2.1)",
+      "Cổng kết nối": "1 x DisplayPort (1.4a)\n2 x HDMI™ (2.1)",
       "Độ nghiêng": "-5 ~ 15º",
       "Xoay": "-10 ~ 10°",
       "Màu sắc": "Black",
@@ -736,7 +736,7 @@
       "Thời gian phản hồi": "0.03ms (GtG)",
       "Tần số quét": "240Hz",
       "Khả năng hiển thị màu sắc": "DCI-P3 94% (CIE1976)",
-      "Cổng kết nối": "2 x HDMI™1 x Display Port (1.4)",
+      "Cổng kết nối": "2 x HDMI™\n1 x Display Port (1.4)",
       "Nguồn cấp điện": "100~240V (50/60Hz)",
       "Kích thước riêng sản phẩm": "973 x 183 x 544 mm",
       "Trọng lượng sản phẩm": "13.9 kg"
@@ -763,15 +763,15 @@
       "Kích thước màn hình": "26.5 inch",
       "Độ phân giải": "2K (2560x1440)",
       "Tấm nền": "OLED",
-      "Độ sáng": "1040cd/m² (@HDR 1.5% APL)640cd/m² (@HDR 10% APL)",
+      "Độ sáng": "1040cd/m² (@HDR 1.5% APL)\n640cd/m² (@HDR 10% APL)",
       "Tỉ lệ khung hình": "16:9",
       "Thời gian phản hồi": "0.03ms (GTG)",
       "Góc nhìn (H/V)": "178º(R/L), 178º(U/D)",
       "Tần số quét": "480Hz",
       "Khả năng hiển thị màu sắc": "1.07 tỷ màu",
       "Tỷ lệ tương phản": "1200000:1",
-      "Cổng kết nối": "1 x HDMI 2.11 x DisplayPort 2.1",
-      "Kích thước riêng sản phẩm": "605.2 x 579.3 x 249.1 (Up)605.2 x 469.3 x 249.1 (Down)",
+      "Cổng kết nối": "1 x HDMI 2.1\n1 x DisplayPort 2.1",
+      "Kích thước riêng sản phẩm": "605.2 x 579.3 x 249.1 (Up)\n605.2 x 469.3 x 249.1 (Down)",
       "Trọng lượng sản phẩm": "9.3 kg"
     },
     "variants": [
@@ -804,13 +804,13 @@
       "Độ phân giải": "FHD (1920x1080)",
       "Kích thước màn hình": "27 inch",
       "Tính năng đặc biệt": "FreeSync Premium",
-      "Cổng kết nối": "2x HDMI (Supports FHD@144Hz as specified in HDMI 1.4b)1x DP (Supports FHD@170Hz as specified in DisplayPort 1.2a with overclocking)1x Earphone out",
+      "Cổng kết nối": "2x HDMI (Supports FHD@144Hz as specified in HDMI 1.4b)\n1x DP (Supports FHD@170Hz as specified in DisplayPort 1.2a with overclocking)\n1x Earphone out",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100 - 240 V / 50 - 60 Hz",
       "Kích thước riêng sản phẩm": "612.5 x 228.2 x 454 mm",
       "Trọng lượng sản phẩm": "4.1kg",
-      "Phụ kiện đính kèm": "1 x cáp nguồn1 x Cáp HDMI"
+      "Phụ kiện đính kèm": "1 x cáp nguồn\n1 x Cáp HDMI"
     },
     "variants": [
       {
@@ -841,7 +841,7 @@
       "Khả năng hiển thị màu sắc": "1.07B, 10 bit (8 bit + FRC)",
       "Tần số quét": "240Hz",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "2x HDMI™ 2.0b (WQHD@144Hz)1x DisplayPort 1.4a (HBR3)",
+      "Cổng kết nối": "2x HDMI™ 2.0b (WQHD@144Hz)\n1x DisplayPort 1.4a (HBR3)",
       "Độ nghiêng": "-5°~20°",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100 ~ 240V, 50/60Hz",
@@ -913,8 +913,8 @@
       "Tần số quét": "48 - 180Hz",
       "Khả năng hiển thị màu sắc": "1.07B, 10 bits (8 bits + FRC)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Anti-glareAdaptive-Sync",
-      "Cổng kết nối": "1x DisplayPort 1.42x HDMI™ 2.0b1 x Headphone Out",
+      "Tính năng đặc biệt": "Anti-glare\nAdaptive-Sync",
+      "Cổng kết nối": "1x DisplayPort 1.4\n2x HDMI™ 2.0b\n1 x Headphone Out",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5 ° ~ 20 °",
@@ -951,10 +951,10 @@
       "Tỉ lệ khung hình": "16:09",
       "Khả năng hiển thị màu sắc": "1.07B , 10 bits (8 bits + FRC)",
       "Tần số quét": "48 - 180Hz",
-      "Tấm nền": "Rapid IPSIPS",
+      "Tấm nền": "Rapid IPS\nIPS",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Adaptive-SyncChống chói Anti-Glare101% sRGB78% DCI-P382% ADOBE RGB",
-      "Cổng kết nối": "2 x HDMI 2.01 x Headphone-out1 x DisplayPort 1.4",
+      "Tính năng đặc biệt": "Adaptive-Sync\nChống chói Anti-Glare\n101% sRGB\n78% DCI-P3\n82% ADOBE RGB",
+      "Cổng kết nối": "2 x HDMI 2.0\n1 x Headphone-out\n1 x DisplayPort 1.4",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5 ° ~ 20 °",
@@ -993,8 +993,8 @@
       "Tần số quét": "75Hz",
       "Khả năng hiển thị màu sắc": "16.7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Độ chính xác màu ΔE<2Hỗ trợ 100% sRGB và 100% Rec.709Chứng nhận Calman VerifiedCông nghệ Adaptive-SyncCông nghệ giảm ánh sáng xanhCông nghệ khử nhấp nháyProArt Preset và ProArt PaletteQuickFit Virtual Scale",
-      "Cổng kết nối": "1 x DisplayPort 1.21 x Mini DisplayPort1 x HDMI (v1.4)1 x Dual-Link DVI4 x USB 3.2 Gen 1 Type-A1 x Giắc cắm tai nghe1 x Đầu vào âm thanh PC",
+      "Tính năng đặc biệt": "Độ chính xác màu ΔE<2\nHỗ trợ 100% sRGB và 100% Rec.709\nChứng nhận Calman Verified\nCông nghệ Adaptive-Sync\nCông nghệ giảm ánh sáng xanh\nCông nghệ khử nhấp nháy\nProArt Preset và ProArt Palette\nQuickFit Virtual Scale",
+      "Cổng kết nối": "1 x DisplayPort 1.2\n1 x Mini DisplayPort\n1 x HDMI (v1.4)\n1 x Dual-Link DVI\n4 x USB 3.2 Gen 1 Type-A\n1 x Giắc cắm tai nghe\n1 x Đầu vào âm thanh PC",
       "Màu sắc": "Black",
       "Độ nghiêng": "+35° ~ -5°",
       "Xoay": "+90° ~ -90°",
@@ -1005,8 +1005,8 @@
       "Kích thước (Bao gồm thùng máy)": "73.50 x 46.40 x 21.60 cm",
       "Trọng lượng sản phẩm": "6.9 kg",
       "Trọng lượng (Bao gồm thùng máy)": "9.5 kg",
-      "Phụ kiện đính kèm": "Cáp âm thanhBáo cáo hiệu chỉnh màu sắcCáp DisplayPortCáp DisplayPort sang miniDPCáp HDMIDây nguồnHướng dẫn sử dụngThẻ bảo hành",
-      "Thông tin khác": "Chứng nhận TÜV Rheinland về công nghệ khử nhấp nháy và giảm ánh sáng xanhHỗ trợ gắn tường chuẩn VESA 100x100mmKhóa Kensington"
+      "Phụ kiện đính kèm": "Cáp âm thanh\nBáo cáo hiệu chỉnh màu sắc\nCáp DisplayPort\nCáp DisplayPort sang miniDP\nCáp HDMI\nDây nguồn\nHướng dẫn sử dụng\nThẻ bảo hành",
+      "Thông tin khác": "Chứng nhận TÜV Rheinland về công nghệ khử nhấp nháy và giảm ánh sáng xanh\nHỗ trợ gắn tường chuẩn VESA 100x100mm\nKhóa Kensington"
     },
     "variants": [
       {
@@ -1037,8 +1037,8 @@
       "Khả năng hiển thị màu sắc": "16.7 triệu màu",
       "Thời gian phản hồi": "1ms (MPRT)",
       "Tỉ lệ khung hình": "16:09",
-      "Tính năng đặc biệt": "Eye Saver ModeCông nghệ chống nháy - Flicker-freeAuto Source Switch+Black Equalizer (Bộ cân bằng màu đen)AMD FreeSyncHDR10Curved Screen 1000R",
-      "Cổng kết nối": "1 x Jack tai nghe 3.5 mm1 x HDMI 2.01 x DisplayPort 1.2",
+      "Tính năng đặc biệt": "Eye Saver Mode\nCông nghệ chống nháy - Flicker-free\nAuto Source Switch+\nBlack Equalizer (Bộ cân bằng màu đen)\nAMD FreeSync\nHDR10\nCurved Screen 1000R",
+      "Cổng kết nối": "1 x Jack tai nghe 3.5 mm\n1 x HDMI 2.0\n1 x DisplayPort 1.2",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Độ nghiêng": "-2 ~ 18",
@@ -1048,7 +1048,7 @@
       "Kích thước (Bao gồm thùng máy)": "793.0 x 197 x 494.0 mm",
       "Trọng lượng (Bao gồm thùng máy)": "7.5 kg",
       "Trọng lượng sản phẩm": "4.8 kg",
-      "Phụ kiện đính kèm": "1 x Adapter1 x Cáp HDMI1 x cáp DisplayPort",
+      "Phụ kiện đính kèm": "1 x Adapter\n1 x Cáp HDMI\n1 x cáp DisplayPort",
       "Thông tin khác": "Gập màn hình lên xuống"
     },
     "variants": [
@@ -1080,7 +1080,7 @@
       "Tần số quét": "165Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "HDMI(v2.0) x2DisplayPort 1.2",
+      "Cổng kết nối": "HDMI(v2.0) x2\nDisplayPort 1.2",
       "Kích thước riêng sản phẩm": "620x363x66 mm",
       "Trọng lượng sản phẩm": "8.0 kg"
     },
@@ -1113,8 +1113,8 @@
       "Tần số quét": "100Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "HDR10Eye ProTechFlicker-Free",
-      "Cổng kết nối": "1x Đầu ra âm thanh 3,5 mm2x HDMI 2.01x DisplayPortCổng cắm nguồn: DC Socket (Center Positive)",
+      "Tính năng đặc biệt": "HDR10\nEye ProTech\nFlicker-Free",
+      "Cổng kết nối": "1x Đầu ra âm thanh 3,5 mm\n2x HDMI 2.0\n1x DisplayPort\nCổng cắm nguồn: DC Socket (Center Positive)",
       "Dạng chân đế": "Chân vuông",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5º / 15º",
@@ -1124,8 +1124,8 @@
       "Kích thước (Bao gồm thùng máy)": "676 x 458 x 107 mm",
       "Trọng lượng sản phẩm": "4.1 kg",
       "Trọng lượng (Bao gồm thùng máy)": "5.5 kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x Cáp HDMI",
-      "Thông tin khác": "Công nghệ đồng bộ hóa tốc độ khung hìnhBộ lọc ánh sáng xanhKhông nhấp nháy"
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x Cáp HDMI",
+      "Thông tin khác": "Công nghệ đồng bộ hóa tốc độ khung hình\nBộ lọc ánh sáng xanh\nKhông nhấp nháy"
     },
     "variants": [
       {
@@ -1156,8 +1156,8 @@
       "Tỉ lệ khung hình": "16:9",
       "Tỷ lệ tương phản": "1000:1",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Công nghệ chống nháy - Flicker-freeLọc ánh sáng xanhHDR10Chống chói Anti-Glare",
-      "Cổng kết nối": "1 x DisplayPort2 x HDMI 2.01 x Jack tai nghe 3.5 mm",
+      "Tính năng đặc biệt": "Công nghệ chống nháy - Flicker-free\nLọc ánh sáng xanh\nHDR10\nChống chói Anti-Glare",
+      "Cổng kết nối": "1 x DisplayPort\n2 x HDMI 2.0\n1 x Jack tai nghe 3.5 mm",
       "Dạng chân đế": "Chân vuông",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5º / 20º",
@@ -1168,8 +1168,8 @@
       "Kích thước (Bao gồm thùng máy)": "859 x 488 x 128 mm",
       "Trọng lượng (Bao gồm thùng máy)": "8.1 kg",
       "Trọng lượng sản phẩm": "4.5 kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x cáp DisplayPort",
-      "Thông tin khác": "Thay đổi được chiều caoXoay màn hình 90 độGập màn hình lên xuốngĐiều chỉnh được độ nghiêng của màn hình"
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x cáp DisplayPort",
+      "Thông tin khác": "Thay đổi được chiều cao\nXoay màn hình 90 độ\nGập màn hình lên xuống\nĐiều chỉnh được độ nghiêng của màn hình"
     },
     "variants": [
       {
@@ -1200,8 +1200,8 @@
       "Tấm nền": "IPS",
       "Độ phân giải": "QHD (2560 x 1440)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "HDR10FreeSync for HDMIFreeSync Premium for DP",
-      "Cổng kết nối": "1x Đầu ra âm thanh 3,5 mm2x HDMI 2.11x DisplayPortCổng cắm nguồn: 3-pin Socket (IEC C14 / CEE22)",
+      "Tính năng đặc biệt": "HDR10\nFreeSync for HDMI\nFreeSync Premium for DP",
+      "Cổng kết nối": "1x Đầu ra âm thanh 3,5 mm\n2x HDMI 2.1\n1x DisplayPort\nCổng cắm nguồn: 3-pin Socket (IEC C14 / CEE22)",
       "Độ nghiêng": "-5º / 20º",
       "Màu sắc": "Black",
       "Dạng chân đế": "Chân V",
@@ -1211,7 +1211,7 @@
       "Kích thước riêng sản phẩm": "614.1 x 365.65 x 47.05 mm",
       "Trọng lượng (Bao gồm thùng máy)": "6.4 kg",
       "Trọng lượng sản phẩm": "4.5 kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x cáp DisplayPort",
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x cáp DisplayPort",
       "Thông tin khác": "Hạn chế ánh sáng xanh, Chống chói, Chống nháy, Chế độ tiết kiệm điện, AMD FreeSync, AMD FreeSync Premium"
     },
     "variants": [
@@ -1243,8 +1243,8 @@
       "Tỉ lệ khung hình": "16:9",
       "Thời gian phản hồi": "0.43 ms (MPRT)",
       "Tỷ lệ tương phản": "1200:1",
-      "Tính năng đặc biệt": "Công nghệ chống nháy - Flicker-freeLọc ánh sáng xanhAMD FreeSync PremiumChống chói Anti-Glare",
-      "Cổng kết nối": "1 x DisplayPort2 x HDMI 2.01 x Jack tai nghe 3.5 mm",
+      "Tính năng đặc biệt": "Công nghệ chống nháy - Flicker-free\nLọc ánh sáng xanh\nAMD FreeSync Premium\nChống chói Anti-Glare",
+      "Cổng kết nối": "1 x DisplayPort\n2 x HDMI 2.0\n1 x Jack tai nghe 3.5 mm",
       "Độ nghiêng": "-5º / 20º",
       "Màu sắc": "Black",
       "Dạng chân đế": "Chân V",
@@ -1254,8 +1254,8 @@
       "Kích thước riêng sản phẩm": "614.1 x 453.35 x 180.26 mm",
       "Trọng lượng (Bao gồm thùng máy)": "6.4 kg",
       "Trọng lượng sản phẩm": "4.5 kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x cáp DisplayPort",
-      "Thông tin khác": "Thay đổi được chiều caoGập màn hình lên xuống"
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x cáp DisplayPort",
+      "Thông tin khác": "Thay đổi được chiều cao\nGập màn hình lên xuống"
     },
     "variants": [
       {
@@ -1316,8 +1316,8 @@
       "Thời gian phản hồi": "1ms (GtG)",
       "Tần số quét": "180Hz",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "AMD FreeSync™HDR 10NVIDIA G-Sync™Black StabilizerHiệu ứng HDRChế độ đọc sáchBộ đếm FPS",
-      "Cổng kết nối": "1 × HDMI1 × Cổng nguồn DC1 x Cổng DP",
+      "Tính năng đặc biệt": "AMD FreeSync™\nHDR 10\nNVIDIA G-Sync™\nBlack Stabilizer\nHiệu ứng HDR\nChế độ đọc sách\nBộ đếm FPS",
+      "Cổng kết nối": "1 × HDMI\n1 × Cổng nguồn DC\n1 x Cổng DP",
       "Nguồn cấp điện": "100~240V (50/60Hz)"
     },
     "variants": [
@@ -1349,7 +1349,7 @@
       "Tần số quét": "100Hz",
       "Khả năng hiển thị màu sắc": "16.7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "2 x HDMI 2.11 x DisplayPort 1.4",
+      "Cổng kết nối": "2 x HDMI 2.1\n1 x DisplayPort 1.4",
       "Kích thước riêng sản phẩm": "613.2 x 571.6 x 196.2 mm",
       "Trọng lượng sản phẩm": "5.65 kg"
     },
@@ -1413,8 +1413,8 @@
       "Tần số quét": "60Hz",
       "Khả năng hiển thị màu sắc": "1.07 tỷ màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Thay đổi được chiều caoXoay màn hình 90 độĐiều chỉnh được màn hình quay trái - phảiGập màn hình lên xuống",
-      "Cổng kết nối": "1 x Type-C (90W output)2 x HDMI 2.01 x Audio Out1 x DisplayPort 1.42 x USB 2.0",
+      "Tính năng đặc biệt": "Thay đổi được chiều cao\nXoay màn hình 90 độ\nĐiều chỉnh được màn hình quay trái - phải\nGập màn hình lên xuống",
+      "Cổng kết nối": "1 x Type-C (90W output)\n2 x HDMI 2.0\n1 x Audio Out\n1 x DisplayPort 1.4\n2 x USB 2.0",
       "Màu sắc": "Black",
       "Độ nghiêng": "Tiến 5° / Lùi 21°",
       "Kích thước riêng sản phẩm": "613 x 511 x 185 mm",
@@ -1449,8 +1449,8 @@
       "Tần số quét": "180Hz",
       "Độ phân giải": "FHD (1920x1080)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Trace Free Technology : YesGameVisual : YesColor Temp. Selection : Yes(4 modes)GamePlus : YesHDCP : Yes, 2.2Extreme Low Motion Blur : YesVRR Technology : Yes (Adaptive-Sync)GameFast Input technology : YesShadow Boost : YesDisplayWidget : Yes, DisplayWidget CenterLow Blue Light : Yes",
-      "Cổng kết nối": "DisplayPort 1.2 x 1HDMI(v2.0) x 2Earphone Jack : Yes",
+      "Tính năng đặc biệt": "Trace Free Technology : Yes\nGameVisual : Yes\nColor Temp. Selection : Yes(4 modes)\nGamePlus : Yes\nHDCP : Yes, 2.2\nExtreme Low Motion Blur : Yes\nVRR Technology : Yes (Adaptive-Sync)\nGameFast Input technology : Yes\nShadow Boost : Yes\nDisplayWidget : Yes, DisplayWidget Center\nLow Blue Light : Yes",
+      "Cổng kết nối": "DisplayPort 1.2 x 1\nHDMI(v2.0) x 2\nEarphone Jack : Yes",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Mức tiêu thụ nguồn (Tối đa)": "100-240V, 50/60Hz",
@@ -1459,7 +1459,7 @@
       "Kích thước riêng sản phẩm": "61.50 x 45.30 x 19.30 cm",
       "Trọng lượng sản phẩm": "3.5 Kg",
       "Trọng lượng (Bao gồm thùng máy)": "6.9 kg",
-      "Phụ kiện đính kèm": "Cáp DisplayPortCáp HDMIDây điệnHướng dẫn sử dụngThẻ bảo hành"
+      "Phụ kiện đính kèm": "Cáp DisplayPort\nCáp HDMI\nDây điện\nHướng dẫn sử dụng\nThẻ bảo hành"
     },
     "variants": [
       {
@@ -1490,11 +1490,11 @@
       "Góc nhìn (H/V)": "178°",
       "Tấm nền": "VA",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "VGADisplayPort 1.2",
+      "Cổng kết nối": "VGA\nDisplayPort 1.2",
       "Độ nghiêng": "-5°/+21°",
       "Kích thước riêng sản phẩm": "62.23 x 45.974 x 18.796 cm",
       "Trọng lượng sản phẩm": "4.85 kg",
-      "Phụ kiện đính kèm": "1 x cáp nguồn1 x cáp DisplayPort",
+      "Phụ kiện đính kèm": "1 x cáp nguồn\n1 x cáp DisplayPort",
       "Thông tin khác": "Chuẩn VESA 100 x 100 mm"
     },
     "variants": [
@@ -1522,17 +1522,17 @@
       "Độ sáng": "250 cd/m2",
       "Tỷ lệ tương phản": "1000:1",
       "Tỉ lệ khung hình": "16:9",
-      "Thời gian phản hồi": "8 ms (Normal)5 ms (Fast)",
+      "Thời gian phản hồi": "8 ms (Normal)\n5 ms (Fast)",
       "Tần số quét": "120Hz",
-      "Khả năng hiển thị màu sắc": "16.7 triệu màu100% sRGB, 100% BT.709, 85% DCI-P3, Delta E < 2 (trung bình) (sRGB, BT.709)",
+      "Khả năng hiển thị màu sắc": "16.7 triệu màu\n100% sRGB, 100% BT.709, 85% DCI-P3, Delta E < 2 (trung bình) (sRGB, BT.709)",
       "Kích thước màn hình": "23.8 inch",
       "Tính năng đặc biệt": "Điều chỉnh độ sáng và nhiệt độ màu tự động dựa trên cảm biến",
-      "Cổng kết nối": "1 x DisplayPort 1.41 x HDMI 1.4)1 x DisplayPort 1.4 (out)1 x USB-C upstream port (video and data) (hỗ trợ DisplayPort 1.4, Power Delivery PD tối đa 90 W)1 x USB Type-C upstream port (chỉ truyền dữ liệu, 10 Gbps USB 3.2 Gen2)3 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)1 x Audio line out1 x RJ45 port1 x USB-C downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) với sạc (15W)1 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with BC1.2 power charging",
+      "Cổng kết nối": "1 x DisplayPort 1.4\n1 x HDMI 1.4)\n1 x DisplayPort 1.4 (out)\n1 x USB-C upstream port (video and data) (hỗ trợ DisplayPort 1.4, Power Delivery PD tối đa 90 W)\n1 x USB Type-C upstream port (chỉ truyền dữ liệu, 10 Gbps USB 3.2 Gen2)\n3 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)\n1 x Audio line out\n1 x RJ45 port\n1 x USB-C downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) với sạc (15W)\n1 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with BC1.2 power charging",
       "Độ nghiêng": "-5°/+21°",
       "Xoay": "-90°/+90°",
       "Kích thước riêng sản phẩm": "538.734 x 363.98 ~ 496.57 x 181.864 mm",
       "Trọng lượng sản phẩm": "5.91kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x cáp DisplayPort"
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x cáp DisplayPort"
     },
     "variants": [
       {
@@ -1559,17 +1559,17 @@
       "Độ sáng": "250 cd/m2",
       "Tỷ lệ tương phản": "1000:1",
       "Tỉ lệ khung hình": "16:9",
-      "Thời gian phản hồi": "8 ms (Normal)5 ms (Fast)",
+      "Thời gian phản hồi": "8 ms (Normal)\n5 ms (Fast)",
       "Tần số quét": "120Hz",
-      "Khả năng hiển thị màu sắc": "16.7 triệu màu100% sRGB, 100% BT.709, 85% DCI-P3, Delta E < 2 (trung bình) (sRGB, BT.709)",
+      "Khả năng hiển thị màu sắc": "16.7 triệu màu\n100% sRGB, 100% BT.709, 85% DCI-P3, Delta E < 2 (trung bình) (sRGB, BT.709)",
       "Kích thước màn hình": "23.8 inch",
       "Tính năng đặc biệt": "Điều chỉnh độ sáng và nhiệt độ màu tự động dựa trên cảm biến",
-      "Cổng kết nối": "1 x DisplayPort 1.4 (DRR for Microsoft Windows) (HDCP 1.4)1 x HDMI (HDCP 1.4)(supports up to FHD 1920 x 1080 120Hz TMDS as per specified in HDMI 1.4)1 x DisplayPort 1.4 (Out) with MST (HDCP 1.4)1 x USB Type-C upstream port (data only, SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)2 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)1 x audio line-out portQuick Access:1 x USB Type-C downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with power charging (15W)1 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with BC1.2 power charging",
+      "Cổng kết nối": "1 x DisplayPort 1.4 (DRR for Microsoft Windows) (HDCP 1.4)\n1 x HDMI (HDCP 1.4)(supports up to FHD 1920 x 1080 120Hz TMDS as per specified in HDMI 1.4)\n1 x DisplayPort 1.4 (Out) with MST (HDCP 1.4)\n1 x USB Type-C upstream port (data only, SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)\n2 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2)\n1 x audio line-out port\nQuick Access:\n1 x USB Type-C downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with power charging (15W)\n1 x USB Type-A downstream port (SuperSpeed USB 10 Gbps, USB 3.2 Gen 2) with BC1.2 power charging",
       "Độ nghiêng": "-5°/+21°",
       "Xoay": "-90°/+90°",
       "Kích thước riêng sản phẩm": "7.16 x 21.21 x 14.33 ~ 19.55 inch",
       "Trọng lượng sản phẩm": "5.38kg",
-      "Phụ kiện đính kèm": "1 x Bộ nguồn1 x cáp DisplayPort - DisplayPort tới DisplayPort"
+      "Phụ kiện đính kèm": "1 x Bộ nguồn\n1 x cáp DisplayPort - DisplayPort tới DisplayPort"
     },
     "variants": [
       {
@@ -1597,18 +1597,18 @@
       "Tỉ lệ khung hình": "16:09",
       "Thời gian phản hồi": "5ms",
       "Góc nhìn (H/V)": "178/178 º",
-      "Khả năng hiển thị màu sắc": "16,7 triệu màu100% sRGB100% Rec.709",
+      "Khả năng hiển thị màu sắc": "16,7 triệu màu\n100% sRGB\n100% Rec.709",
       "Độ phân giải": "2K QHD (2560x1440)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace free :CóProArt Preset : Tiêu chuẩnProArt Preset : sRGBProArt Preset : DCI-P3ProArt Preset : Rec. 709ProArt Preset : Cảnh vậtProArt Preset : ĐọcProArt Preset : Phòng tốiProArt Preset : Dựng hình nhanhProArt Preset : Chế độ Người dùng 1ProArt Preset : Chế độ Người dùng 2Công nghệ SPLENDID :CóNhiệt độ màu. Lựa chọn :Có(5 chế độ)Điều chỉnh màu sắc :6 trục điều chỉnh(R,G,B,C,M,Y)Điều chỉnh thông số gamma :Có (Support Gamma 1.8/2.0/2.2/2.4/2.6 )Hiển thị màu chính xác :△E< 2ProArt Palette : CóQuickFit : CóHDCP : YesExtreme Low Motion Blur : CóCông nghệ VRR :Adaptive-SyncTăng tối :CóTiện ích ProArt :CóLow Blue Light : CóTính năng âm thanh: Có loa kép 2W x 2",
-      "Cổng kết nối": "DisplayPort 1.2 x 2 (Daisy Chain)HDMI 1.4 x 1USB Hub: 4 cổng USB 3.1Jack cắm tai nghe 3.5mm x 1",
+      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace free :Có\nProArt Preset : Tiêu chuẩn\nProArt Preset : sRGB\nProArt Preset : DCI-P3\nProArt Preset : Rec. 709\nProArt Preset : Cảnh vật\nProArt Preset : Đọc\nProArt Preset : Phòng tối\nProArt Preset : Dựng hình nhanh\nProArt Preset : Chế độ Người dùng 1\nProArt Preset : Chế độ Người dùng 2\nCông nghệ SPLENDID :Có\nNhiệt độ màu. Lựa chọn :Có(5 chế độ)\nĐiều chỉnh màu sắc :6 trục điều chỉnh(R,G,B,C,M,Y)\nĐiều chỉnh thông số gamma :Có (Support Gamma 1.8/2.0/2.2/2.4/2.6 )\nHiển thị màu chính xác :△E< 2\nProArt Palette : Có\nQuickFit : Có\nHDCP : Yes\nExtreme Low Motion Blur : Có\nCông nghệ VRR :Adaptive-Sync\nTăng tối :Có\nTiện ích ProArt :Có\nLow Blue Light : Có\nTính năng âm thanh: Có loa kép 2W x 2",
+      "Cổng kết nối": "DisplayPort 1.2 x 2 (Daisy Chain)\nHDMI 1.4 x 1\nUSB Hub: 4 cổng USB 3.1\nJack cắm tai nghe 3.5mm x 1",
       "Màu sắc": "Grey",
       "Mức tiêu thụ nguồn (Tối đa)": "12.5 W",
       "Kích thước riêng sản phẩm": "61.50 x 53.20 x 22.60 cm",
       "Kích thước (Bao gồm thùng máy)": "73.50 x 46.40 x 21.60 cm",
       "Trọng lượng sản phẩm": "4.83 kg",
       "Trọng lượng (Bao gồm thùng máy)": "10.74 kg",
-      "Phụ kiện đính kèm": "Báo cáo hiệu chỉnh màu sắcCáp DisplayPortDây điệnHướng dẫn sử dụngThẻ bảo hànhWelcome CardPhụ kiện trong hộp có thể thay đổi theo khu vực"
+      "Phụ kiện đính kèm": "Báo cáo hiệu chỉnh màu sắc\nCáp DisplayPort\nDây điện\nHướng dẫn sử dụng\nThẻ bảo hành\nWelcome Card\nPhụ kiện trong hộp có thể thay đổi theo khu vực"
     },
     "variants": [
       {
@@ -1662,10 +1662,10 @@
       "Góc nhìn (H/V)": "178º horizontal, 178º vertical, CR>5; 170º horizontal, 170º vertical, CR>10",
       "Khả năng hiển thị màu sắc": "NTSC: 45% size (Typ), sRGB: 64% size (Typ)",
       "Độ sáng": "250 cd/m² (typ)",
-      "Tỷ lệ tương phản": "Tỷ lệ tương phản tĩnh: 800:1 (typ)\nTỷ lệ tương phản động: 50M:1",
+      "Tỷ lệ tương phản": "Tỷ lệ tương phản tĩnh: 800:1 (typ) Tỷ lệ tương phản động: 50M:1",
       "Kích thước màn hình": "15.6 inch",
       "Tính năng đặc biệt": "Projected Capacitive, 10-point multi-touch",
-      "Cổng kết nối": "USB 3.2 Type C Up Stream; DisplayPort Alt mode : 2 (60W power charger)Đầu ra âm thanh 3,5 mm: 1Mini HDMI: 1Cổng cắm nguồn: USB Type C (with video & data)",
+      "Cổng kết nối": "USB 3.2 Type C Up Stream; DisplayPort Alt mode : 2 (60W power charger)\nĐầu ra âm thanh 3,5 mm: 1\nMini HDMI: 1\nCổng cắm nguồn: USB Type C (with video & data)",
       "Độ nghiêng": "20º / 60º",
       "Mức tiêu thụ nguồn (Tối đa)": "8.3W",
       "Nguồn cấp điện": "AC 100-240V",
@@ -1702,14 +1702,14 @@
       "Tỷ lệ tương phản": "1.000:1 (typ)",
       "Thời gian phản hồi": "4ms (GTG)",
       "Tần số quét": "75Hz",
-      "Khả năng hiển thị màu sắc": "NTSC: 72% size (Typ)sRGB: 102% size (Typ)",
+      "Khả năng hiển thị màu sắc": "NTSC: 72% size (Typ)\nsRGB: 102% size (Typ)",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "Đầu ra âm thanh 3,5 mm: 1HDMI 1.4: 2DisplayPort: 1Cổng cắm nguồn: 3-pin Socket (IEC C14 / CEE22)",
+      "Cổng kết nối": "Đầu ra âm thanh 3,5 mm: 1\nHDMI 1.4: 2\nDisplayPort: 1\nCổng cắm nguồn: 3-pin Socket (IEC C14 / CEE22)",
       "Xoay": "Xoay phải 90º",
       "Kích thước riêng sản phẩm": "613 x 409.4~559.4 x 214 mm",
       "Kích thước (Bao gồm thùng máy)": "845 x 507 x 134 mm",
-      "Trọng lượng sản phẩm": "Kích thước (mm): 617 x 452 x 184Kích thước không có chân đế (mm): 617 x 366 x 48",
-      "Trọng lượng (Bao gồm thùng máy)": "Khối lượng tịnh (kg): 5.9Khối lượng tịnh không có chân đế (kg): 3.8Tổng (kg): 7.8"
+      "Trọng lượng sản phẩm": "Kích thước (mm): 617 x 452 x 184\nKích thước không có chân đế (mm): 617 x 366 x 48",
+      "Trọng lượng (Bao gồm thùng máy)": "Khối lượng tịnh (kg): 5.9\nKhối lượng tịnh không có chân đế (kg): 3.8\nTổng (kg): 7.8"
     },
     "variants": [
       {
@@ -1740,15 +1740,15 @@
       "Tỉ lệ khung hình": "16:9",
       "Tần số quét": "60Hz",
       "Khả năng hiển thị màu sắc": "DCI-P3 90% (CIE1976)",
-      "Tính năng đặc biệt": "HDR 10Hiệu ứng HDRGam màu rộngMàn hình 1.07 tỷ màu",
-      "Cổng kết nối": "2 x HDMI1 x DP 1.41 x Đầu ra tai nghe",
+      "Tính năng đặc biệt": "HDR 10\nHiệu ứng HDR\nGam màu rộng\nMàn hình 1.07 tỷ màu",
+      "Cổng kết nối": "2 x HDMI\n1 x DP 1.4\n1 x Đầu ra tai nghe",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Kích thước riêng sản phẩm": "714,3 x 512,3 x 208,8 mm",
       "Kích thước (Bao gồm thùng máy)": "821 x 507 x 226mm",
       "Trọng lượng sản phẩm": "7,7 kg",
       "Trọng lượng (Bao gồm thùng máy)": "10,7 kg",
-      "Phụ kiện đính kèm": "1 x Cáp HDMI1 x cáp nguồn"
+      "Phụ kiện đính kèm": "1 x Cáp HDMI\n1 x cáp nguồn"
     },
     "variants": [
       {
@@ -1780,10 +1780,10 @@
       "Độ phân giải": "FHD (1920x1080)",
       "Kích thước màn hình": "23.8 inch",
       "Tính năng đặc biệt": "100% sRGB, 100% Rec. 709, Độ chính xác màu ΔE <2,",
-      "Cổng kết nối": "USB-C x 1 (PD 65W)DisplayPort 1.2 x 2HDMI(v1.4) x 1USB Hub : 4x USB 3.2 Gen 1 Type-A",
+      "Cổng kết nối": "USB-C x 1 (PD 65W)\nDisplayPort 1.2 x 2\nHDMI(v1.4) x 1\nUSB Hub : 4x USB 3.2 Gen 1 Type-A",
       "Kích thước riêng sản phẩm": "649x474x192mm",
       "Trọng lượng sản phẩm": "3,9kg",
-      "Phụ kiện đính kèm": "1x Dây nguồn1x Dây HDMI1x Dây DisplayPort (optional)"
+      "Phụ kiện đính kèm": "1x Dây nguồn\n1x Dây HDMI\n1x Dây DisplayPort (optional)"
     },
     "variants": [
       {
@@ -1814,15 +1814,15 @@
       "Góc nhìn (H/V)": "178/178 º",
       "Độ phân giải": "WUXGA (1920x1200)",
       "Kích thước màn hình": "24.1 inch",
-      "Tính năng đặc biệt": "Trace Free Technology : YesProArt Preset : 9 Chế độ (sRGB Mode/Rec. 709 Mode/Scenery Mode/Standard Mode/Rapid Rendering/User Mode 1/User Mode 2/Reading Mode/Darkroom Mode)ProArt Palette : CóLựa chọn tông màu: 3 chế độTuỳ chỉnh nhiệt độ màu: 4 chế độĐộ chính xác màu : △E< 2Điều chỉnh Gamma : Có (Support Gamma 1.8/2.0/2.2/2.4/2.6 )Color Adjustment : 6-axis adjustment(R,G,B,C,M,Y)QuickFit (modes) : Yes (Alignment Grid/Paper/Ruler Modes)Giảm ánh sáng xanh: cóHỗ trợ HDCP : có, 1.4Adaptive-Sync supported : CóMotion Sync: Có",
-      "Cổng kết nối": "HDMID-SubDisplayPort 3.5mm",
+      "Tính năng đặc biệt": "Trace Free Technology : Yes\nProArt Preset : 9 Chế độ (sRGB Mode/Rec. 709 Mode/Scenery Mode/Standard Mode/Rapid Rendering/User Mode 1/User Mode 2/Reading Mode/Darkroom Mode)\nProArt Palette : Có\nLựa chọn tông màu: 3 chế độ\nTuỳ chỉnh nhiệt độ màu: 4 chế độ\nĐộ chính xác màu : △E< 2\nĐiều chỉnh Gamma : Có (Support Gamma 1.8/2.0/2.2/2.4/2.6 )\nColor Adjustment : 6-axis adjustment(R,G,B,C,M,Y)\nQuickFit (modes) : Yes (Alignment Grid/Paper/Ruler Modes)\nGiảm ánh sáng xanh: có\nHỗ trợ HDCP : có, 1.4\nAdaptive-Sync supported : Có\nMotion Sync: Có",
+      "Cổng kết nối": "HDMI\nD-Sub\nDisplayPort 3.5mm",
       "Màu sắc": "Grey",
       "Mức tiêu thụ nguồn (Tối đa)": "9.4 W",
       "Kích thước riêng sản phẩm": "53.30 x 50.50 x 21.10 cm",
       "Kích thước (Bao gồm thùng máy)": "64.90 x 47.40 x 19.20 cm",
       "Trọng lượng sản phẩm": "3.9kg",
       "Trọng lượng (Bao gồm thùng máy)": "8.3kg",
-      "Phụ kiện đính kèm": "Cổng xuất hình: HDMI, D-Sub, DisplayPortCổng PC Audio: 3.5mm Mini-JackCổng tai nghe: 3.5mm Mini-JackUSB Port(s) : 3.0x4"
+      "Phụ kiện đính kèm": "Cổng xuất hình: HDMI, D-Sub, DisplayPort\nCổng PC Audio: 3.5mm Mini-Jack\nCổng tai nghe: 3.5mm Mini-Jack\nUSB Port(s) : 3.0x4"
     },
     "variants": [
       {
@@ -1853,14 +1853,14 @@
       "Thời gian phản hồi": "5ms",
       "Độ phân giải": "2K QHD (2560x1440)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Công nghệ đèn nền: đèn nền viền WLEDĐộ phủ màu 99% sRGBMàn hình phủ chống chói",
-      "Cổng kết nối": "DisplayPort 1.2 (HDCP 1.4)HDMI (HDCP 1.4)USB 3.2 Gen 1 upstream4 x USB 3.2 Gen 1 downstream",
+      "Tính năng đặc biệt": "Công nghệ đèn nền: đèn nền viền WLED\nĐộ phủ màu 99% sRGB\nMàn hình phủ chống chói",
+      "Cổng kết nối": "DisplayPort 1.2 (HDCP 1.4)\nHDMI (HDCP 1.4)\nUSB 3.2 Gen 1 upstream\n4 x USB 3.2 Gen 1 downstream",
       "Xoay": "-45/+45°°",
       "Độ nghiêng": "-5/+21°°",
       "Mức tiêu thụ nguồn (Tối đa)": "55W",
       "Nguồn cấp điện": "100 - 240 V / 50 - 60 Hz",
       "Trọng lượng sản phẩm": "4.5 kg",
-      "Phụ kiện đính kèm": "1 x cáp DisplayPort - DisplayPort tới DisplayPort - 6 ft1 x cáp USB 3.2 Thế hệ 1 - USB Loại A đến B"
+      "Phụ kiện đính kèm": "1 x cáp DisplayPort - DisplayPort tới DisplayPort - 6 ft\n1 x cáp USB 3.2 Thế hệ 1 - USB Loại A đến B"
     },
     "variants": [
       {
@@ -1890,7 +1890,7 @@
       "Khả năng hiển thị màu sắc": "0.98",
       "Tần số quét": "60Hz",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "USB-CHDMI",
+      "Cổng kết nối": "USB-C\nHDMI",
       "Dạng chân đế": "HAS",
       "Màu sắc": "Black",
       "Độ nghiêng": "-2.0˚(±3.0˚)~25.0˚(±3.0˚)",
@@ -1899,7 +1899,7 @@
       "Kích thước riêng sản phẩm": "Dài 615.5 x Rộng 551.9 x Mỏng 196.4 mm",
       "Trọng lượng sản phẩm": "6.7 kg",
       "Trọng lượng (Bao gồm thùng máy)": "15.1kg",
-      "Phụ kiện đính kèm": "HDMI CableUSB Type-C Cable"
+      "Phụ kiện đính kèm": "HDMI Cable\nUSB Type-C Cable"
     },
     "variants": [
       {
@@ -1930,9 +1930,9 @@
       "Góc nhìn (H/V)": "178/178 º",
       "Tần số quét": "75Hz",
       "Độ phân giải": "2K QHD (2560x1440)",
-      "Cổng kết nối": "HDMI x 2DisplayPort x 13.5mm Audio Out x 1Power In x 1",
+      "Cổng kết nối": "HDMI x 2\nDisplayPort x 1\n3.5mm Audio Out x 1\nPower In x 1",
       "Mức tiêu thụ nguồn (Tối đa)": "35 W",
-      "Kích thước riêng sản phẩm": "714 x 520 x 231 mm (Gồm chân đế)714 x 428 x 59 mm (Không chân đế",
+      "Kích thước riêng sản phẩm": "714 x 520 x 231 mm (Gồm chân đế)\n714 x 428 x 59 mm (Không chân đế",
       "Trọng lượng sản phẩm": "7.3 kg",
       "Trọng lượng (Bao gồm thùng máy)": "9.2 kg"
     },
@@ -1965,7 +1965,7 @@
       "Độ phân giải": "2K QHD (2560x1440)",
       "Tỉ lệ khung hình": "16:9",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "2x HDMI 2.01x Displayport 1.2USB\t2 x USB 3.0",
+      "Cổng kết nối": "2x HDMI 2.0\n1x Displayport 1.2\nUSB 2 x USB 3.0",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100 - 240 VAC, 50/60Hz",
@@ -2012,7 +2012,7 @@
       "Kích thước (Bao gồm thùng máy)": "611 X 391 X 165 mm",
       "Trọng lượng sản phẩm": "Có chân đế: 4.0 kg",
       "Trọng lượng (Bao gồm thùng máy)": "5.5 kg",
-      "Phụ kiện đính kèm": "Dây nguồnCáp DisplayPort (Có thể có)Sách hướng dẫnCáp HDMIPhiếu bảo hành"
+      "Phụ kiện đính kèm": "Dây nguồn\nCáp DisplayPort (Có thể có)\nSách hướng dẫn\nCáp HDMI\nPhiếu bảo hành"
     },
     "variants": [
       {
@@ -2042,14 +2042,14 @@
       "Góc nhìn (H/V)": "178°(Dọc) / 178°(Ngang)",
       "Thời gian phản hồi": "1 ms (GTG)",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Giảm ánh sáng xanhEye CareAnti-FlickerChống chói Anti-GlareAdaptive-Sync",
-      "Cổng kết nối": "2 x HDMI 1.41 x Headphone-out1 x DisplayPort 1.2",
+      "Tính năng đặc biệt": "Giảm ánh sáng xanh\nEye Care\nAnti-Flicker\nChống chói Anti-Glare\nAdaptive-Sync",
+      "Cổng kết nối": "2 x HDMI 1.4\n1 x Headphone-out\n1 x DisplayPort 1.2",
       "Màu sắc": "Silver",
       "Nguồn cấp điện": "100 - 240 V / 50 - 60 Hz",
       "Mức tiêu thụ nguồn (Tối đa)": "21 W",
       "Kích thước riêng sản phẩm": "613.5 mm - 362.5 mm - 48.5 mm",
       "Trọng lượng sản phẩm": "5.67 kg",
-      "Phụ kiện đính kèm": "1 x cáp nguồn1 x Cáp HDMI"
+      "Phụ kiện đính kèm": "1 x cáp nguồn\n1 x Cáp HDMI"
     },
     "variants": [
       {
@@ -2078,16 +2078,16 @@
       "Tỷ lệ tương phản": "3000:1",
       "Thời gian phản hồi": "1ms MPRT",
       "Tần số quét": "165Hz",
-      "Khả năng hiển thị màu sắc": "Không gian màu (sRGB) :120%Không gian màu (DCI-P3) :90%",
+      "Khả năng hiển thị màu sắc": "Không gian màu (sRGB) :120%\nKhông gian màu (DCI-P3) :90%",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace free :CóGameVisual : CóNhiệt độ màu. Lựa chọn :Có(3 chế độ)Điều chỉnh thông số gamma :Có (Hỗ trợ Gamma 1.8/2.2/2.4)GamePlus : CóHDCP : CóExtreme Low Motion Blur : CóCông nghệ VRR :Có (Adaptive-Sync)Công nghệ GameFast Input :CóTăng bóng :CóTần suất Ánh sáng Xanh Thấp :Có",
-      "Cổng kết nối": "HDMI(v2.0) x 1VGA x 1Đầu cắm Tai nghe :CóĐầu vào âm thanh PC :Có",
-      "Độ nghiêng": "Góc nghiêng :Có (+20° ~ -5°)Xoay :Có (+16° ~ -16°)Điều chỉnh Độ cao :KhôngChuẩn VESA treo tường :100x100mmKhoá Kensington :Có",
+      "Tính năng đặc biệt": "Công nghệ không để lại dấu trace free :Có\nGameVisual : Có\nNhiệt độ màu. Lựa chọn :Có(3 chế độ)\nĐiều chỉnh thông số gamma :Có (Hỗ trợ Gamma 1.8/2.2/2.4)\nGamePlus : Có\nHDCP : Có\nExtreme Low Motion Blur : Có\nCông nghệ VRR :Có (Adaptive-Sync)\nCông nghệ GameFast Input :Có\nTăng bóng :Có\nTần suất Ánh sáng Xanh Thấp :Có",
+      "Cổng kết nối": "HDMI(v2.0) x 1\nVGA x 1\nĐầu cắm Tai nghe :Có\nĐầu vào âm thanh PC :Có",
+      "Độ nghiêng": "Góc nghiêng :Có (+20° ~ -5°)\nXoay :Có (+16° ~ -16°)\nĐiều chỉnh Độ cao :Không\nChuẩn VESA treo tường :100x100mm\nKhoá Kensington :Có",
       "Nguồn cấp điện": "Điện áp :100-240V, 50/60Hz",
       "Mức tiêu thụ nguồn (Tối đa)": "Điện năng tiêu thụ :<28W",
-      "Kích thước riêng sản phẩm": "Kích thước vật lý kèm với kệ (W x H x D) :610.34 x 475.16 x 213.77 mmKích thước vật lý không kèmkệ (W x H x D) :610.34 x 367.34 x 77.72 mm",
+      "Kích thước riêng sản phẩm": "Kích thước vật lý kèm với kệ (W x H x D) :610.34 x 475.16 x 213.77 mm\nKích thước vật lý không kèmkệ (W x H x D) :610.34 x 367.34 x 77.72 mm",
       "Kích thước (Bao gồm thùng máy)": "Kích thước hộp (W x H x D) :680 x 520 x 150 mm",
-      "Phụ kiện đính kèm": "Cáp âm thanhDây nguồnSách hướng dẫnCáp HDMI (Có thể có)Phiếu bảo hành"
+      "Phụ kiện đính kèm": "Cáp âm thanh\nDây nguồn\nSách hướng dẫn\nCáp HDMI (Có thể có)\nPhiếu bảo hành"
     },
     "variants": [
       {
@@ -2147,15 +2147,15 @@
       "Thời gian phản hồi": "5ms (GtG at Faster)",
       "Khả năng hiển thị màu sắc": "16.7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "1ms Motion Blur ReductionCông nghệ AMD FreeSyncTM PremiumGiao diện người dùng chơi gameThiết kế gần như không viền 3 cạnh",
-      "Cổng kết nối": "2x HDMI 1.41x DisplayPort 1.41x Audio 3.5mm",
+      "Tính năng đặc biệt": "1ms Motion Blur Reduction\nCông nghệ AMD FreeSyncTM Premium\nGiao diện người dùng chơi game\nThiết kế gần như không viền 3 cạnh",
+      "Cổng kết nối": "2x HDMI 1.4\n1x DisplayPort 1.4\n1x Audio 3.5mm",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Mức tiêu thụ nguồn (Tối đa)": "35W",
       "Nguồn cấp điện": "100 - 240 V / 50 - 60 Hz",
       "Kích thước riêng sản phẩm": "613,7 x 364,1 x 39,3 mm",
       "Trọng lượng sản phẩm": "3,25kg",
-      "Phụ kiện đính kèm": "1 x cáp DisplayPort1 x Bộ nguồn"
+      "Phụ kiện đính kèm": "1 x cáp DisplayPort\n1 x Bộ nguồn"
     },
     "variants": [
       {
@@ -2186,8 +2186,8 @@
       "Khả năng hiển thị màu sắc": "1.07 tỉ màu",
       "Độ sáng": "300 cd/m2",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "sRGB: 100% (CIE 1976)COLOR BIT: 10 bits (8 bits + FRC)Anti-glare",
-      "Cổng kết nối": "2x HDMI™ (2.0b)1x DP (1.2a)1x Headphone-out",
+      "Tính năng đặc biệt": "sRGB: 100% (CIE 1976)\nCOLOR BIT: 10 bits (8 bits + FRC)\nAnti-glare",
+      "Cổng kết nối": "2x HDMI™ (2.0b)\n1x DP (1.2a)\n1x Headphone-out",
       "Dạng chân đế": "Chân vuông",
       "Màu sắc": "Black",
       "Độ nghiêng": "-5° ~ 20°",
@@ -2226,7 +2226,7 @@
       "Tần số quét": "180Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "23.8 inch",
-      "Tính năng đặc biệt": "HDR 10AMD FreeSync™Tiết kiệm năng lượng thông minhHiệu chỉnh màu tại nhà máyChống nháy hìnhPIPĐồng bộ hành động độngBlack StabilizerChế độ đọc sáchCrosshairChọn đầu vào tự động",
+      "Tính năng đặc biệt": "HDR 10\nAMD FreeSync™\nTiết kiệm năng lượng thông minh\nHiệu chỉnh màu tại nhà máy\nChống nháy hình\nPIP\nĐồng bộ hành động động\nBlack Stabilizer\nChế độ đọc sách\nCrosshair\nChọn đầu vào tự động",
       "Cổng kết nối": "1 x HDMI; 1 x DisplayPort (1.4)",
       "Dạng chân đế": "Chân V",
       "Nguồn cấp điện": "100-240V (50/60Hz)",
@@ -2266,8 +2266,8 @@
       "Tần số quét": "180Hz",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Flicker FreeEye SaverAMD FreeSyncG-Sync Compatible",
-      "Cổng kết nối": "1x DisplayPort 1.41x HDMI 2.01x Audio 3.5mm",
+      "Tính năng đặc biệt": "Flicker Free\nEye Saver\nAMD FreeSync\nG-Sync Compatible",
+      "Cổng kết nối": "1x DisplayPort 1.4\n1x HDMI 2.0\n1x Audio 3.5mm",
       "Dạng chân đế": "Chân V",
       "Nguồn cấp điện": "100-240V (50/60Hz)",
       "Mức tiêu thụ nguồn (Tối đa)": "22W",
@@ -2275,7 +2275,7 @@
       "Kích thước riêng sản phẩm": "614.2 x 364.8 x 51.7 mm",
       "Trọng lượng sản phẩm": "5.1 kg",
       "Trọng lượng (Bao gồm thùng máy)": "7.9 kg",
-      "Phụ kiện đính kèm": "Cáp DisplayPortAdapter"
+      "Phụ kiện đính kèm": "Cáp DisplayPort\nAdapter"
     },
     "variants": [
       {
@@ -2306,8 +2306,8 @@
       "Độ sáng": "300 cd/m²",
       "Khả năng hiển thị màu sắc": "16,7 triệu màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Flicker FreeEye SaverAMD FreeSyncG-Sync Compatible",
-      "Cổng kết nối": "1x DisplayPort 1.42x HDMI 2.0 (Max 144Hz)1x Audio 3.5mm",
+      "Tính năng đặc biệt": "Flicker Free\nEye Saver\nAMD FreeSync\nG-Sync Compatible",
+      "Cổng kết nối": "1x DisplayPort 1.4\n2x HDMI 2.0 (Max 144Hz)\n1x Audio 3.5mm",
       "Dạng chân đế": "Chân V",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100~240V (50/60Hz)",
@@ -2316,7 +2316,7 @@
       "Kích thước (Bao gồm thùng máy)": "691 x 498 x 184 mm",
       "Trọng lượng sản phẩm": "4,1 kg",
       "Trọng lượng (Bao gồm thùng máy)": "8,4 kg",
-      "Phụ kiện đính kèm": "Cáp DisplayPortAdapter"
+      "Phụ kiện đính kèm": "Cáp DisplayPort\nAdapter"
     },
     "variants": [
       {
@@ -2347,8 +2347,8 @@
       "Tần số quét": "200Hz",
       "Khả năng hiển thị màu sắc": "1.07 tỉ màu",
       "Kích thước màn hình": "27 inch",
-      "Tính năng đặc biệt": "Flicker FreeEye SaverAMD FreeSyncG-Sync Compatible",
-      "Cổng kết nối": "1x DisplayPort 1.42x HDMI 2.0 (Max 144Hz)1x USB-B 3.0 Upstream2x USB-A 3.0 Downstream1x Audio 3.5mm",
+      "Tính năng đặc biệt": "Flicker Free\nEye Saver\nAMD FreeSync\nG-Sync Compatible",
+      "Cổng kết nối": "1x DisplayPort 1.4\n2x HDMI 2.0 (Max 144Hz)\n1x USB-B 3.0 Upstream\n2x USB-A 3.0 Downstream\n1x Audio 3.5mm",
       "Độ nghiêng": "-5° ~ 15°",
       "Xoay": "-0° ~ 90°",
       "Màu sắc": "Black",
@@ -2358,7 +2358,7 @@
       "Kích thước (Bao gồm thùng máy)": "613.5 x 577.7 x 253.7 mm",
       "Trọng lượng sản phẩm": "4.1KG",
       "Trọng lượng (Bao gồm thùng máy)": "6.2KG",
-      "Phụ kiện đính kèm": "Cáp DisplayPortCáp USB-A to B Upstream"
+      "Phụ kiện đính kèm": "Cáp DisplayPort\nCáp USB-A to B Upstream"
     },
     "variants": [
       {
@@ -2382,14 +2382,14 @@
       "Độ sáng": "350 nits",
       "Tỷ lệ tương phản": "1.000:1",
       "Tấm nền": "IPS",
-      "Góc nhìn (H/V)": "R/L178(Typ.)U/D178(Typ.)",
+      "Góc nhìn (H/V)": "R/L178(Typ.)\nU/D178(Typ.)",
       "Thời gian phản hồi": "1ms",
       "Tần số quét": "165Hz",
       "Độ phân giải": "QHD (2560x1440)",
       "Tỉ lệ khung hình": "16:9",
-      "Khả năng hiển thị màu sắc": "DCI-P3 117%Adobe RGB 118%sRGB 159%NTSC 113%",
+      "Khả năng hiển thị màu sắc": "DCI-P3 117%\nAdobe RGB 118%\nsRGB 159%\nNTSC 113%",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "HDMI2.0 x 1DP1.4 x 1Type-C x 1USB2.0 x 2Audio out",
+      "Cổng kết nối": "HDMI2.0 x 1\nDP1.4 x 1\nType-C x 1\nUSB2.0 x 2\nAudio out",
       "Màu sắc": "Black",
       "Nguồn cấp điện": "100-240V~ 50/60Hz 1.1A",
       "Kích thước riêng sản phẩm": "614 x 539 x 232 mm",
@@ -2423,9 +2423,9 @@
       "Độ sáng": "300 cd/m²",
       "Tỉ lệ khung hình": "16:9",
       "Độ phân giải": "QHD (2560x1440)",
-      "Khả năng hiển thị màu sắc": "NTSC 92%sRGB 100%Adobe RGB 95%DCI-P3 97%16.7 triệu màu sắc hiển thị",
+      "Khả năng hiển thị màu sắc": "NTSC 92%\nsRGB 100%\nAdobe RGB 95%\nDCI-P3 97%\n16.7 triệu màu sắc hiển thị",
       "Kích thước màn hình": "27 inch",
-      "Cổng kết nối": "HDMI 2.1 x 1DP 1.4 x 1Type-CAudio out",
+      "Cổng kết nối": "HDMI 2.1 x 1\nDP 1.4 x 1\nType-C\nAudio out",
       "Màu sắc": "White",
       "Xoay": "Forerake 5°，Fadeaway 15°",
       "Nguồn cấp điện": "DC 24V",
@@ -2455,14 +2455,14 @@
       "Độ phân giải": "FHD (1920x1080)",
       "Tấm nền": "IPS",
       "Độ sáng": "250cd/m²",
-      "Tỷ lệ tương phản": "Tỷ lệ tương phản tĩnh: 800:1 (typ)Tỷ lệ tương phản động: 80M:1",
+      "Tỷ lệ tương phản": "Tỷ lệ tương phản tĩnh: 800:1 (typ)\nTỷ lệ tương phản động: 80M:1",
       "Tỉ lệ khung hình": "16:9",
       "Thời gian phản hồi": "4.67ms",
       "Góc nhìn (H/V)": "170º horizontal, 170º vertical",
       "Tần số quét": "144Hz",
-      "Khả năng hiển thị màu sắc": "NTSC: 45% size (Typ)sRGB: 64% size (Typ)",
+      "Khả năng hiển thị màu sắc": "NTSC: 45% size (Typ)\nsRGB: 64% size (Typ)",
       "Kích thước màn hình": "16 inch",
-      "Cổng kết nối": "USB 3.2 Type C DisplayPort Alt mode only x 2 (60W power charger)Đầu ra âm thanh 3.5 mm x 1Mini HDMI x 1Cổng cắm nguồn: USB Type C (with video & data)",
+      "Cổng kết nối": "USB 3.2 Type C DisplayPort Alt mode only x 2 (60W power charger)\nĐầu ra âm thanh 3.5 mm x 1\nMini HDMI x 1\nCổng cắm nguồn: USB Type C (with video & data)",
       "Độ nghiêng": "Nghiêng (Tiến / lùi): 30º / 53º",
       "Kích thước (Bao gồm thùng máy)": "446 x 383 x 93mm",
       "Kích thước riêng sản phẩm": "359.26 x 226.98 x 17.85mm",

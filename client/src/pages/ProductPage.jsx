@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-// import { PRODUCTS } from '../data/mockData'; // Deprecated
 import { productService } from '../services/api';
 
 // Import các component con
