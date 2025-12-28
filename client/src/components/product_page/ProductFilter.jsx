@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ProductFilter = ({
-   selectedBrand, setSelectedBrand,
+   selectedBrand, onBrandSelect,
    tempPriceRange, setTempPriceRange,
    applyPriceFilter
 }) => {
@@ -39,7 +39,7 @@ const ProductFilter = ({
                <h3 className="font-bold text-gray-800 text-sm">Lựa chọn hãng</h3>
                {/* Nút bỏ chọn hãng */}
                {selectedBrand && (
-                  <button onClick={() => setSelectedBrand(null)} className="text-xs text-red-500 hover:underline">
+                  <button onClick={() => onBrandSelect(null)} className="text-xs text-red-500 hover:underline">
                      Bỏ chọn
                   </button>
                )}
@@ -53,7 +53,7 @@ const ProductFilter = ({
                   return (
                      <button
                         key={brand.brand_id}
-                        onClick={() => setSelectedBrand(isActive ? null : brandValue)}
+                        onClick={() => onBrandSelect(isActive ? null : brandValue)}
                         className={`border rounded px-2 py-2 text-xs font-medium transition-all ${isActive
                            ? 'border-[#004535] bg-[#004535] text-white'
                            : 'border-gray-200 text-gray-600 hover:border-[#004535] hover:text-[#004535] hover:bg-gray-50'

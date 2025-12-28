@@ -11,7 +11,7 @@ import ProductCard from '@/components/ProductCard';
 import { SearchX } from 'lucide-react';
 
 const ProductsPage = () => {
-   const [searchParams] = useSearchParams();
+   const [searchParams, setSearchParams] = useSearchParams();
    const initialBrand = searchParams.get('brand');
 
    // --- 1. STATES QUẢN LÝ LỌC ---
@@ -24,6 +24,17 @@ const ProductsPage = () => {
          setSelectedBrand(brandParam || null);
       }
    }, [searchParams, selectedBrand]);
+
+   // Handle brand selection by updating URL
+   const handleBrandSelect = (brandSlug) => {
+      const newParams = new URLSearchParams(searchParams);
+      if (brandSlug) {
+         newParams.set('brand', brandSlug);
+      } else {
+         newParams.delete('brand');
+      }
+      setSearchParams(newParams);
+   };
 
    // Khoảng giá đang áp dụng lọc
    const [appliedPriceRange, setAppliedPriceRange] = useState([0, 1000000000]);
@@ -116,7 +127,7 @@ const ProductsPage = () => {
                   <aside className="sticky top-24 hidden lg:block lg:col-span-3 self-start">
                      <ProductFilter
                         selectedBrand={selectedBrand}
-                        setSelectedBrand={setSelectedBrand}
+                        onBrandSelect={handleBrandSelect}
                         tempPriceRange={tempPriceRange}
                         setTempPriceRange={setTempPriceRange}
                         applyPriceFilter={handleApplyPrice}
