@@ -1,0 +1,97 @@
+[
+    {
+        "name": "iPhone 17 Pro Max 256GB - Chính hãng Apple Việt Nam",
+        "link": "https://hoanghamobile.com/dien-thoai/iphone-17-pro-max",
+        "currentPrice": 37190000,
+        "oldPrice": 37990000,
+        "img": "https://cdn.hoanghamobile.vn/default/Uploads/2025/09/10/iphone-17-pro-max-cosmic-orange-pdp-image-position-1-cosmic-orange-color-vn-vi.jpg;trim.threshold=80;trim.percentpadding=0.5;width=138;height=180;mode=pad;",
+        "brandId": 1,
+        "specs": {
+            "Tần số quét (Hz)": "120Hz",
+            "Công nghệ màn hình": "Super Retina XDR",
+            "Độ phân giải": "2868 x 1320",
+            "Kích thước màn hình": "6.9\"",
+            "Độ sáng màn hình": "3000nits",
+            "Độ phân giải camera": "Camera 18MP, khẩu độ ƒ/1.9",
+            "Vi xử lý": "Apple A19 Pro",
+            "Hệ điều hành": "iOS 26",
+            "Bộ nhớ trong": "256GB"
+        }
+    },
+    {
+        "name": "iPhone 16 Pro Max 256GB - Chính hãng VN/A",
+        "link": "https://hoanghamobile.com/dien-thoai/iphone-16-pro-max",
+        "currentPrice": 30490000,
+        "oldPrice": 34990000,
+        "img": "https://cdn.hoanghamobile.vn/default/Uploads/2024/09/10/iphone-16-pro-sa-mac-1.png;trim.threshold=80;trim.percentpadding=0.5;width=138;height=180;mode=pad;",
+        "brandId": 1,
+        "specs": {
+            "Tần số quét (Hz)": "120Hz",
+            "Công nghệ màn hình": "Super Retina XDR",
+            "Kích thước màn hình": "6.9\"",
+            "Vi xử lý": "Apple A18 Pro",
+            "Hệ điều hành": "iOS 18",
+            "Bộ nhớ trong": "256GB"
+        }
+    },
+    {
+        "name": "Samsung Galaxy S25 - 12GB/256GB",
+        "link": "https://hoanghamobile.com/dien-thoai/samsung-galaxy-s25",
+        "currentPrice": 17640000,
+        "oldPrice": 22990000,
+        "img": "https://cdn.hoanghamobile.vn/default/Uploads/2025/01/23/thumb.png;trim.threshold=80;trim.percentpadding=0.5;width=138;height=180;mode=pad;",
+        "brandId": 2,
+        "specs": {
+            "Tần số quét (Hz)": "120Hz",
+            "Công nghệ màn hình": "Dynamic AMOLED 2X",
+            "Kích thước màn hình": "6.2\"",
+            "Vi xử lý": "Snapdragon 8 Elite dành cho Galaxy (3nm)",
+            "Hệ điều hành": "Android 15, One UI 7",
+            "RAM": "12GB",
+            "Bộ nhớ trong": "256GB"
+        }
+    },
+    {
+        "name": "Samsung Galaxy S25 Ultra - 12GB/512GB",
+        "link": "https://hoanghamobile.com/dien-thoai/samsung-galaxy-s25-ultra-512gb",
+        "currentPrice": 29590000,
+        "oldPrice": 37490000,
+        "img": "https://cdn.hoanghamobile.vn/default/Uploads/2025/01/23/image-removebg-preview.png;trim.threshold=80;trim.percentpadding=0.5;width=138;height=180;mode=pad;",
+        "brandId": 2,
+        "specs": {
+            "Tần số quét (Hz)": "120Hz",
+            "Công nghệ màn hình": "Dynamic AMOLED 2X",
+            "Kích thước màn hình": "6.9\"",
+            "Vi xử lý": "Snapdragon 8 Elite dành cho Galaxy (3nm)",
+            "Hệ điều hành": "Android 15, One UI 7",
+            "RAM": "12GB",
+            "Bộ nhớ trong": "512GB"
+        }
+    },
+    {
+        "name": "Xiaomi 14 5G 12GB/256GB",
+        "link": "https://hoanghamobile.com/dien-thoai/xiaomi-14",
+        "currentPrice": 19990000,
+        "oldPrice": 22990000,
+        "img": "https://cdn.hoanghamobile.vn/Uploads/2025/06/25/reno14-5g-combo-product-white.png;trim.threshold=80;trim.percentpadding=0.5;width=180;height=180;mode=pad;",
+        "brandId": 3,
+        "specs": {
+            "Vi xử lý": "Snapdragon 8 Gen 3",
+            "RAM": "12GB",
+            "Bộ nhớ trong": "256GB"
+        }
+    },
+    {
+        "name": "OPPO Reno12 F 5G 8GB/256GB",
+        "link": "https://hoanghamobile.com/dien-thoai/oppo-reno12-f",
+        "currentPrice": 8490000,
+        "oldPrice": 9490000,
+        "img": "https://cdn.hoanghamobile.vn/Uploads/2024/06/15/reno12-f-5g.png;trim.threshold=80;trim.percentpadding=0.5;width=180;height=180;mode=pad;",
+        "brandId": 4,
+        "specs": {
+            "Vi xử lý": "Dimensity 6300",
+            "RAM": "8GB",
+            "Bộ nhớ trong": "256GB"
+        }
+    }
+]

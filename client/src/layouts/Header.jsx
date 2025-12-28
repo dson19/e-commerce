@@ -10,17 +10,20 @@ import {
   LogIn,
 } from "lucide-react";
 
-// Import dữ liệu và context
 import { useCart } from "../context/cartContext";
 import { useAuth } from "../context/authContext";
-import { PRODUCTS } from "../data/mockData"; // <--- 1. Import PRODUCTS để lọc
+import { formatCurrency } from "../utils/currency";
+// import { PRODUCTS } from "../data/mockData"; // Deprecated
+import axios from 'axios';
 
 const Header = () => {
   const navigate = useNavigate();
-  
+
   // State tìm kiếm & Gợi ý
   const [keyword, setKeyword] = useState("");
-  const [suggestions, setSuggestions] = useState([]); // Lưu danh sách gợi ý
+  const [suggestions, setSuggestions] = useState([]); // Lưu danh sách sản phẩm gợi ý
+  const [suggestedBrands, setSuggestedBrands] = useState([]); // Lưu danh sách brands gợi ý
+  const [brands, setBrands] = useState([]); // Tất cả brands
   const [showDropdown, setShowDropdown] = useState(false); // Ẩn/hiện dropdown
   const searchRef = useRef(null); // Ref để bắt sự kiện click ra ngoài
 
@@ -31,22 +34,61 @@ const Header = () => {
   const { user, signOut, loading } = useAuth();
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  // --- LOGIC 1: LỌC SẢN PHẨM KHI NHẬP LIỆU ---
+  // Fetch Brands on Mount
   useEffect(() => {
-    if (keyword.trim().length > 0) {
-      const lowerKeyword = keyword.toLowerCase();
-      // Lọc sản phẩm theo tên
-      const matches = PRODUCTS.filter((p) =>
-        p.name.toLowerCase().includes(lowerKeyword)
-      ).slice(0, 5); // Chỉ lấy tối đa 5 kết quả
-      
-      setSuggestions(matches);
-      setShowDropdown(true);
-    } else {
-      setSuggestions([]);
-      setShowDropdown(false);
-    }
-  }, [keyword]);
+    const fetchBrands = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/products/brands');
+        setBrands(res.data);
+      } catch (error) {
+        console.error("Failed to fetch brands in Header", error);
+      }
+    };
+    fetchBrands();
+  }, []);
+
+  // --- LOGIC 1: LỌC SẢN PHẨM & BRANDS KHI NHẬP LIỆU ---
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      const trimmed = keyword.trim().toLowerCase();
+      if (trimmed.length > 0) {
+
+        // 1. Filter Brands
+        const matchedBrands = brands.filter(b =>
+          b.brand_name.toLowerCase().includes(trimmed)
+        ).slice(0, 3);
+        setSuggestedBrands(matchedBrands);
+
+        try {
+          // 2. Filter Products (API)
+          const res = await axios.get(`http://localhost:5000/api/products?search=${encodeURIComponent(keyword)}&limit=5`);
+          const matches = res.data.data ? res.data.data : []; // Handle if API structure slightly differs
+
+          const mapped = Array.isArray(matches) ? matches.map(p => ({
+            ...p,
+            price: p.min_price || "0"
+          })) : [];
+
+          setSuggestions(mapped);
+          setShowDropdown(true);
+        } catch (error) {
+          console.error("Error fetching suggestions", error);
+          setSuggestions([]);
+        }
+      } else {
+        setSuggestions([]);
+        setSuggestedBrands([]);
+        setShowDropdown(false);
+      }
+    };
+
+    // Debounce
+    const timeoutId = setTimeout(() => {
+      fetchSuggestions();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [keyword, brands]);
 
   // --- LOGIC 2: CLICK RA NGOÀI ĐỂ ĐÓNG DROPDOWN ---
   useEffect(() => {
@@ -106,55 +148,78 @@ const Header = () => {
             </button>
           </form>
 
-          {/* --- DROPDOWN GỢI Ý  --- */}
-          {showDropdown && suggestions.length > 0 && (
+          {/* --- DROPDOWN GỢI Ý (ENHANCED) --- */}
+          {showDropdown && (suggestedBrands.length > 0 || suggestions.length > 0) && (
             <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              <div className="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase">
-                Sản phẩm gợi ý
-              </div>
-              <div className="divide-y divide-gray-50">
-                {suggestions.map((product) => {
-                    // Xử lý ảnh (vì mockData của bạn có url dài)
-                    const imgUrl = product.img.split(';')[0];
-                    return (
+
+              {/* SECTION 1: CÓ PHẢI BẠN ĐANG CẦN TÌM (Brands) */}
+              {suggestedBrands.length > 0 && (
+                <div className="pb-2">
+                  <div className="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase">
+                    Có phải bạn đang cần tìm
+                  </div>
+                  <div className="p-2 space-y-1">
+                    {suggestedBrands.map(brand => (
+                      <Link
+                        key={brand.brand_id}
+                        to={`/products?brand=${brand.slug || brand.brand_name}`}
+                        onClick={() => setShowDropdown(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-gray-800 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        <span>Chuyên trang {brand.brand_name}</span>
+                        <span className="ml-auto opacity-70">Go &rarr;</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SECTION 2: SẢN PHẨM GỢI Ý */}
+              {suggestions.length > 0 && (
+                <>
+                  <div className="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase">
+                    Sản phẩm gợi ý
+                  </div>
+                  <div className="divide-y divide-gray-50">
+                    {suggestions.map((product) => {
+                      const imgUrl = product.img ? product.img.split(';')[0] : '';
+                      return (
                         <Link
-                            key={product.id}
-                            to={`/product/${product.id}`}
-                            onClick={() => setShowDropdown(false)} // Đóng khi click chọn
-                            className="flex items-center gap-4 p-3 hover:bg-[#F2F4F7] transition-colors group"
+                          key={product.id}
+                          to={`/product/${product.id}`}
+                          onClick={() => setShowDropdown(false)}
+                          className="flex items-center gap-4 p-3 hover:bg-[#F2F4F7] transition-colors group"
                         >
-                            <div className="w-12 h-12 shrink-0 bg-white rounded border border-gray-100 p-1">
-                                <img 
-                                    src={imgUrl} 
-                                    alt={product.name} 
-                                    className="w-full h-full object-contain mix-blend-multiply" 
-                                />
+                          <div className="w-10 h-10 shrink-0 bg-white rounded border border-gray-100 p-1">
+                            <img
+                              src={imgUrl}
+                              alt={product.name}
+                              className="w-full h-full object-contain mix-blend-multiply"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#004535]">
+                              {product.name}
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-red-600">
+                                {formatCurrency(product.price)}
+                              </span>
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <h4 className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#004535]">
-                                    {product.name}
-                                </h4>
-                                <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="text-sm font-bold text-red-600">
-                                        {product.price}
-                                    </span>
-                                    {product.oldPrice && (
-                                        <span className="text-xs text-gray-400 line-through">
-                                            {product.oldPrice}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                          </div>
                         </Link>
-                    )
-                })}
-              </div>
-              {/* Nút xem tất cả nếu cần */}
-              <div 
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* Nút xem tất cả */}
+              <div
                 onClick={handleSearch}
                 className="p-3 text-center text-sm text-[#004535] font-medium hover:bg-gray-50 cursor-pointer border-t border-gray-100"
               >
-                Xem tất cả kết quả cho "{keyword}"
+                Xem tất cả kết quả cho <span className="font-bold">"{keyword}"</span>
               </div>
             </div>
           )}
@@ -184,7 +249,7 @@ const Header = () => {
                 </div>
               </button>
               {isDropdownOpen && (
-                 <div className="absolute right-0 top-full mt-3 w-[280px] bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute right-0 top-full mt-3 w-[280px] bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
                   {/* ... (Phần User Menu giữ nguyên như code cũ của bạn) ... */}
                   <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
                     <div className="w-10 h-10 rounded-full bg-[#1a5d1a] text-white flex items-center justify-center font-bold text-lg">
@@ -196,11 +261,11 @@ const Header = () => {
                     </div>
                   </div>
                   <div className="p-2">
-                    <Link to="/profile" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Settings size={18} className="text-gray-500"/> Quản lý tài khoản</Link>
-                    <Link to="/orders" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Package size={18} className="text-gray-500"/> Đơn hàng của tôi</Link>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"><LogOut size={18}/> Đăng xuất</button>
+                    <Link to="/profile" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Settings size={18} className="text-gray-500" /> Quản lý tài khoản</Link>
+                    <Link to="/orders" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Package size={18} className="text-gray-500" /> Đơn hàng của tôi</Link>
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"><LogOut size={18} /> Đăng xuất</button>
                   </div>
-                 </div>
+                </div>
               )}
             </div>
           ) : (

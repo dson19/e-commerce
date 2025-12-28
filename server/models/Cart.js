@@ -19,7 +19,9 @@ const getCart = async (userId) => {
             pv.price, 
             pv.image_url as img, 
             pv.original_price as "oldPrice",
-            ci.variant_id
+            ci.variant_id,
+            pv.color,
+            pv.sku
         FROM carts c
         JOIN cart_items ci ON c.cart_id = ci.cart_id
         JOIN product_variants pv ON ci.variant_id = pv.variant_id
@@ -30,18 +32,20 @@ const getCart = async (userId) => {
     return res.rows;
 };
 
-const addToCart = async (userId, productId, quantity) => {
+const addToCart = async (userId, productId, quantity, variantId = null) => {
     const cartId = await getCartId(userId);
 
-    // Find a variant for this product. 
-    // TODO: Support selecting specific variants from Frontend. 
-    // For now, default to the first variant found.
-    const variantRes = await pool.query('SELECT variant_id FROM product_variants WHERE product_id = $1 LIMIT 1', [productId]);
-    
-    if (variantRes.rows.length === 0) {
-        throw new Error('Product not available (no variants found)');
+    let targetVariantId = variantId;
+
+    // If no variantId provided, fallback to default (first variant)
+    if (!targetVariantId) {
+        const variantRes = await pool.query('SELECT variant_id FROM product_variants WHERE product_id = $1 LIMIT 1', [productId]);
+        
+        if (variantRes.rows.length === 0) {
+            throw new Error('Product not available (no variants found)');
+        }
+        targetVariantId = variantRes.rows[0].variant_id;
     }
-    const variantId = variantRes.rows[0].variant_id;
 
     // Insert or Update Quantity
     const query = `
@@ -51,7 +55,7 @@ const addToCart = async (userId, productId, quantity) => {
         DO UPDATE SET quantity = cart_items.quantity + $3
         RETURNING *
     `;
-    const res = await pool.query(query, [cartId, variantId, quantity]);
+    const res = await pool.query(query, [cartId, targetVariantId, quantity]);
     return res.rows[0];
 };
 

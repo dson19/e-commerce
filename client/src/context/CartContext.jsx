@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const initialState = {
@@ -34,7 +34,7 @@ export const CartProvider = ({ children }) => {
       case 'UPDATE_QUANTITY':
         return {
           ...state,
-          items: state.items.map(item => 
+          items: state.items.map(item =>
             item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item
           )
         };
@@ -52,13 +52,15 @@ export const CartProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(cartReducer, initialState);
 
   // Helper to sanitize product data for Cart
-   const sanitizeCartItem = (item) => ({
-      ...item,
-      id: Number(item.id),
-      quantity: Number(item.quantity) || 1,
-      price: Number(item.price) || 0,
-      oldPrice: Number(item.oldPrice) || 0
-   });
+  const sanitizeCartItem = (item) => ({
+    ...item,
+    id: Number(item.id),
+    quantity: Number(item.quantity) || 1,
+    price: Number(item.price) || 0,
+    oldPrice: Number(item.oldPrice) || 0,
+    // Map flat color to options object for CartItem display
+    options: item.color ? { "Màu sắc": item.color } : (item.options || {})
+  });
 
   // Sync Cart khi User thay đổi
   useEffect(() => {
@@ -84,28 +86,29 @@ export const CartProvider = ({ children }) => {
   // 1. Hàm thêm sản phẩm
   const addToCart = async (product, quantity = 1) => {
     if (!user) {
-       toast.error("Vui lòng đăng nhập để mua hàng");
-       navigate("/signIn");
-       return false;
+      toast.error("Vui lòng đăng nhập để mua hàng");
+      navigate("/signIn");
+      return false;
     }
 
     try {
-        // Optimistic Update
-        dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
+      // Optimistic Update
+      dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
 
-        await axios.post('http://localhost:5000/api/cart/add', {
-          productId: product.id,
-          quantity
-        }, { withCredentials: true });
-        
-        return true;
+      await axios.post('http://localhost:5000/api/cart/add', {
+        productId: product.id,
+        quantity,
+        variantId: product.selectedVariant?.id || product.variantId
+      }, { withCredentials: true });
 
-      } catch (error) {
-        console.error(error);
-        toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
-        // Revert or fetch cart again on error? For now simple toast.
-        return false;
-      }
+      return true;
+
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
+      // Revert or fetch cart again on error? For now simple toast.
+      return false;
+    }
   };
 
   // 2. Hàm xóa sản phẩm
@@ -113,14 +116,14 @@ export const CartProvider = ({ children }) => {
     if (!user) return;
 
     if (window.confirm('Bạn muốn xóa sản phẩm này?')) {
-        try {
-            await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, { withCredentials: true });
-            dispatch({ type: 'REMOVE_ITEM', payload: id });
-            toast.success('Đã xóa sản phẩm');
-        } catch (error) {
-            console.error(error);
-            toast.error("Lỗi xóa sản phẩm");
-        }
+      try {
+        await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, { withCredentials: true });
+        dispatch({ type: 'REMOVE_ITEM', payload: id });
+        toast.success('Đã xóa sản phẩm');
+      } catch (error) {
+        console.error(error);
+        toast.error("Lỗi xóa sản phẩm");
+      }
     }
   };
 
@@ -134,26 +137,26 @@ export const CartProvider = ({ children }) => {
     if (newQty < 1) return;
 
     try {
-        await axios.put('http://localhost:5000/api/cart/update', { productId: id, quantity: newQty }, { withCredentials: true });
-        dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
+      await axios.put('http://localhost:5000/api/cart/update', { productId: id, quantity: newQty }, { withCredentials: true });
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
     } catch (error) {
-        console.error(error);
-        toast.error("Lỗi cập nhật số lượng");
+      console.error(error);
+      toast.error("Lỗi cập nhật số lượng");
     }
   };
 
   // 4. Hàm xóa sạch giỏ hàng
   const clearCart = async () => {
     if (!user) {
-        dispatch({ type: 'CLEAR_CART' });
-        return;
+      dispatch({ type: 'CLEAR_CART' });
+      return;
     }
     try {
-        await axios.delete('http://localhost:5000/api/cart/clear', { withCredentials: true });
-        dispatch({ type: 'CLEAR_CART' });
+      await axios.delete('http://localhost:5000/api/cart/clear', { withCredentials: true });
+      dispatch({ type: 'CLEAR_CART' });
     } catch (error) {
-        console.error(error);
-        toast.error("Lỗi xóa giỏ hàng");
+      console.error(error);
+      toast.error("Lỗi xóa giỏ hàng");
     }
   };
 

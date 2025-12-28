@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Star, CheckCircle, Minus, Plus, ShoppingCart, Heart, Share2 } from 'lucide-react';
+import { formatCurrency } from '../../utils/currency';
 
 const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
@@ -9,13 +10,27 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
     if (type === 'increase') setQuantity(quantity + 1);
   };
 
+  // Logic to determine price to display
+  let displayPrice = product.price;
+  let displayOldPrice = product.oldPrice;
+
+  // Handle "Màu sắc" selection specifically since ProductDetail is currently mapping it simply
+  if (selectedOptions["Màu sắc"] && product.variants) {
+    const variant = product.variants.find(v => v.color === selectedOptions["Màu sắc"]);
+    if (variant) {
+      // Use bestPrice/lastPrice from API (camelCase)
+      displayPrice = variant.bestPrice || variant.price || displayPrice;
+      displayOldPrice = variant.lastPrice || displayOldPrice;
+    }
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* Header Info */}
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
         {product.name}
       </h1>
-      
+
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <div className="flex items-center gap-1">
           <div className="flex text-yellow-400">
@@ -36,17 +51,17 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
       {/* Giá tiền */}
       <div className="bg-gray-50 p-4 rounded-xl mb-6">
         <div className="flex items-end gap-3">
-            <span className="text-3xl font-bold text-[#004535]">{product.price}</span>
-            {product.oldPrice && (
+          <span className="text-3xl font-bold text-[#004535]">{formatCurrency(displayPrice)}</span>
+          {displayOldPrice && (
             <span className="text-lg text-gray-400 line-through mb-1">
-                {product.oldPrice}
+              {formatCurrency(displayOldPrice)}
             </span>
-            )}
-            {product.discount && (
-                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded mb-2">
-                    {product.discount}
-                </span>
-            )}
+          )}
+          {product.discount && (
+            <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded mb-2">
+              {product.discount}
+            </span>
+          )}
         </div>
       </div>
 
@@ -57,12 +72,12 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
 
       {/* Tùy chọn (Màu/Size) */}
       <div className="space-y-6 mb-8">
-        {product.options.map((option, idx) => (
+        {product.options && product.options.map((option, idx) => (
           <div key={idx}>
             <div className="flex justify-between mb-3">
-                <span className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+              <span className="text-sm font-bold text-gray-900 uppercase tracking-wide">
                 {option.name}: <span className="text-[#004535] ml-1">{selectedOptions[option.name]}</span>
-                </span>
+              </span>
             </div>
             <div className="flex flex-wrap gap-3">
               {option.variants.map((variant) => {
@@ -71,11 +86,10 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
                   <button
                     key={variant}
                     onClick={() => handleOptionSelect(option.name, variant)}
-                    className={`min-w-[80px] px-4 py-2 text-sm rounded-lg border transition-all ${
-                      isSelected
-                        ? "border-[#004535] text-[#004535] bg-[#004535]/5 font-bold ring-1 ring-[#004535]"
-                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-white"
-                    }`}
+                    className={`min-w-[80px] px-4 py-2 text-sm rounded-lg border transition-all ${isSelected
+                      ? "border-[#004535] text-[#004535] bg-[#004535]/5 font-bold ring-1 ring-[#004535]"
+                      : "border-gray-200 text-gray-600 hover:border-gray-300 bg-white"
+                      }`}
                   >
                     {variant}
                   </button>
@@ -110,12 +124,12 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
         </button>
       </div>
 
-       {/* Footer nhỏ */}
-       <div className="mt-6 flex items-center gap-4 text-xs text-gray-500 font-medium">
-            <button className="flex items-center gap-1 hover:text-[#004535]"><Share2 size={14}/> Chia sẻ</button>
-            <span>•</span>
-            <span>Cam kết chính hãng 100%</span>
-       </div>
+      {/* Footer nhỏ */}
+      <div className="mt-6 flex items-center gap-4 text-xs text-gray-500 font-medium">
+        <button className="flex items-center gap-1 hover:text-[#004535]"><Share2 size={14} /> Chia sẻ</button>
+        <span>•</span>
+        <span>Cam kết chính hãng 100%</span>
+      </div>
     </div>
   );
 };
