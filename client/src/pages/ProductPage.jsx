@@ -5,9 +5,9 @@ import MainLayout from '../layouts/MainLayout';
 import { productService } from '../services/api';
 
 // Import các component con
-import ProductFilter from '../components/product_page/ProductFilter';
-import SortBar from '../components/product_page/SortBar';
-import ProductCard from '@/components/ProductCard';
+import ProductFilter from '../components/product/page/ProductFilter';
+import SortBar from '../components/product/page/SortBar';
+import ProductCard from '../components/product/ProductCard';
 import { SearchX } from 'lucide-react';
 
 const ProductsPage = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/product/ProductCard';
 import { CATEGORIES } from '../data/mockData';
 import {
   ChevronRight, Truck, ShieldCheck, RefreshCw, Zap, Menu,
@@ -48,7 +48,7 @@ const HomePage = () => {
     const fetchCategories = async () => {
       try {
         const res = await productService.getParentCategories();
-        setBrands(res.data);
+        setBrands(res.data.data || []);
       } catch (error) {
         console.error("Failed to fetch categories", error);
       }

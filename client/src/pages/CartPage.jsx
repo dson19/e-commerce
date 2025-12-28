@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import { ArrowLeft } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useCart } from "@/context/CartContext";
 import CartItem from '../components/cart/CartItem';
 import CartSummary from '../components/cart/CartSummary';
 import EmptyCart from '../components/cart/EmptyCart';
@@ -52,18 +52,18 @@ const CartPage = () => {
 
             <div className="divide-y divide-gray-100">
               {cartItems.map((item) => (
-                <CartItem 
-                  key={item.id} 
-                  item={item} 
-                  updateQuantity={updateQuantity} 
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  updateQuantity={updateQuantity}
                   removeItem={removeFromCart}
                   // Truyền hàm parsePrice xuống component con để dùng
-                  parsePrice={parsePrice} 
+                  parsePrice={parsePrice}
                 />
               ))}
             </div>
           </div>
-          
+
           <div className="mt-6">
             <Link to="/" className="inline-flex items-center gap-2 text-[#004535] font-medium hover:underline">
               <ArrowLeft size={18} /> Tiếp tục mua sắm

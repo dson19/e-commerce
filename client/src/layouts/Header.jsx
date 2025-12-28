@@ -10,8 +10,8 @@ import {
   LogIn,
 } from "lucide-react";
 
-import { useCart } from "../context/cartContext";
-import { useAuth } from "../context/authContext";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { formatCurrency } from "../utils/currency";
 import { productService } from "../services/api";
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ShoppingBag, ChevronRight } from "lucide-react";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "@/context/CartContext";
 import { productService } from "../../services/api";
 
 import RelatedProductCard from "./RelatedProductCard";

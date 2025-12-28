@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Star, CheckCircle, Minus, Plus, ShoppingCart, Heart, Share2 } from 'lucide-react';
-import { formatCurrency } from '../../utils/currency';
+import { formatCurrency } from '@/utils/currency';
 
 const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);

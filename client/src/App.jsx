@@ -2,23 +2,22 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Import các trang
-import HomePage from './pages/HomePage'; // File Homepage của bạn
+import HomePage from './pages/Homepage'; // File Homepage của bạn
 import SignInPage from './pages/SignInPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { Toaster } from "@/components/ui/sonner";
 import SignUpPage from './pages/SignUp';
 
-import { AuthProvider } from './context/authContext';
+import { AuthProvider } from '@/context/AuthContext';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import CartPage from './pages/CartPage';
-import { CartProvider } from './context/cartContext';
+import { CartProvider } from '@/context/CartContext';
 import SearchPage from './pages/SearchPage';
 import OrderPage from './pages/OrderPage';
 import ProductsPage from './pages/ProductPage';
-import ProductCard from '../components/product/ProductCard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {

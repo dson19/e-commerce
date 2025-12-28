@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { Users, UserPlus, Search, ShieldAlert } from 'lucide-react';
 
 const UserAnalytics = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CATEGORIES } from '../../../data/mockData';
+import { CATEGORIES } from '@/data/mockData';
 function SideBar() {
   return (
     <aside className="w-[220px] bg-white rounded-lg shadow-sm h-fit hidden lg:block overflow-hidden">

@@ -7,7 +7,7 @@ import { email, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom"; // 1. Import chuyển trang
-import axios from "axios"; // 2. Import axios
+import { authService } from "@/services/api";
 import { useState } from "react"; // 3. Import useState
 import { toast } from "sonner"; // 4. Import sonner để hiển thị thông báo
 import OtpModal from "./otp-modal";
@@ -37,8 +37,8 @@ export function SignupForm({ className, ...props }) {
       email: "",
       fullname: "",
       password: "",
-      phoneNumber: "", 
-      gender: "male", 
+      phoneNumber: "",
+      gender: "male",
     },
   });
 
@@ -47,8 +47,7 @@ export function SignupForm({ className, ...props }) {
     setApiError(""); // Reset lỗi cũ
 
     try {
-      // Gọi API Backend
-      await axios.post("http://localhost:5000/api/auth/signUp", {
+      await authService.signUp({
         email: data.email,
         fullname: data.fullname,
         password: data.password,
@@ -70,11 +69,11 @@ export function SignupForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      
+
       {showOtpModal && (
-        <OtpModal 
+        <OtpModal
           isOpen={true} // Lúc nào render thì cũng là đang mở
-          email={registeredEmail} 
+          email={registeredEmail}
           onClose={() => setShowOtpModal(false)}
         />
       )}
@@ -82,7 +81,7 @@ export function SignupForm({ className, ...props }) {
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              
+
               {/* Header - Logo */}
               <div className="flex flex-col items-center text-center gap-2">
                 <a href="/" className="mx-auto block w-fit text-center">
@@ -95,7 +94,7 @@ export function SignupForm({ className, ...props }) {
                 </p>
               </div>
 
-              
+
               {/* Họ và tên*/}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="fullname" className="block text-sm">
@@ -186,12 +185,12 @@ export function SignupForm({ className, ...props }) {
               </Button>
 
               <div className="text-sm text-center">
-              Đã có tài khoản?{" "}
-              {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
-              <Link to="/signIn" className="hover:underline">
-                Đăng nhập
-              </Link>
-            </div>
+                Đã có tài khoản?{" "}
+                {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
+                <Link to="/signIn" className="hover:underline">
+                  Đăng nhập
+                </Link>
+              </div>
             </div>
           </form>
 

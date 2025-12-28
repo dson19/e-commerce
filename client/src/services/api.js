@@ -23,6 +23,7 @@ export const authService = {
 export const productService = {
   getProducts: (params) => api.get('/products', { params }),
   getProductById: (id) => api.get(`/products/${id}`),
+  getProduct: (id) => api.get(`/products/${id}`), 
   getBrands: () => api.get('/products/brands'),
   getParentCategories: () => api.get('/products/categories/parents'),
 };

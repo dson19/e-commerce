@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatCurrency } from '../../utils/currency';
-import { slugify } from '../../utils/slugify';
+import { formatCurrency } from '@/utils/currency';
+import { slugify } from '@/utils/slugify';
 
 const ProductCard = ({ product }) => {
     // Determine slugs

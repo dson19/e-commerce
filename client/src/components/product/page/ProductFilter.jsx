@@ -1,6 +1,6 @@
 import * as Slider from '@radix-ui/react-slider';
 import React, { useState, useEffect } from 'react';
-import { productService } from '../../../services/api';
+import { productService } from '@/services/api';
 
 const ProductFilter = ({
    selectedBrand, onBrandSelect,

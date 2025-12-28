@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Minus, Plus } from 'lucide-react';
-import { formatCurrency } from '../../utils/currency';
+import { formatCurrency } from '@/utils/currency';
 
 // Nhận thêm prop parsePrice từ cha truyền xuống
 const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {

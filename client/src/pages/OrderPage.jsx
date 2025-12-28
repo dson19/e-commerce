@@ -13,7 +13,7 @@ import {
   XCircle,
   ShoppingBag,
 } from "lucide-react";
-import { useAuth } from "../context/authContext";
+import { useAuth } from '@/context/AuthContext';
 
 const OrderPage = () => {
   const { user, logout } = useAuth();
