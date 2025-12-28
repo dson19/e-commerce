@@ -4,7 +4,7 @@ import pool from '../config/db.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const rawData = fs.readFileSync('/Users/Administrator/Coding/mobile_store/server/data/phones.json', 'utf-8');
+const rawData = fs.readFileSync('/Users/Administrator/Coding/mobile_store/server/data/tablets.json', 'utf-8');
 const products = JSON.parse(rawData);
 
 for (let i = 0; i < products.length; i++) {
