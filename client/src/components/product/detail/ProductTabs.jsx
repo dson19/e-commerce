@@ -1,19 +1,10 @@
 import React from 'react';
 
-const ProductTabs = ({ activeTab, setActiveTab, description, reviewsCount, specs }) => {
+const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
   return (
     <div>
       {/* Tab Headers */}
       <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
-        <button
-          onClick={() => setActiveTab('description')}
-          className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${activeTab === 'description'
-              ? 'border-[#004535] text-[#004535]'
-              : 'border-transparent text-gray-500 hover:text-gray-800'
-            }`}
-        >
-          Mô tả sản phẩm
-        </button>
         {specs && Object.keys(specs).length > 0 && (
           <button
             onClick={() => setActiveTab('specs')}
@@ -47,13 +38,6 @@ const ProductTabs = ({ activeTab, setActiveTab, description, reviewsCount, specs
 
       {/* Tab Content */}
       <div className="text-gray-700 leading-relaxed text-sm md:text-base min-h-[200px]">
-        {activeTab === 'description' && (
-          <div className="animate-in fade-in duration-300">
-            <p className="mb-4">{description}</p>
-            <p>Nội dung mô tả chi tiết hơn sẽ nằm ở đây. Bạn có thể render HTML hoặc các đoạn văn bản dài.</p>
-          </div>
-        )}
-
         {activeTab === 'specs' && specs && (
           <div className="animate-in fade-in duration-300">
             <table className="w-full text-left border-collapse">

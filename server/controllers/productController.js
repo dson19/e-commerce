@@ -41,7 +41,7 @@ const getProducts = asyncHandler(async (req, res) => {
         paramIndex++;
     }
     if (search) {
-        whereClause += ` AND (p.name ILIKE $${paramIndex} OR c.category_name ILIKE $${paramIndex} OR pc.category_name ILIKE $${paramIndex})`;
+        whereClause += ` AND (p.name ILIKE $${paramIndex} OR b.brand_name ILIKE $${paramIndex} OR c.category_name ILIKE $${paramIndex} OR pc.category_name ILIKE $${paramIndex})`;
         params.push(`%${search}%`);
         paramIndex++;
     }
