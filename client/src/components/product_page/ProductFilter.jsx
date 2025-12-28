@@ -3,11 +3,13 @@ import axios from 'axios';
 
 const ProductFilter = ({
    selectedBrand, onBrandSelect,
+   selectedCategory, onCategorySelect,
    tempPriceRange, setTempPriceRange,
    applyPriceFilter
 }) => {
 
    const [brands, setBrands] = useState([]);
+   const [categories, setCategories] = useState([]);
 
    useEffect(() => {
       const fetchBrands = async () => {
@@ -16,10 +18,20 @@ const ProductFilter = ({
             setBrands(res.data);
          } catch (error) {
             console.error("Failed to fetch brands", error);
-            // Fallback or empty if fail
          }
       };
+
+      const fetchCategories = async () => {
+         try {
+            const res = await axios.get('http://localhost:5000/api/products/categories/parents');
+            setCategories(res.data);
+         } catch (error) {
+            console.error("Failed to fetch categories", error);
+         }
+      };
+
       fetchBrands();
+      fetchCategories();
    }, []);
 
    // Cấu hình các khoảng giá mẫu
@@ -33,6 +45,36 @@ const ProductFilter = ({
 
    return (
       <div className="space-y-4">
+
+         {/* 0. LỌC DANH MỤC (Parent Categories) */}
+         <div className="bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-3">
+               <h3 className="font-bold text-gray-800 text-sm">Danh mục</h3>
+               {selectedCategory && (
+                  <button onClick={() => onCategorySelect(null)} className="text-xs text-red-500 hover:underline">
+                     Bỏ chọn
+                  </button>
+               )}
+            </div>
+            <div className="flex flex-col gap-1">
+               {categories.map((cat) => {
+                  const isActive = selectedCategory === cat.category_name;
+                  return (
+                     <button
+                        key={cat.category_id}
+                        onClick={() => onCategorySelect(isActive ? null : cat.category_name)}
+                        className={`px-3 py-2 text-sm text-left rounded transition-all ${isActive
+                           ? 'bg-[#004535] text-white font-medium'
+                           : 'text-gray-600 hover:bg-gray-50 hover:text-[#004535]'
+                           }`}
+                     >
+                        {cat.category_name}
+                     </button>
+                  );
+               })}
+            </div>
+         </div>
+
          {/* 1. Lọc Hãng */}
          <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="flex justify-between items-center mb-3">

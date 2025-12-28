@@ -4,7 +4,8 @@ import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/ProductCard';
 import { CATEGORIES } from '../data/mockData';
 import {
-  ChevronRight, Truck, ShieldCheck, RefreshCw, Zap, Menu, Smartphone
+  ChevronRight, Truck, ShieldCheck, RefreshCw, Zap, Menu,
+  Smartphone, Laptop, Tablet, Headphones, Monitor, Grid
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -12,6 +13,17 @@ const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Icon mapping helper
+  const getCategoryIcon = (name) => {
+    const lowerName = name?.toLowerCase() || "";
+    if (lowerName.includes("điện thoại")) return <Smartphone size={20} strokeWidth={1.5} />;
+    if (lowerName.includes("laptop")) return <Laptop size={20} strokeWidth={1.5} />;
+    if (lowerName.includes("tablet")) return <Tablet size={20} strokeWidth={1.5} />;
+    if (lowerName.includes("âm thanh")) return <Headphones size={20} strokeWidth={1.5} />;
+    if (lowerName.includes("màn hình")) return <Monitor size={20} strokeWidth={1.5} />;
+    return <Grid size={20} strokeWidth={1.5} />;
+  };
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -35,17 +47,17 @@ const HomePage = () => {
       }
     };
 
-    const fetchBrands = async () => {
+    const fetchCategories = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products/brands');
-        setBrands(res.data);
+        const res = await axios.get('http://localhost:5000/api/products/categories/parents');
+        setBrands(res.data); // Keep using brands state variable to minimize diff, or rename it? Let's keep it but it holds categories now.
       } catch (error) {
-        console.error("Failed to fetch brands", error);
+        console.error("Failed to fetch categories", error);
       }
     };
 
     fetchFeatured();
-    fetchBrands();
+    fetchCategories();
   }, []);
 
   return (
@@ -65,22 +77,20 @@ const HomePage = () => {
               </div>
 
               <ul className="py-2">
-                <ul className="py-2">
-                  {brands.map((brand) => (
-                    <li key={brand.brand_id}>
-                      <Link
-                        to={`/products?brand=${brand.slug || brand.brand_name}`}
-                        className="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#004535] hover:pl-7 transition-all duration-300 group border-l-2 border-transparent hover:border-[#004535]"
-                      >
-                        <span className="text-gray-400 group-hover:text-[#004535] transition-colors">
-                          <Smartphone size={20} strokeWidth={1.5} />
-                        </span>
-                        {brand.brand_name}
-                        <ChevronRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transition-all text-gray-400" />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                {brands.map((cat) => (
+                  <li key={cat.category_id}>
+                    <Link
+                      to={`/products?search=${cat.category_name}`}
+                      className="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#004535] hover:pl-7 transition-all duration-300 group border-l-2 border-transparent hover:border-[#004535]"
+                    >
+                      <span className="text-gray-400 group-hover:text-[#004535] transition-colors">
+                        {getCategoryIcon(cat.category_name)}
+                      </span>
+                      {cat.category_name}
+                      <ChevronRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transition-all text-gray-400" />
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </aside>

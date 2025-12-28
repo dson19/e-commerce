@@ -234,7 +234,12 @@ const ProductDetail = () => {
       <div className="container mx-auto px-4 max-w-7xl">
 
         {/* Breadcrumb */}
-        <ProductBreadcrumb category={productData.category} brand={productData.brand_name} name={productData.name} />
+        <ProductBreadcrumb
+          parentCategory={productData.parent_category_name}
+          category={productData.category_name || productData.category} // Fallback to old field if needed
+          brand={productData.brand_name}
+          name={productData.name}
+        />
 
         {/* Main Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 p-6 md:p-8">

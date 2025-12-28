@@ -13,17 +13,24 @@ import { SearchX } from 'lucide-react';
 const ProductsPage = () => {
    const [searchParams, setSearchParams] = useSearchParams();
    const initialBrand = searchParams.get('brand');
+   const initialCategory = searchParams.get('category');
 
    // --- 1. STATES QUẢN LÝ LỌC ---
    const [selectedBrand, setSelectedBrand] = useState(initialBrand || null); // Hãng (null = tất cả)
+   const [selectedCategory, setSelectedCategory] = useState(initialCategory || null);
 
    // Sync state if URL changes (e.g. navigation from sidebar while on page)
    useEffect(() => {
       const brandParam = searchParams.get('brand');
+      const categoryParam = searchParams.get('category');
+
       if (brandParam !== selectedBrand) {
          setSelectedBrand(brandParam || null);
       }
-   }, [searchParams, selectedBrand]);
+      if (categoryParam !== selectedCategory) {
+         setSelectedCategory(categoryParam || null);
+      }
+   }, [searchParams, selectedBrand, selectedCategory]);
 
    // Handle brand selection by updating URL
    const handleBrandSelect = (brandSlug) => {
@@ -33,6 +40,19 @@ const ProductsPage = () => {
       } else {
          newParams.delete('brand');
       }
+      setSearchParams(newParams);
+   };
+
+   // Handle category selection
+   const handleCategorySelect = (categoryName) => {
+      const newParams = new URLSearchParams(searchParams);
+      if (categoryName) {
+         newParams.set('category', categoryName);
+      } else {
+         newParams.delete('category');
+      }
+      // Assuming we want to keep other filters or maybe clear them? 
+      // Usually changing main category might want to clear specific brand if it doesn't apply, but let's keep it simple.
       setSearchParams(newParams);
    };
 
@@ -66,6 +86,7 @@ const ProductsPage = () => {
                minPrice: appliedPriceRange[0] > 0 ? appliedPriceRange[0] : undefined,
                maxPrice: appliedPriceRange[1] < 1000000000 ? appliedPriceRange[1] : undefined,
                brand: selectedBrand || undefined,
+               category: selectedCategory || undefined,
                sort: sortOption !== 'default' ? sortOption : undefined
             };
 
@@ -91,7 +112,7 @@ const ProductsPage = () => {
       };
 
       fetchProducts();
-   }, [currentPage, itemsPerPage, selectedBrand, appliedPriceRange, sortOption]);
+   }, [currentPage, itemsPerPage, selectedBrand, selectedCategory, appliedPriceRange, sortOption]);
 
    // Hàm xử lý khi bấm nút "Áp dụng" giá
    const handleApplyPrice = (min, max) => {
@@ -107,7 +128,7 @@ const ProductsPage = () => {
    // Reset page when filters change (except page change itself)
    useEffect(() => {
       setCurrentPage(1);
-   }, [selectedBrand, appliedPriceRange, sortOption]);
+   }, [selectedBrand, selectedCategory, appliedPriceRange, sortOption]);
 
 
 
@@ -128,6 +149,8 @@ const ProductsPage = () => {
                      <ProductFilter
                         selectedBrand={selectedBrand}
                         onBrandSelect={handleBrandSelect}
+                        selectedCategory={selectedCategory}
+                        onCategorySelect={handleCategorySelect}
                         tempPriceRange={tempPriceRange}
                         setTempPriceRange={setTempPriceRange}
                         applyPriceFilter={handleApplyPrice}

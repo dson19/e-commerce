@@ -3,7 +3,7 @@ import pool from '../config/db.js';
 
 const getProducts = async (req, res) => {
     try {
-        const { minPrice, maxPrice, brand, sort, search, page = 1, limit = 12 } = req.query;
+        const { minPrice, maxPrice, brand, category, sort, search, page = 1, limit = 12 } = req.query;
 
         const pageNum = parseInt(page);
         const limitNum = parseInt(limit);
@@ -35,8 +35,14 @@ const getProducts = async (req, res) => {
             params.push(`%${brand}%`);
             paramIndex++;
         }
+        if (category) {
+            // Filter by either direct category or parent category
+            whereClause += ` AND (c.category_name ILIKE $${paramIndex} OR pc.category_name ILIKE $${paramIndex})`;
+            params.push(`%${category}%`);
+            paramIndex++;
+        }
         if (search) {
-            whereClause += ` AND p.name ILIKE $${paramIndex}`;
+            whereClause += ` AND (p.name ILIKE $${paramIndex} OR c.category_name ILIKE $${paramIndex} OR pc.category_name ILIKE $${paramIndex})`;
             params.push(`%${search}%`);
             paramIndex++;
         }
@@ -46,6 +52,8 @@ const getProducts = async (req, res) => {
             SELECT COUNT(*) 
             FROM products p
             LEFT JOIN brands b ON p.brand_id = b.brand_id
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN categories pc ON c.parent_id = pc.category_id
             ${whereClause}
         `;
         const countResult = await pool.query(countQuery, params);
@@ -54,9 +62,11 @@ const getProducts = async (req, res) => {
 
         // 2. Get Paginated Data
         let dataQuery = `
-            SELECT p.*, b.brand_name 
+            SELECT p.*, b.brand_name, c.category_name, pc.category_name as parent_category_name
             FROM products p
             LEFT JOIN brands b ON p.brand_id = b.brand_id
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN categories pc ON c.parent_id = pc.category_id
             ${whereClause}
         `;
 
@@ -98,9 +108,11 @@ const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         let query = `
-            SELECT p.*, b.brand_name 
+            SELECT p.*, b.brand_name, c.category_name, pc.category_name as parent_category_name
             FROM products p
             LEFT JOIN brands b ON p.brand_id = b.brand_id
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN categories pc ON c.parent_id = pc.category_id
             WHERE 
         `;
         
@@ -160,4 +172,15 @@ const getBrands = async (req, res) => {
     }
 };
 
-export default { getProducts, getProductById, getBrands };
+const getParentCategories = async (req, res) => {
+    try {
+        const query = 'SELECT * FROM categories WHERE parent_id IS NULL ORDER BY category_id ASC';
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching parent categories" });
+    }
+};
+
+export default { getProducts, getProductById, getBrands, getParentCategories };
