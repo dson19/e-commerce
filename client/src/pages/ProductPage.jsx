@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 // import { PRODUCTS } from '../data/mockData'; // Deprecated
 import { productService } from '../services/api';
@@ -16,13 +16,17 @@ const ProductsPage = () => {
    const initialCategory = searchParams.get('category');
 
    // --- 1. STATES QUẢN LÝ LỌC ---
-   const [selectedBrand, setSelectedBrand] = useState(initialBrand || null); // Hãng (null = tất cả)
+   const [selectedBrand, setSelectedBrand] = useState(initialBrand || null);
    const [selectedCategory, setSelectedCategory] = useState(initialCategory || null);
+   const [sortOption, setSortOption] = useState(searchParams.get('sort') || 'default');
+   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || null);
 
    // Sync state if URL changes (e.g. navigation from sidebar while on page)
    useEffect(() => {
       const brandParam = searchParams.get('brand');
       const categoryParam = searchParams.get('category');
+      const sortParam = searchParams.get('sort') || 'default';
+      const searchParam = searchParams.get('search');
 
       if (brandParam !== selectedBrand) {
          setSelectedBrand(brandParam || null);
@@ -30,7 +34,13 @@ const ProductsPage = () => {
       if (categoryParam !== selectedCategory) {
          setSelectedCategory(categoryParam || null);
       }
-   }, [searchParams, selectedBrand, selectedCategory]);
+      if (sortParam !== sortOption) {
+         setSortOption(sortParam);
+      }
+      if (searchParam !== searchQuery) {
+         setSearchQuery(searchParam || null);
+      }
+   }, [searchParams, selectedBrand, selectedCategory, sortOption, searchQuery]);
 
    // Handle brand selection by updating URL
    const handleBrandSelect = (brandSlug) => {
@@ -51,8 +61,16 @@ const ProductsPage = () => {
       } else {
          newParams.delete('category');
       }
-      // Assuming we want to keep other filters or maybe clear them? 
-      // Usually changing main category might want to clear specific brand if it doesn't apply, but let's keep it simple.
+      setSearchParams(newParams);
+   };
+
+   const handleSortChange = (newSort) => {
+      const newParams = new URLSearchParams(searchParams);
+      if (newSort && newSort !== 'default') {
+         newParams.set('sort', newSort);
+      } else {
+         newParams.delete('sort');
+      }
       setSearchParams(newParams);
    };
 
@@ -62,7 +80,6 @@ const ProductsPage = () => {
    // Khoảng giá hiển thị trên ô input (chưa áp dụng cho đến khi bấm nút)
    const [tempPriceRange, setTempPriceRange] = useState([0, 50000000]);
 
-   const [sortOption, setSortOption] = useState('default'); // default, newest, price_asc, price_desc
 
    // Data state
    const [totalPages, setTotalPages] = useState(0);
@@ -73,7 +90,7 @@ const ProductsPage = () => {
 
    // --- Pagination State ---
    const [currentPage, setCurrentPage] = useState(1);
-   const [itemsPerPage, setItemsPerPage] = useState(15);
+   const [itemsPerPage, setItemsPerPage] = useState(16);
 
    // Fetch data
    useEffect(() => {
@@ -87,7 +104,8 @@ const ProductsPage = () => {
                maxPrice: appliedPriceRange[1] < 1000000000 ? appliedPriceRange[1] : undefined,
                brand: selectedBrand || undefined,
                category: selectedCategory || undefined,
-               sort: sortOption !== 'default' ? sortOption : undefined
+               sort: sortOption !== 'default' ? sortOption : undefined,
+               search: searchQuery || undefined
             };
 
             const response = await productService.getProducts(params);
@@ -114,7 +132,7 @@ const ProductsPage = () => {
       };
 
       fetchProducts();
-   }, [currentPage, itemsPerPage, selectedBrand, selectedCategory, appliedPriceRange, sortOption]);
+   }, [currentPage, itemsPerPage, selectedBrand, selectedCategory, appliedPriceRange, sortOption, searchQuery]);
 
    // Hàm xử lý khi bấm nút "Áp dụng" giá
    const handleApplyPrice = (min, max) => {
@@ -130,7 +148,7 @@ const ProductsPage = () => {
    // Reset page when filters change (except page change itself)
    useEffect(() => {
       setCurrentPage(1);
-   }, [selectedBrand, selectedCategory, appliedPriceRange, sortOption]);
+   }, [selectedBrand, selectedCategory, appliedPriceRange, sortOption, searchQuery]);
 
 
 
@@ -141,7 +159,7 @@ const ProductsPage = () => {
             <div className="container mx-auto px-4 max-w-[1200px]">
 
                <div className="text-xs text-gray-500 mb-4">
-                  Trang chủ / <span className="text-gray-800">Sản phẩm</span>
+                  <Link to="/">Trang chủ</Link> <span className="text-gray-800">/ Sản phẩm</span>
                </div>
 
                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -168,13 +186,13 @@ const ProductsPage = () => {
                      {/* Thanh sắp xếp */}
                      <SortBar
                         sortOption={sortOption}
-                        setSortOption={setSortOption}
+                        setSortOption={handleSortChange}
                      />
 
                      {/* Danh sách sản phẩm */}
                      <div className="bg-white p-4 rounded-lg shadow-sm min-h-[500px]">
                         <h1 className="text-lg font-bold text-gray-800 mb-2">
-                           {selectedBrand ? `Điện thoại ${selectedBrand.toUpperCase()}` : 'Tất cả điện thoại'}
+                           {searchQuery ? `Kết quả tìm kiếm cho "${searchQuery}"` : selectedBrand ? `Điện thoại ${selectedBrand.toUpperCase()}` : 'Tất cả điện thoại'}
                         </h1>
 
                         {loading ? (
@@ -200,10 +218,10 @@ const ProductsPage = () => {
                                              setItemsPerPage(Number(e.target.value));
                                              setCurrentPage(1);
                                           }}
-                                          className="appearance-none bg-white border border-gray-300 text-gray-700 py-1.5 pl-4 pr-8 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#004535] focus:border-[#004535] cursor-pointer"
+                                          className="appearance-none cursor-pointer bg-white border border-gray-300 text-gray-700 py-1.5 pl-4 pr-8 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#004535] focus:border-[#004535] cursor-pointer"
                                        >
                                           <option value={12}>12 / trang</option>
-                                          <option value={15}>15 / trang</option>
+                                          <option value={16}>16 / trang</option>
                                           <option value={24}>24 / trang</option>
                                           <option value={48}>48 / trang</option>
                                        </select>
@@ -218,7 +236,7 @@ const ProductsPage = () => {
                                           <button
                                              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                              disabled={currentPage === 1}
-                                             className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
+                                             className="cursor-pointer w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
                                           >
                                              &lt;
                                           </button>
@@ -254,7 +272,7 @@ const ProductsPage = () => {
                                                    key={index}
                                                    onClick={() => typeof page === 'number' && setCurrentPage(page)}
                                                    disabled={page === '...'}
-                                                   className={`w-8 h-8 flex items-center justify-center border rounded-md text-sm font-medium transition-colors ${page === currentPage
+                                                   className={`cursor-pointer w-8 h-8 flex items-center justify-center border rounded-md text-sm font-medium transition-colors ${page === currentPage
                                                       ? 'bg-[#00A76F] text-white border-[#00A76F]'
                                                       : page === '...'
                                                          ? 'border-transparent text-gray-500 cursor-default'
@@ -269,7 +287,7 @@ const ProductsPage = () => {
                                           <button
                                              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                              disabled={currentPage === totalPages}
-                                             className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
+                                             className="cursor-pointer w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
                                           >
                                              &gt;
                                           </button>
@@ -315,14 +333,14 @@ const ProductsPage = () => {
                                                 setItemsPerPage(Number(e.target.value));
                                                 setCurrentPage(1);
                                              }}
-                                             className="appearance-none bg-white border border-gray-300 text-gray-700 py-1.5 pl-4 pr-8 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#004535] focus:border-[#004535] cursor-pointer"
+                                             className="cursor-pointer appearance-none bg-white border border-gray-300 text-gray-700 py-1.5 pl-4 pr-8 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#004535] focus:border-[#004535] cursor-pointer"
                                           >
                                              <option value={12}>12 / trang</option>
-                                             <option value={15}>15 / trang</option>
+                                             <option value={16}>16 / trang</option>
                                              <option value={24}>24 / trang</option>
                                              <option value={48}>48 / trang</option>
                                           </select>
-                                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                          <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
                                              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                                           </div>
                                        </div>
@@ -331,7 +349,7 @@ const ProductsPage = () => {
                                           <button
                                              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                              disabled={currentPage === 1}
-                                             className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
+                                             className="cursor-pointer w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
                                           >
                                              &lt;
                                           </button>
@@ -367,7 +385,7 @@ const ProductsPage = () => {
                                                    key={index}
                                                    onClick={() => typeof page === 'number' && setCurrentPage(page)}
                                                    disabled={page === '...'}
-                                                   className={`w-8 h-8 flex items-center justify-center border rounded-md text-sm font-medium transition-colors ${page === currentPage
+                                                   className={`cursor-pointer w-8 h-8 flex items-center justify-center border rounded-md text-sm font-medium transition-colors ${page === currentPage
                                                       ? 'bg-[#00A76F] text-white border-[#00A76F]'
                                                       : page === '...'
                                                          ? 'border-transparent text-gray-500 cursor-default'
@@ -382,7 +400,7 @@ const ProductsPage = () => {
                                           <button
                                              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                              disabled={currentPage === totalPages}
-                                             className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
+                                             className="cursor-pointer w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-500"
                                           >
                                              &gt;
                                           </button>

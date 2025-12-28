@@ -25,12 +25,12 @@ const ProductDetail = () => {
   // States
   const [productData, setProductData] = useState(null);
   const [mainImage, setMainImage] = useState("");
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState('specs');
   const [selectedOptions, setSelectedOptions] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-
+ console.log(activeTab);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -89,9 +89,8 @@ const ProductDetail = () => {
           // Support 'currentPrice' (new) or 'min_price' (old)
           price: product.currentPrice || product.min_price || "Liên hệ",
           oldPrice: product.oldPrice || null,
-          reviewsCount: product.reviewsCount || Math.floor(Math.random() * 100),
+          reviewsCount: product.reviewsCount || 0,
           rating: product.rating || (4 + Math.random()).toFixed(1),
-          description: product.description || (Object.keys(product.specs || {}).length > 0 ? "Thông số kỹ thuật chi tiết bên dưới." : "Đang cập nhật mô tả..."),
           options: mappedOptions,
           gallery: galleryImages,
           specs: product.specs || {}
@@ -130,7 +129,7 @@ const ProductDetail = () => {
         }
         setSelectedOptions(initialOptions);
 
-        setActiveTab("description");
+        setActiveTab("specs");
 
         // Fetch related products (keep existing logic)
         fetchRelatedProducts(product.category_id || product.brand_id, product.id);
@@ -268,7 +267,6 @@ const ProductDetail = () => {
           <ProductTabs
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            description={productData.description}
             reviewsCount={productData.reviewsCount}
             specs={productData.specs} // Pass specs to tabs if needed
           />

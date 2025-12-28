@@ -105,7 +105,7 @@ const Header = () => {
     e.preventDefault();
     setShowDropdown(false);
     if (keyword.trim()) {
-      navigate(`/products?category=${encodeURIComponent(keyword)}`);
+      navigate(`/products?search=${encodeURIComponent(keyword.trim())}`);
     }
   };
 

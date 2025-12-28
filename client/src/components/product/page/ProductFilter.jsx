@@ -64,7 +64,7 @@ const ProductFilter = ({
                      <button
                         key={cat.category_id}
                         onClick={() => onCategorySelect(isActive ? null : cat.category_name)}
-                        className={`px-3 py-2 text-sm text-left rounded transition-all ${isActive
+                        className={`px-3 py-2 text-sm text-left rounded transition-all cursor-pointer ${isActive
                            ? 'bg-[#004535] text-white font-medium'
                            : 'text-gray-600 hover:bg-gray-50 hover:text-[#004535]'
                            }`}
@@ -97,7 +97,7 @@ const ProductFilter = ({
                      <button
                         key={brand.brand_id}
                         onClick={() => onBrandSelect(isActive ? null : brandValue)}
-                        className={`border rounded px-2 py-2 text-xs font-medium transition-all ${isActive
+                        className={`border rounded px-2 py-2 text-xs font-medium transition-all cursor-pointer ${isActive
                            ? 'border-[#004535] bg-[#004535] text-white'
                            : 'border-gray-200 text-gray-600 hover:border-[#004535] hover:text-[#004535] hover:bg-gray-50'
                            }`}
@@ -127,11 +127,11 @@ const ProductFilter = ({
                      <Slider.Range className="absolute bg-[#004535] rounded-full h-full" />
                   </Slider.Track>
                   <Slider.Thumb
-                     className="block w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
+                     className="block cursor-pointer w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
                      aria-label="Minimum Price"
                   />
                   <Slider.Thumb
-                     className="block w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
+                     className="block cursor-pointer w-4 h-4 bg-white border-2 border-[#004535] shadow-[0_2px_10px] shadow-black/10 rounded-[10px] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#004535]/20 transition-transform hover:scale-110"
                      aria-label="Maximum Price"
                   />
                </Slider.Root>
