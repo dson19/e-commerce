@@ -35,7 +35,7 @@ const findById = async(id) => {
   return res.rows[0];
 }
 const findByIdNoPassword = async(id) => {
-  const query = 'SELECT user_id, email, fullname, phone_number, gender FROM users WHERE user_id = $1';
+  const query = 'SELECT user_id, email, fullname, phone_number, gender, role FROM users WHERE user_id = $1';
   const values = [id];
   const res = await pool.query(query, values);
   return res.rows[0];

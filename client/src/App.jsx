@@ -42,9 +42,12 @@ function App() {
 
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/admin" element={<AdminPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/orders" element={<OrderPage />} />
+            </Route>
+            {/* Admin route để riêng */}
+            <Route element={<ProtectedRoute adminOnly={true} />}>
+              <Route path="/admin/*" element={<AdminPage />} />
             </Route>
           </Routes>
         </CartProvider>

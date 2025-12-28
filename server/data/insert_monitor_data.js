@@ -15,7 +15,8 @@ for (let i = 0; i < products.length; i++) {
     const productQuery = `
         INSERT INTO products (name, min_price, img, category_id, brand_id, specs)
         VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (name) DO NOTHING
+        ON CONFLICT (name) 
+        DO UPDATE SET category_id = EXCLUDED.category_id
         RETURNING ID;
     `;
     const productValues = [

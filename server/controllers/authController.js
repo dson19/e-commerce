@@ -103,7 +103,7 @@ export const signIn = asyncHandler(async (req, res) => {
         throw new ErrorResponse("Thông tin không hợp lệ", 401);
     }
 
-    const token = generateToken(user.user_id);
+    const token = generateToken(user.user_id, user.role);
     res.cookie("token", token, {
         httpOnly: true,
         secure: false,
@@ -119,6 +119,8 @@ export const signIn = asyncHandler(async (req, res) => {
             email: user.email,
             fullname: user.fullname,
             phone_number: user.phone_number,
+            gender: user.gender,
+            role: user.role
         }
     });
 });
@@ -136,7 +138,7 @@ export const signOut = asyncHandler(async (req, res) => {
 });
 
 export const getMe = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const user = await User.findByIdNoPassword(userId);
     if (!user) {
         throw new ErrorResponse("User not found", 404);
@@ -149,6 +151,7 @@ export const getMe = asyncHandler(async (req, res) => {
             fullname: user.fullname,
             phone_number: user.phone_number,
             gender: user.gender,
+            role: user.role
         }
     });
 });
@@ -215,16 +218,16 @@ export const resetPassword = asyncHandler(async (req, res) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.id;
     const { fullname } = req.body;
 
-    const updatedUser = await User.updateProfile(userId, fullname);
-    if (!updatedUser) {
+    const updatedUserNoPassword = await User.findByIdNoPassword(userId);
+    if (!updatedUserNoPassword) {
         throw new ErrorResponse("Không tìm thấy người dùng", 404);
     }
     res.status(200).json({
         success: true,
         message: "Cập nhật hồ sơ thành công",
-        data: updatedUser
+        data: updatedUserNoPassword
     });
 });

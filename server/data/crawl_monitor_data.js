@@ -36,9 +36,9 @@ const BRAND_MAPPING = [
 
 const DB_MONITOR_CATEGORIES = [
     // --- Các mục ĐÃ CÓ trong Database (ID 37 -> 41, 46) ---
-    { id: 37, name: 'Samsung',   keywords: ['samsung', 'odyssey', 'smart monitor', 'màn hình', 'ls', 'lc'] },
-    { id: 38, name: 'LG',        keywords: ['lg', 'ultragear', 'ultrawide', 'libero', 'gram view', 'màn hình'] },
-    { id: 39, name: 'Dell',      keywords: ['dell', 'ultrasharp', 'alienware', 'p series', 's series', 'e series'] },
+    { id: 37, name: 'Samsung',   keywords: ['samsung', 'odyssey'] },
+    { id: 38, name: 'LG',        keywords: ['lg', 'ultragear', 'ultrawide', 'libero', 'gram view'] },
+    { id: 39, name: 'MSI',       keywords: ['msi'] },
     { id: 40, name: 'Asus',      keywords: ['asus', 'tuf', 'rog', 'proart', 'vy', 'vz'] },
     { id: 41, name: 'ViewSonic', keywords: ['viewsonic', 'vx', 'va', 'omni', 'colorpro'] },
 

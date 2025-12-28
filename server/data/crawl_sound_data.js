@@ -43,8 +43,7 @@ const DB_AUDIO_CATEGORIES = [
     
     // Trong ảnh 4, các mục này đã xuất hiện, mình map keywords tương ứng
     { id: 36, name: 'Bose',     keywords: ['bose', 'quietcomfort', 'soundlink', 'ultra'] },
-    { id: 37, name: 'Samsung',  keywords: ['samsung', 'galaxy buds', 'buds'] }, 
-    { id: 38, name: 'LG',       keywords: ['lg', 'xboom', 'tone', 'loa thanh', 'soundbar'] },
+
 
 ];
 

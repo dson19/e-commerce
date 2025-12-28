@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({adminOnly = false}) => {
     const { user, loading } = useAuth();
 
     if (loading) {
@@ -12,6 +12,10 @@ const ProtectedRoute = () => {
 
     if (!user) {
         return <Navigate to="/signIn" replace />;
+    }
+    //user tự động vào route admin = cút 
+    if (user.role !== 'admin' && adminOnly) {
+        return <Navigate to="/" replace />;
     }
 
     return <Outlet />;
