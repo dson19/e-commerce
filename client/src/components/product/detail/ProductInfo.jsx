@@ -5,24 +5,29 @@ import { formatCurrency } from '@/utils/currency';
 const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
 
-  const handleQuantityChange = (type) => {
-    if (type === 'decrease' && quantity > 1) setQuantity(quantity - 1);
-    if (type === 'increase') setQuantity(quantity + 1);
-  };
-
-  // Logic to determine price to display
+  // Logic to determine price and stock to display
   let displayPrice = product.price;
   let displayOldPrice = product.oldPrice;
+  let availableStock = 0;
+  let activeVariant = null;
 
   // Handle "Màu sắc" selection specifically since ProductDetail is currently mapping it simply
   if (selectedOptions["Màu sắc"] && product.variants) {
-    const variant = product.variants.find(v => v.color === selectedOptions["Màu sắc"]);
-    if (variant) {
+    activeVariant = product.variants.find(v => v.color === selectedOptions["Màu sắc"]);
+    if (activeVariant) {
       // Use bestPrice/lastPrice from API (camelCase)
-      displayPrice = variant.bestPrice || variant.price || displayPrice;
-      displayOldPrice = variant.old_price || variant.lastPrice || displayOldPrice;
+      displayPrice = activeVariant.bestPrice || activeVariant.price || displayPrice;
+      displayOldPrice = activeVariant.old_price || activeVariant.lastPrice || displayOldPrice;
+      availableStock = (activeVariant.stock || 0) - (activeVariant.reservedStock || 0);
     }
   }
+
+  const isOutOfStock = availableStock <= 0;
+
+  const handleQuantityChange = (type) => {
+    if (type === 'decrease' && quantity > 1) setQuantity(quantity - 1);
+    if (type === 'increase' && quantity < availableStock) setQuantity(quantity + 1);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -41,9 +46,15 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
           <span className="text-sm text-gray-500 ml-1">({product.reviewsCount} đánh giá)</span>
         </div>
         <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
-        <span className="text-sm text-green-600 font-medium flex items-center gap-1">
-          <CheckCircle size={14} /> Còn hàng
-        </span>
+        {isOutOfStock ? (
+          <span className="text-sm text-red-600 font-medium flex items-center gap-1">
+            <CheckCircle size={14} className="text-red-400" /> Hết hàng
+          </span>
+        ) : (
+          <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+            <CheckCircle size={14} /> Còn hàng ({availableStock})
+          </span>
+        )}
         <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
         <span className="text-sm text-gray-500">SKU: {product.sku || `SP-${product.id}`}</span>
       </div>
@@ -111,11 +122,15 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
 
         {/* Nút Thêm giỏ hàng */}
         <button
-          onClick={() => handleAddToCart(quantity)}
-          className="flex-1 bg-[#004535] text-white h-12 rounded-lg font-bold hover:bg-[#003528] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#004535]/20 active:scale-[0.98]"
+          onClick={() => handleAddToCart(quantity, activeVariant)}
+          disabled={isOutOfStock}
+          className={`flex-1 h-12 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] ${isOutOfStock
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+            : "bg-[#004535] text-white hover:bg-[#003528] shadow-[#004535]/20"
+            }`}
         >
           <ShoppingCart size={20} />
-          Thêm vào giỏ hàng
+          {isOutOfStock ? "Đã hết hàng" : "Thêm vào giỏ hàng"}
         </button>
 
         {/* Nút Yêu thích */}

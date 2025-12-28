@@ -28,6 +28,12 @@ export const productService = {
   getParentCategories: () => api.get('/products/categories/parents'),
 };
 
+export const adminService = {
+  getDashboardStats: () => api.get('/admin/dashboard-stats'),
+  getUsers: (params) => api.get('/admin/users', { params }),
+  updateInventory: (variantId, data) => api.put(`/admin/inventory/${variantId}`, data),
+};
+
 export const cartService = {
   getCart: () => api.get('/cart'),
   addToCart: (data) => api.post('/cart/add', data),

@@ -30,7 +30,6 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
- console.log(activeTab);
   useEffect(() => {
     const fetchProduct = async () => {
       try {

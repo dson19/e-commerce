@@ -61,12 +61,17 @@ const getProducts = asyncHandler(async (req, res) => {
 
     // 2. Get Paginated Data
     let dataQuery = `
-        SELECT p.*, b.brand_name, c.category_name, pc.category_name as parent_category_name
+        SELECT p.*, b.brand_name, c.category_name, pc.category_name as parent_category_name,
+               COALESCE(SUM(i.stock), 0) as total_stock,
+               COALESCE(SUM(i.reserved_stock), 0) as total_reserved
         FROM products p
         LEFT JOIN brands b ON p.brand_id = b.brand_id
         LEFT JOIN categories c ON p.category_id = c.category_id
         LEFT JOIN categories pc ON c.parent_id = pc.category_id
+        LEFT JOIN product_variants pv ON p.id = pv.product_id
+        LEFT JOIN inventory i ON pv.variant_id = i.variant_id
         ${whereClause}
+        GROUP BY p.id, b.brand_name, c.category_name, pc.category_name
     `;
 
     // Sorting
