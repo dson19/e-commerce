@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , Link} from 'react-router-dom';
 import { LayoutDashboard, Users, ShoppingBag, PieChart, LogOut } from 'lucide-react';
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
@@ -35,7 +35,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       </nav>
 
       <div className="p-4 border-t border-white/10">
-        <button onClick={() => navigate('/')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-200 hover:bg-red-900/20 transition-colors">
+        <button onClick={() => navigate('/')} className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-200 hover:bg-red-900/20 transition-colors">
           <LogOut size={20} /> Thoát Admin
         </button>
       </div>
