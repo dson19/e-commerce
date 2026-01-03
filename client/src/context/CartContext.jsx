@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext-temp';
 import { cartService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 

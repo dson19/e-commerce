@@ -8,7 +8,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import { Toaster } from "@/components/ui/sonner";
 import SignUpPage from './pages/SignUp';
 
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider } from '@/context/AuthContext-temp';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProfilePage from './pages/ProfilePage';

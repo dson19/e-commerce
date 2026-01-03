@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext-temp";
 import { formatCurrency } from "../utils/currency";
 import { productService } from "../services/api";
 
