@@ -43,7 +43,10 @@ const handleCassoWebhook = asyncHandler(async (req, res) => {
             console.log(`No OrderID found in description: ${description}`);
         }
     }
-    return res.status(200).json({message: "Webhook processed" });
+    return res.status(200).json(
+        {
+            success: true,
+            message: "Webhook processed" });
 });
 
 export default { handleCassoWebhook };
