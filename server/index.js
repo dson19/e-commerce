@@ -24,7 +24,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoute); 
 app.use('/api/orders', orderRoute);
-
+app.use('/api/payment', paymentRoute);
 // Error Handler Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
 app.use(errorHandler);

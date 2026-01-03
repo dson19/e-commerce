@@ -5,7 +5,7 @@ import { getDashboardStats, getUsers, updateInventory } from '../controllers/adm
 const router = express.Router();
 router.use(authenticateToken, authorizeAdmin);
 
-router.get('/dashboard-stats', getDashboardStats);
+router.get('/stats', getDashboardStats);
 router.get('/users', getUsers);
 router.put('/inventory/:variantId', updateInventory);
 export default router;

@@ -97,5 +97,34 @@ const getUserOrderHistory = async (userId) => {
     const ordersRes = await pool.query(ordersQuery, ordersValues);
     return ordersRes.rows;
 };
-
-export default { createOrder, getOrderById, getUserOrderHistory };
+const getOrderByIdNoUserId = async (orderId) => {
+    const orderQuery = `
+        SELECT o.*,
+        json_agg(json_build_object(
+            'product_name', p.name,
+            'color', pv.color,
+            'price', oi.price,
+            'quantity', oi.quantity
+        )) AS items
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        LEFT JOIN product_variants pv ON oi.variant_id = pv.variant_id
+        LEFT JOIN products p ON pv.product_id = p.id
+        WHERE o.order_id = $1
+        GROUP BY o.order_id`;
+    const orderValues = [orderId];
+    const orderRes = await pool.query(orderQuery, orderValues);
+    if (orderRes.rows.length === 0) {
+        return null;
+    }
+    return orderRes.rows[0];
+};
+const updateOrderStatusToPaid = async (orderId) => {
+    const query = `
+        UPDATE orders
+        SET status = 'paid'
+        WHERE order_id = $1`;
+    const values = [orderId];
+    await pool.query(query, values);
+}
+export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid };
