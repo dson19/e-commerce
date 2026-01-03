@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import productRoutes from './routes/productRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
 import orderRoute from './routes/orderRoute.js';
+import paymentRoute from './routes/paymentRoute.js';
 
 //đọc file .env
 dotenv.config();
@@ -22,7 +23,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/admin', adminRoute); 
+app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/payment', paymentRoute);
 // Error Handler Middleware
