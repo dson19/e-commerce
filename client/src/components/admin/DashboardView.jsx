@@ -8,7 +8,7 @@ const DashboardView = () => {
 
   // Cấu hình API ngay tại đây
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://e-commerce-6gc6.onrender.com/api',
     withCredentials: true,
   });
 

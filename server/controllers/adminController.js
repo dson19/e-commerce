@@ -1,19 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import pool from '../config/db.js';
-
+import { getStats } from '../models/Admin.js';
 export const getDashboardStats = asyncHandler(async (req, res) => {
     // Trả về dữ liệu giả thay vì query Database
+    const data = await getStats(req, res);
     res.json({
         success: true,
-        data: {
-            usersCount: 125,        // Giả vờ có 125 user
-            ordersCount: 48,        // Giả vờ có 48 đơn
-            revenue: 50000000,      // Giả vờ doanh thu 50 triệu
-            recentOrders: []        // Mảng rỗng
-        }
+        data: data
     });
 });
-
 export const getUsers = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const pageNum = parseInt(page);

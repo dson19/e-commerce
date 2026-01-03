@@ -13,9 +13,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT;
-
+app.set('trust proxy', 1);
 app.use(cors({
-  origin: "http://localhost:5173", // Chỉ định chính xác link Frontend
+  origin: "http://localhost:5173", 
   credentials: true // Cho phép mang theo Cookie/Token
 }));
 app.use(express.json());

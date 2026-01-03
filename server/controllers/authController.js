@@ -106,8 +106,8 @@ export const signIn = asyncHandler(async (req, res) => {
     const token = generateToken(user.user_id, user.role);
     res.cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -128,8 +128,8 @@ export const signIn = asyncHandler(async (req, res) => {
 export const signOut = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
-        secure: false
+        sameSite: "none",
+        secure: true
     });
     res.status(200).json({
         success: true,
