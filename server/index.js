@@ -6,6 +6,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import productRoutes from './routes/productRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
+import orderRoute from './routes/orderRoute.js';
+
 //đọc file .env
 dotenv.config();
 
@@ -22,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoute); 
+app.use('/api/orders', orderRoute);
 
 // Error Handler Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';

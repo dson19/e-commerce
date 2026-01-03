@@ -231,3 +231,59 @@ export const updateProfile = asyncHandler(async (req, res) => {
         data: updatedUserNoPassword
     });
 });
+export const getAddresses = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const addresses = await User.getAddresses(userId);
+    res.status(200).json({
+        success: true,
+        data: addresses
+    });
+});
+
+export const addAddress = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { city, district, ward, street, is_default } = req.body;
+    if (!city || !district || !ward || !street) {
+        throw new ErrorResponse("Vui lòng điền đầy đủ thông tin địa chỉ", 400);
+    }
+    const data = { city, district, ward, street };
+    const newAddress = await User.addAddress(userId, data, is_default);
+    res.status(201).json({
+        success: true,
+        data: newAddress
+    });
+});
+
+export const deleteAddress = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const address_id = req.params.addressId;
+    const deleteAddress =await User.deleteAddress(userId, address_id);
+    if (!deleteAddress) {
+        throw new ErrorResponse("Địa chỉ không tồn tại", 404);
+    }
+    res.status(200).json({
+        success: true,
+        message: "Xóa địa chỉ thành công"
+    });
+});
+
+export const updateAddress = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const address_id = req.params.addressId;
+    const { city, district, ward, street, is_default } = req.body;
+    const data = { city, district, ward, street };
+    const updatedAddress = await User.updateAddress(userId, address_id, data, is_default);
+    res.status(200).json({
+        success: true,
+        data: updatedAddress
+    });
+});
+
+export const getDefaultAddress = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const defaultAddress = await User.getDefaultAddress(userId);
+    res.status(200).json({
+        success: true,
+        data: defaultAddress
+    });
+});

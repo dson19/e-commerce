@@ -132,13 +132,16 @@ const getProductById = asyncHandler(async (req, res) => {
     const variantsRes = await pool.query('SELECT pv.*,i.stock, i.reserved_stock FROM product_variants pv LEFT JOIN inventory i ON pv.variant_id = i.variant_id WHERE product_id = $1', [product.id]);
     product.variants = variantsRes.rows.map(v => {
         const { id, variant_id, created_at, ...rest } = v; 
+        let availableStock = (v.stock || 0) - (v.reserved_stock || 0);
+        if (availableStock < 0) availableStock = 0;
         return {
             ...rest,
             id: variant_id,
             bestPrice: v.best_price, 
             lastPrice: v.last_price,
             stock: v.stock || 0,
-            reservedStock: v.reserved_stock || 0
+            reserved_stock: v.reserved_stock || 0,
+            availableStock: availableStock
         };
     });
 

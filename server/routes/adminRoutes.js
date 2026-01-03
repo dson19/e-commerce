@@ -3,7 +3,9 @@ import { authenticateToken, authorizeAdmin } from '../middleware/middlewareAuth.
 import { getDashboardStats, getUsers, updateInventory } from '../controllers/adminController.js';
 
 const router = express.Router();
-router.get('/dashboard-stats', authenticateToken, authorizeAdmin, getDashboardStats);
-router.get('/users', authenticateToken, authorizeAdmin, getUsers);
-router.put('/inventory/:variantId', authenticateToken, authorizeAdmin, updateInventory);
+router.use(authenticateToken, authorizeAdmin);
+
+router.get('/dashboard-stats', getDashboardStats);
+router.get('/users', getUsers);
+router.put('/inventory/:variantId', updateInventory);
 export default router;

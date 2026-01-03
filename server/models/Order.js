@@ -1,0 +1,101 @@
+import pool from '../config/db.js';
+
+const createOrder = async (userId, items, address_id, paymentMethod, phone_number, name) => { 
+    const client = await pool.connect();
+    
+    try {
+        await client.query('BEGIN');
+
+        let calculatedGrandTotal = 0;
+
+        // 1. Tạo đơn hàng trước (Status Pending, Total tạm để 0)
+        const orderQuery = `
+            INSERT INTO orders (user_id, address_id, payment_method, shipping_phone, shipping_name, status, grand_total)
+            VALUES ($1, $2, $3, $4, $5, 'Pending', 0) 
+            RETURNING order_id`;
+        // grand_total để tạm là 0, sau khi tính toán xong items sẽ update lại
+        const orderRes = await client.query(orderQuery, [userId, address_id, paymentMethod, phone_number, name]);
+        const orderId = orderRes.rows[0].order_id;
+
+        for (const item of items) {
+
+            const variantQuery = `
+                SELECT price, stock_quantity, reserved_stock 
+                FROM variants 
+                JOIN inventory ON variants.id = inventory.variant_id
+                WHERE variants.id = $1 
+                FOR UPDATE`; 
+            
+            const variantRes = await client.query(variantQuery, [item.variant_id]);
+            
+            if (variantRes.rows.length === 0) {
+                throw new Error(`Sản phẩm ID ${item.variant_id} không tồn tại`);
+            }
+
+            const productData = variantRes.rows[0];
+            const availableStock = productData.stock_quantity - productData.reserved_stock;
+
+            if (availableStock < item.quantity) {
+                throw new Error(`Sản phẩm ${item.variant_id} không đủ hàng (Còn: ${availableStock})`);
+            }
+
+            const insertItemQuery = `
+                INSERT INTO order_items (order_id, variant_id, quantity, price)
+                VALUES ($1, $2, $3, $4)`;
+            await client.query(insertItemQuery, [orderId, item.variant_id, item.quantity, productData.price]);
+
+            const updateStockQuery = `
+                UPDATE inventory 
+                SET reserved_stock = reserved_stock + $1 
+                WHERE variant_id = $2`;
+            await client.query(updateStockQuery, [item.quantity, item.variant_id]);
+
+            calculatedGrandTotal += Number(productData.price) * item.quantity;
+        }
+
+        await client.query('UPDATE orders SET grand_total = $1 WHERE order_id = $2', [calculatedGrandTotal, orderId]);
+
+        await client.query('COMMIT');
+        return { order_id: orderId, total: calculatedGrandTotal };
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error("Lỗi tạo đơn hàng:", error.message);
+        throw error; 
+    } finally {
+        client.release();
+    }
+};
+const getOrderById = async (userId, orderId) => {
+    const orderQuery = `
+        SELECT o.*,
+        json_agg(json_build_object(
+            'product_name', p.name,
+            'color', pv.color,
+            'price', oi.price,
+            'quantity', oi.quantity
+        )) AS items
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        LEFT JOIN product_variants pv ON oi.variant_id = pv.variant_id
+        LEFT JOIN products p ON pv.product_id = p.id
+        WHERE o.order_id = $1 AND o.user_id = $2
+        GROUP BY o.order_id`;
+    const orderValues = [orderId, userId];
+    const orderRes = await pool.query(orderQuery, orderValues);
+    if (orderRes.rows.length === 0) {
+        return null;
+    }
+    return orderRes.rows[0];
+};
+const getUserOrderHistory = async (userId) => {
+    const ordersQuery = `
+        SELECT * FROM orders
+        WHERE user_id = $1
+        ORDER BY created_at DESC`;
+    const ordersValues = [userId];
+    const ordersRes = await pool.query(ordersQuery, ordersValues);
+    return ordersRes.rows;
+};
+
+export default { createOrder, getOrderById, getUserOrderHistory };
