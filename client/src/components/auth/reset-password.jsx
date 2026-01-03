@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import axios from "axios";
+import { authService } from "@/services/api";
 import { cn } from "@/lib/utils"; // Import cn utility
 
 // Tận dụng lại style UI 2 cột giống trang SigninForm
@@ -37,7 +37,7 @@ const ResetPassword = ({ className, ...props }) => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/reset-password", {
+      await authService.resetPassword({
         email,
         otp,
         newPassword: password,

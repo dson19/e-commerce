@@ -1,51 +1,70 @@
+import pool from '../config/db.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import { ErrorResponse } from '../middleware/errorMiddleware.js';
 import Cart from '../models/Cart.js';
 
-const getCart = async (req, res) => {
-    try {
-        const cart = await Cart.getCart(req.userId);
-        res.status(200).json(cart);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to fetch cart", error: error.message });
-    }
-};
+const getCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const items = await Cart.getCart(userId);
+    res.json({
+        success: true,
+        data: items
+    });
+});
 
-const addToCart = async (req, res) => {
+const addToCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { productId, quantity, variantId } = req.body;
+
+    if (!productId || !quantity) {
+        throw new ErrorResponse("Product ID and quantity are required", 400);
+    }
+
+    const item = await Cart.addToCart(userId, productId, quantity, variantId);
+
+    res.json({ 
+        success: true, 
+        data: item,
+        message: "Item added to cart" 
+    });
+});
+
+const removeFromCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { productId } = req.params; // Route uses :productId
+
+    if (!productId) {
+        throw new ErrorResponse("Product ID is required", 400);
+    }
+
+    await Cart.removeFromCart(userId, productId);
+    
+    res.json({ success: true, message: "Item removed from cart" });
+});
+
+const updateQuantity = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
-    try {
-        const item = await Cart.addToCart(req.userId, productId, quantity);
-        res.status(200).json(item);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to add to cart", error: error.message });
-    }
-};
 
-const removeFromCart = async (req, res) => {
-    const { productId } = req.params;
-    try {
-        await Cart.removeFromCart(req.userId, productId);
-        res.status(200).json({ message: "Item removed" });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to remove item", error: error.message });
+    if (!productId || quantity === undefined) {
+        throw new ErrorResponse("Product ID and quantity are required", 400);
     }
-};
 
-const updateQuantity = async (req, res) => {
-    const { productId, quantity } = req.body;
-    try {
-        const item = await Cart.updateQuantity(req.userId, productId, quantity);
-        res.status(200).json(item);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to update quantity", error: error.message });
-    }
-};
+    const item = await Cart.updateQuantity(userId, productId, quantity);
+    
+    res.json({ 
+        success: true, 
+        data: item,
+        message: "Quantity updated" 
+    });
+});
 
-const clearCart = async (req, res) => {
-    try {
-        await Cart.clearCart(req.userId);
-        res.status(200).json({ message: "Cart cleared" });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to clear cart", error: error.message });
-    }
-};
+const clearCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    await Cart.clearCart(userId);
+    res.json({ success: true, message: "Cart cleared" });
+});
 
 export default { getCart, addToCart, removeFromCart, updateQuantity, clearCart };
+
+

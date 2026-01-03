@@ -43,8 +43,7 @@ const DB_AUDIO_CATEGORIES = [
     
     // Trong ảnh 4, các mục này đã xuất hiện, mình map keywords tương ứng
     { id: 36, name: 'Bose',     keywords: ['bose', 'quietcomfort', 'soundlink', 'ultra'] },
-    { id: 37, name: 'Samsung',  keywords: ['samsung', 'galaxy buds', 'buds'] }, 
-    { id: 38, name: 'LG',       keywords: ['lg', 'xboom', 'tone', 'loa thanh', 'soundbar'] },
+
 
 ];
 
@@ -140,8 +139,8 @@ let count = 0;
                         const keyEl = row.querySelector('strong');
                         const valEl = row.querySelector('span');
                         if (keyEl && valEl) {
-                            key = keyEl.textContent.replace(/:/g, '').trim();
-                            value = valEl.textContent.trim();
+                            key = keyEl.innerText.replace(/:/g, '').trim();
+                            value = valEl.innerText.trim();
                         }
                         if (key && value && key.length < 50) {
                             specObj[key] = value;

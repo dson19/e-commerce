@@ -1,36 +1,82 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { toast } from 'sonner';
-import { useAuth } from './authContext'; // Import context authentication
-import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
+import { cartService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth(); // Lấy thông tin user
-  const [cartItems, setCartItems] = useState([]);
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  const initialState = {
+    items: [],
+    loading: false,
+    error: null
+  };
+
+  const cartReducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_CART':
+        return { ...state, items: action.payload, loading: false, error: null };
+      case 'ADD_ITEM': {
+        const existingItemIndex = state.items.findIndex(item => item.id === action.payload.id);
+        if (existingItemIndex > -1) {
+          const newItems = [...state.items];
+          newItems[existingItemIndex].quantity += action.payload.quantity;
+          return { ...state, items: newItems };
+        }
+        return { ...state, items: [...state.items, action.payload] };
+      }
+      case 'REMOVE_ITEM':
+        return { ...state, items: state.items.filter(item => item.id !== action.payload) };
+      case 'UPDATE_QUANTITY':
+        return {
+          ...state,
+          items: state.items.map(item =>
+            item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item
+          )
+        };
+      case 'CLEAR_CART':
+        return { ...state, items: [] };
+      case 'SET_LOADING':
+        return { ...state, loading: true };
+      case 'SET_ERROR':
+        return { ...state, loading: false, error: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(cartReducer, initialState);
+
+  // Helper to sanitize product data for Cart
+  const sanitizeCartItem = (item) => ({
+    ...item,
+    id: Number(item.id),
+    quantity: Number(item.quantity) || 1,
+    price: Number(item.price) || 0,
+    oldPrice: Number(item.oldPrice) || 0,
+    options: item.color ? { "Màu sắc": item.color } : (item.options || {})
+  });
 
   // Sync Cart khi User thay đổi
   useEffect(() => {
     const fetchCart = async () => {
       if (user) {
-        // Nếu đã đăng nhập -> Gọi API lấy giỏ hàng từ DB
+        dispatch({ type: 'SET_LOADING' });
         try {
-          const res = await axios.get('http://localhost:5000/api/cart', { withCredentials: true });
-          const mappedCart = res.data.map(item => ({
-            ...item,
-            id: item.id, // product id
-            quantity: item.quantity
-          }));
-          setCartItems(mappedCart);
+          const res = await cartService.getCart();
+          const cartData = res.data.data || [];
+          const mappedCart = cartData.map(item => sanitizeCartItem(item));
+          dispatch({ type: 'SET_CART', payload: mappedCart });
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
-          toast.error("Không thể tải giỏ hàng của bạn");
+          dispatch({ type: 'SET_ERROR', payload: error.message });
         }
       } else {
-        // Nếu chưa đăng nhập -> Cart rỗng
-        setCartItems([]);
+        dispatch({ type: 'SET_CART', payload: [] });
       }
     };
 
@@ -40,48 +86,42 @@ export const CartProvider = ({ children }) => {
   // 1. Hàm thêm sản phẩm
   const addToCart = async (product, quantity = 1) => {
     if (!user) {
-       toast.error("Vui lòng đăng nhập để mua hàng");
-       navigate("/signIn");
-       return false;
+      toast.error("Vui lòng đăng nhập để mua hàng");
+      navigate("/signIn");
+      return false;
     }
 
-    // Logic cho User (API)
     try {
-        await axios.post('http://localhost:5000/api/cart/add', {
-          productId: product.id,
-          quantity
-        }, { withCredentials: true });
-        
-        
-        setCartItems(prev => {
-           const existingItem = prev.find(item => item.id === product.id);
-           if (existingItem) {
-             return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
-           }
-           return [...prev, { ...product, quantity }];
-        });
-        return true;
+      // Optimistic Update
+      dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
 
-      } catch (error) {
-        console.error(error);
-        toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
-        return false;
-      }
+      await cartService.addToCart({
+        productId: product.id,
+        quantity,
+        variantId: product.selectedVariant?.id || product.variantId
+      });
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Lỗi thêm vào giỏ hàng");
+      return false;
+    }
   };
 
   // 2. Hàm xóa sản phẩm
   const removeFromCart = async (id) => {
-    if (!user) return; // Should not happen usually if UI hides button
+    if (!user) return;
 
     if (window.confirm('Bạn muốn xóa sản phẩm này?')) {
-        try {
-            await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, { withCredentials: true });
-            setCartItems(prev => prev.filter(item => item.id !== id));
-            toast.success('Đã xóa sản phẩm');
-        } catch (error) {
-            console.error(error);
-            toast.error("Lỗi xóa sản phẩm");
-        }
+      try {
+        await cartService.removeFromCart(id);
+        dispatch({ type: 'REMOVE_ITEM', payload: id });
+        toast.success('Đã xóa sản phẩm');
+      } catch (error) {
+        console.error(error);
+        toast.error("Lỗi xóa sản phẩm");
+      }
     }
   };
 
@@ -89,43 +129,46 @@ export const CartProvider = ({ children }) => {
   const updateQuantity = async (id, change) => {
     if (!user) return;
 
-    // Tính toán số lượng mới trước
-    const currentItem = cartItems.find(item => item.id === id);
+    const currentItem = state.items.find(item => item.id === id);
     if (!currentItem) return;
     const newQty = currentItem.quantity + change;
     if (newQty < 1) return;
 
     try {
-        await axios.put('http://localhost:5000/api/cart/update', { productId: id, quantity: newQty }, { withCredentials: true });
-            setCartItems(prev =>
-            prev.map(item => item.id === id ? { ...item, quantity: newQty } : item)
-        );
+      await cartService.updateQuantity({ productId: id, quantity: newQty });
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
     } catch (error) {
-        console.error(error);
-        toast.error("Lỗi cập nhật số lượng");
+      console.error(error);
+      toast.error("Lỗi cập nhật số lượng");
     }
   };
 
   // 4. Hàm xóa sạch giỏ hàng
   const clearCart = async () => {
     if (!user) {
-        setCartItems([]);
-        return;
+      dispatch({ type: 'CLEAR_CART' });
+      return;
     }
     try {
-        await axios.delete('http://localhost:5000/api/cart/clear', { withCredentials: true });
-        setCartItems([]);
+      await cartService.clearCart();
+      dispatch({ type: 'CLEAR_CART' });
     } catch (error) {
-        console.error(error);
-        toast.error("Lỗi xóa giỏ hàng");
+      console.error(error);
+      toast.error("Lỗi xóa giỏ hàng");
     }
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cartItems: state.items, loading: state.loading, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
 };
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};

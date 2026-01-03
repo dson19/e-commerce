@@ -7,9 +7,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useAuth } from "../../context/authContext";
+import { authService } from "@/services/api";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -42,15 +42,13 @@ export function SigninForm({ className, ...props }) {
   const onSubmit = async (data) => {
     setApiError("");
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/signIn", {
+      const response = await authService.signIn({
         email: data.email,
-        fullname: data.fullname,
         password: data.password,
       });
-      const user = response.data.user;
+      const user = response.data.data;
       signIn(user);
-      // alert("Đăng nhập thành công!"); 
-      navigate("/");
+      
     } catch (error) {
       console.log(error);
       const msg = error.response?.data?.message || "Đăng nhập thất bại.";
@@ -62,30 +60,28 @@ export function SigninForm({ className, ...props }) {
     if (!forgotEmail) return toast.error("Vui lòng nhập email");
     setIsLoadingForgot(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/forgot-password", {
-        email: forgotEmail,
-      });
+      await authService.sendForgotOTP(forgotEmail);
       setIsForgotPasswordOpen(false);
       setShowForgotOtp(true);
       toast.success("Mã OTP đã được gửi! Vui lòng kiểm tra email.");
     } catch (error) {
       toast.error(error.response?.data?.message || "Gửi OTP thất bại. Vui lòng thử lại.");
     } finally {
-        setIsLoadingForgot(false);
+      setIsLoadingForgot(false);
     }
   };
 
   const handleVerifyForgotOtp = async () => {
     if (otpValue.length < 6) return alert("Vui lòng nhập đủ 6 số OTP");
     try {
-      await axios.post("http://localhost:5000/api/auth/verify-forgot-otp", {
+      await authService.verifyForgotOTP({
         email: forgotEmail,
         otp: otpValue,
       });
       setShowForgotOtp(false);
       navigate("/reset-password", { state: { email: forgotEmail, otp: otpValue } });
       toast.success("Xác thực OTP thành công! Vui lòng đặt lại mật khẩu.");
-    } catch (error) {
+    } catch {
       toast.error("Mã OTP không hợp lệ hoặc đã hết hạn.");
     }
   };
@@ -104,11 +100,11 @@ export function SigninForm({ className, ...props }) {
               {/* INPUT EMAIL / USERNAME */}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="email" className="block text-sm">Email hoặc Số điện thoại </Label>
-                <Input 
-                  id="email" 
-                  type="text" 
-                  placeholder="" 
-                  {...register("email")} 
+                <Input
+                  id="email"
+                  type="text"
+                  placeholder=""
+                  {...register("email")}
                 />
                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
               </div>
@@ -134,7 +130,7 @@ export function SigninForm({ className, ...props }) {
                 {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
               </Button>
 
-               <div className="text-sm text-center">
+              <div className="text-sm text-center">
                 Chưa có tài khoản?{" "}
                 {/* Sửa href thành to, thêm dấu /, và đổi về chữ thường nếu route của bạn là chữ thường */}
                 <Link to="/signUp" className="hover:underline cursor-pointer">
@@ -144,7 +140,7 @@ export function SigninForm({ className, ...props }) {
             </div>
           </form>
           <div className="relative hidden md:block bg-gray-100">
-             {/* Đảm bảo ảnh tồn tại trong thư mục public */}
+            {/* Đảm bảo ảnh tồn tại trong thư mục public */}
             <img src="/placeholderSignIn.png" alt="Image" className="absolute inset-0 h-full w-full object-cover" />
           </div>
         </CardContent>
@@ -156,19 +152,19 @@ export function SigninForm({ className, ...props }) {
           <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg animate-in fade-in zoom-in duration-200">
             <h3 className="text-lg font-bold mb-2">Quên mật khẩu?</h3>
             <p className="text-sm text-gray-500 mb-4">Nhập email để nhận mã xác thực.</p>
-            
+
             <Label className="mb-2 block">Email của bạn</Label>
-            <Input 
+            <Input
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
               placeholder="name@example.com"
               className="mb-4"
             />
-            
+
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsForgotPasswordOpen(false)}>Hủy</Button>
               <Button onClick={handleSendForgotOtp} disabled={isLoadingForgot}>
-                 {isLoadingForgot ? "Đang gửi..." : "Gửi mã OTP"}
+                {isLoadingForgot ? "Đang gửi..." : "Gửi mã OTP"}
               </Button>
             </div>
           </div>
@@ -181,14 +177,14 @@ export function SigninForm({ className, ...props }) {
           <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg animate-in fade-in zoom-in duration-200 text-center">
             <h3 className="text-lg font-bold mb-2">Xác thực OTP</h3>
             <p className="text-sm text-gray-500 mb-4">Mã OTP đã gửi tới <b>{forgotEmail}</b></p>
-            
+
             <div className="flex justify-center mb-4">
-               <Input 
-                  className="text-center text-2xl tracking-[0.5em] w-2/3 h-12 font-bold" 
-                  maxLength={6}
-                  value={otpValue}
-                  onChange={(e) => setOtpValue(e.target.value.replace(/[^0-9]/g, ''))}
-                />
+              <Input
+                className="text-center text-2xl tracking-[0.5em] w-2/3 h-12 font-bold"
+                maxLength={6}
+                value={otpValue}
+                onChange={(e) => setOtpValue(e.target.value.replace(/[^0-9]/g, ''))}
+              />
             </div>
 
             <div className="flex flex-col gap-2">

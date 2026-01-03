@@ -2,16 +2,19 @@ import fs from 'fs';
 import pg from 'pg';
 import pool from '../config/db.js';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
-const rawData = fs.readFileSync('/Users/Administrator/Coding/mobile_store/server/data/phones.json', 'utf-8');
+const __dirname = path.resolve();
+const dataPath = path.join(__dirname, 'data', 'phones.json');
+const rawData = fs.readFileSync(dataPath, 'utf-8');
 const products = JSON.parse(rawData);
 
 for (let i = 0; i < products.length; i++) {
     const product = products[i];
     const productQuery = `
-        INSERT INTO products (name, min_price, img, category_id, brand_id, specs)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO products (name, min_price, img, category_id, brand_id, specs,slug)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         ON CONFLICT (name) DO NOTHING
         RETURNING ID;
     `;
@@ -21,7 +24,8 @@ for (let i = 0; i < products.length; i++) {
         getHigherQualityImageUrl(product.variants?.[0]?.img || ""),
         product.categoryId,
         product.brandId,
-        product.specs ? JSON.stringify(product.specs) : null
+        product.specs ? JSON.stringify(product.specs) : null,
+        intoslug(product.name)
     ];
     try {
         const res = await pool.query(productQuery, productValues);

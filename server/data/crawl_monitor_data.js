@@ -36,9 +36,9 @@ const BRAND_MAPPING = [
 
 const DB_MONITOR_CATEGORIES = [
     // --- Các mục ĐÃ CÓ trong Database (ID 37 -> 41, 46) ---
-    { id: 37, name: 'Samsung',   keywords: ['samsung', 'odyssey', 'smart monitor', 'màn hình', 'ls', 'lc'] },
-    { id: 38, name: 'LG',        keywords: ['lg', 'ultragear', 'ultrawide', 'libero', 'gram view', 'màn hình'] },
-    { id: 39, name: 'Dell',      keywords: ['dell', 'ultrasharp', 'alienware', 'p series', 's series', 'e series'] },
+    { id: 37, name: 'Samsung',   keywords: ['samsung', 'odyssey'] },
+    { id: 38, name: 'LG',        keywords: ['lg', 'ultragear', 'ultrawide', 'libero', 'gram view'] },
+    { id: 39, name: 'MSI',       keywords: ['msi'] },
     { id: 40, name: 'Asus',      keywords: ['asus', 'tuf', 'rog', 'proart', 'vy', 'vz'] },
     { id: 41, name: 'ViewSonic', keywords: ['viewsonic', 'vx', 'va', 'omni', 'colorpro'] },
 
@@ -70,7 +70,7 @@ let count = 0;
 
     const url = 'https://hoanghamobile.com/man-hinh?filters=%7B%7D&search=true&pmin=3%2C000%2C000&pmax=29%2C400%2C000';
     console.log(`Đang truy cập: ${url}`);
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
     console.log('Đã load hết sản phẩm, bắt đầu lấy dữ liệu...');
     await loadFullPage(page);
@@ -137,8 +137,8 @@ let count = 0;
                         const keyEl = row.querySelector('strong');
                         const valEl = row.querySelector('span');
                         if (keyEl && valEl) {
-                            key = keyEl.textContent.replace(/:/g, '').trim();
-                            value = valEl.textContent.trim();
+                            key = keyEl.innerText.replace(/:/g, '').trim();
+                            value = valEl.innerText.trim();
                         }
                         if (key && value && key.length < 50) {
                             specObj[key] = value;

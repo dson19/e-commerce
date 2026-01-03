@@ -2,9 +2,12 @@ import fs from 'fs';
 import pg from 'pg';
 import pool from '../config/db.js';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
-const rawData = fs.readFileSync('/Users/Administrator/Coding/mobile_store/server/data/monitors.json', 'utf-8');
+const __dirname = path.resolve();
+const dataPath = path.join(__dirname, 'data', 'monitors.json');
+const rawData = fs.readFileSync(dataPath, 'utf-8');
 const products = JSON.parse(rawData);
 
 for (let i = 0; i < products.length; i++) {
@@ -12,7 +15,8 @@ for (let i = 0; i < products.length; i++) {
     const productQuery = `
         INSERT INTO products (name, min_price, img, category_id, brand_id, specs)
         VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (name) DO NOTHING
+        ON CONFLICT (name) 
+        DO UPDATE SET category_id = EXCLUDED.category_id
         RETURNING ID;
     `;
     const productValues = [

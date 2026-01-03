@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
+import { authService } from "@/services/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -15,11 +15,11 @@ export default function OtpModal({ email, isOpen, onClose }) {
     setLoading(true);
     setError("");
     try {
-      await axios.post("http://localhost:5000/api/auth/verify-otp", {
+      await authService.verifyOTP({
         email,
         otp,
       });
-            // Nếu thành công (Status 201)
+      // Nếu thành công (Status 201)
       toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
       navigate("/signIn"); // Chuyển sang trang đăng nhập
     } catch (err) {
@@ -38,7 +38,7 @@ export default function OtpModal({ email, isOpen, onClose }) {
         <p className="text-sm text-gray-500 mb-4 text-center">
           Mã xác thực đã được gửi tới <b>{email}</b>
         </p>
-        
+
         {error && <p className="text-red-500 text-sm mb-2 text-center">{error}</p>}
 
         <Input

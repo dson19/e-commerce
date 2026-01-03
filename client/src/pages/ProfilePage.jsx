@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
+import { authService } from '@/services/api';
 import { toast } from 'sonner';
-import { 
-  User, Package, Ticket, History, LayoutDashboard, 
-  Camera, TicketPercent 
+import {
+  User, Package, Ticket, History, LayoutDashboard,
+  Camera, TicketPercent
 } from 'lucide-react';
 
 const ProfilePage = () => {
@@ -43,13 +43,8 @@ const ProfilePage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // Sửa lại đường dẫn API cho đúng với backend của bạn
-      const res = await axios.put(
-        'http://localhost:5000/api/auth/profile', 
-        formData, 
-        { withCredentials: true }
-      );
-      updateUser(res.data.user || formData); 
+      const res = await authService.updateProfile(formData);
+      updateUser(res.data.data || formData);
       toast.success("Cập nhật hồ sơ thành công!");
     } catch (error) {
       console.error(error);
@@ -76,17 +71,17 @@ const ProfilePage = () => {
           <div className="bg-gradient-to-r from-[#004535] to-[#00654e] rounded-xl p-6 text-white flex justify-between items-center shadow-lg">
             <div>
               <p className="text-white/80 text-sm mb-1">Thành viên {user?.rank || 'Bạc'}</p>
-              <h2 className="text-2xl font-bold">Xin chào, {user?.name}</h2>
+              <h2 className="text-2xl font-bold">Xin chào, {user?.fullname}</h2>
               <p className="text-white/60 text-xs mt-2">Điểm tích lũy: {user?.points || 0} điểm</p>
             </div>
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
-              <span className="text-2xl font-bold">{user?.name?.charAt(0).toUpperCase()}</span>
+              <span className="text-2xl font-bold">{user?.fullname?.charAt(0).toUpperCase()}</span>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             {/* Demo stats */}
-             <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold">2</span><span className="text-xs text-gray-500">Đơn hàng</span></div>
-             <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold text-green-600">0</span><span className="text-xs text-gray-500">Voucher</span></div>
+            {/* Demo stats */}
+            <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold">2</span><span className="text-xs text-gray-500">Đơn hàng</span></div>
+            <div className="bg-white border p-4 rounded-xl text-center"><span className="block text-2xl font-bold text-green-600">0</span><span className="text-xs text-gray-500">Voucher</span></div>
           </div>
         </div>
       );
@@ -106,10 +101,10 @@ const ProfilePage = () => {
             <div className="flex-1 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Họ và tên</label>
-                <input 
+                <input
                   type="text" name="fullname"
                   value={formData.fullname} onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] focus:ring-1 focus:ring-[#004535] outline-none" 
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] focus:ring-1 focus:ring-[#004535] outline-none"
                   placeholder="Nhập họ tên"
                 />
               </div>
@@ -122,7 +117,7 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
-                  <input 
+                  <input
                     type="text" name="phone_number"
                     value={formData.phone_number}
                     disabled
@@ -135,10 +130,10 @@ const ProfilePage = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ</label>
-                <input 
+                <input
                   type="text" name="address"
                   value={formData.address} onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none" 
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:border-[#004535] outline-none"
                   placeholder="Nhập địa chỉ"
                 />
               </div>
@@ -154,10 +149,10 @@ const ProfilePage = () => {
             <div className="w-full md:w-[240px] flex flex-col items-center border-l border-gray-100 pl-0 md:pl-10">
               <div className="relative group cursor-pointer mb-4">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-[#004535] flex items-center justify-center text-white text-4xl font-bold">
-                   {user?.fullname?.charAt(0).toUpperCase()}
+                  {user?.fullname?.charAt(0).toUpperCase()}
                 </div>
                 <div className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-gray-200 text-gray-600 hover:text-[#004535]">
-                    <Camera size={18} />
+                  <Camera size={18} />
                 </div>
               </div>
               <button type="button" className="text-sm font-medium text-[#004535] hover:underline">Chọn ảnh</button>
@@ -182,7 +177,7 @@ const ProfilePage = () => {
         <aside className="w-full md:w-[280px] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden shrink-0">
           <div className="p-5 border-b border-gray-100 flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#004535] flex items-center justify-center text-white font-bold text-lg">
-               {user?.fullname?.charAt(0).toUpperCase()}
+              {user?.fullname?.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
               <p className="text-xs text-gray-500">Xin chào,</p>
@@ -194,9 +189,8 @@ const ProfilePage = () => {
               <li key={item.id}>
                 <button
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === item.id ? 'bg-[#E5F2F0] text-[#004535]' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === item.id ? 'bg-[#E5F2F0] text-[#004535]' : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
                   <span className={activeTab === item.id ? 'text-[#004535]' : 'text-gray-400'}>{item.icon}</span>
                   {item.label}

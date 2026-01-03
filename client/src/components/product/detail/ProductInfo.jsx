@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
 import { Star, CheckCircle, Minus, Plus, ShoppingCart, Heart, Share2 } from 'lucide-react';
+import { formatCurrency } from '@/utils/currency';
 
 const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
 
+  // Logic to determine price and stock to display
+  let displayPrice = product.price;
+  let displayOldPrice = product.oldPrice;
+  let availableStock = 0;
+  let activeVariant = null;
+
+  // Handle "Màu sắc" selection specifically since ProductDetail is currently mapping it simply
+  if (selectedOptions["Màu sắc"] && product.variants) {
+    activeVariant = product.variants.find(v => v.color === selectedOptions["Màu sắc"]);
+    if (activeVariant) {
+      // Use bestPrice/lastPrice from API (camelCase)
+      displayPrice = activeVariant.bestPrice || activeVariant.price || displayPrice;
+      displayOldPrice = activeVariant.old_price || activeVariant.lastPrice || displayOldPrice;
+      availableStock = (activeVariant.stock || 0) - (activeVariant.reservedStock || 0);
+    }
+  }
+
+  const isOutOfStock = availableStock <= 0;
+
   const handleQuantityChange = (type) => {
     if (type === 'decrease' && quantity > 1) setQuantity(quantity - 1);
-    if (type === 'increase') setQuantity(quantity + 1);
+    if (type === 'increase' && quantity < availableStock) setQuantity(quantity + 1);
   };
 
   return (
@@ -15,7 +35,7 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
         {product.name}
       </h1>
-      
+
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <div className="flex items-center gap-1">
           <div className="flex text-yellow-400">
@@ -26,9 +46,15 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
           <span className="text-sm text-gray-500 ml-1">({product.reviewsCount} đánh giá)</span>
         </div>
         <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
-        <span className="text-sm text-green-600 font-medium flex items-center gap-1">
-          <CheckCircle size={14} /> Còn hàng
-        </span>
+        {isOutOfStock ? (
+          <span className="text-sm text-red-600 font-medium flex items-center gap-1">
+            <CheckCircle size={14} className="text-red-400" /> Hết hàng
+          </span>
+        ) : (
+          <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+            <CheckCircle size={14} /> Còn hàng ({availableStock})
+          </span>
+        )}
         <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
         <span className="text-sm text-gray-500">SKU: {product.sku || `SP-${product.id}`}</span>
       </div>
@@ -36,17 +62,17 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
       {/* Giá tiền */}
       <div className="bg-gray-50 p-4 rounded-xl mb-6">
         <div className="flex items-end gap-3">
-            <span className="text-3xl font-bold text-[#004535]">{product.price}</span>
-            {product.oldPrice && (
+          <span className="text-3xl font-bold text-[#004535]">{formatCurrency(displayPrice)}</span>
+          {displayOldPrice && (
             <span className="text-lg text-gray-400 line-through mb-1">
-                {product.oldPrice}
+              {formatCurrency(displayOldPrice)}
             </span>
-            )}
-            {product.discount && (
-                <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded mb-2">
-                    {product.discount}
-                </span>
-            )}
+          )}
+          {product.discount && (
+            <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded mb-2">
+              {product.discount}
+            </span>
+          )}
         </div>
       </div>
 
@@ -57,12 +83,12 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
 
       {/* Tùy chọn (Màu/Size) */}
       <div className="space-y-6 mb-8">
-        {product.options.map((option, idx) => (
+        {product.options && product.options.map((option, idx) => (
           <div key={idx}>
             <div className="flex justify-between mb-3">
-                <span className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+              <span className="text-sm font-bold text-gray-900 uppercase tracking-wide">
                 {option.name}: <span className="text-[#004535] ml-1">{selectedOptions[option.name]}</span>
-                </span>
+              </span>
             </div>
             <div className="flex flex-wrap gap-3">
               {option.variants.map((variant) => {
@@ -71,11 +97,10 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
                   <button
                     key={variant}
                     onClick={() => handleOptionSelect(option.name, variant)}
-                    className={`min-w-[80px] px-4 py-2 text-sm rounded-lg border transition-all ${
-                      isSelected
-                        ? "border-[#004535] text-[#004535] bg-[#004535]/5 font-bold ring-1 ring-[#004535]"
-                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-white"
-                    }`}
+                    className={`min-w-[80px] px-4 py-2 text-sm rounded-lg border transition-all ${isSelected
+                      ? "border-[#004535] text-[#004535] bg-[#004535]/5 font-bold ring-1 ring-[#004535]"
+                      : "border-gray-200 text-gray-600 hover:border-gray-300 bg-white"
+                      }`}
                   >
                     {variant}
                   </button>
@@ -97,11 +122,15 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
 
         {/* Nút Thêm giỏ hàng */}
         <button
-          onClick={() => handleAddToCart(quantity)}
-          className="flex-1 bg-[#004535] text-white h-12 rounded-lg font-bold hover:bg-[#003528] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#004535]/20 active:scale-[0.98]"
+          onClick={() => handleAddToCart(quantity, activeVariant)}
+          disabled={isOutOfStock}
+          className={`flex-1 h-12 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] ${isOutOfStock
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+            : "bg-[#004535] text-white hover:bg-[#003528] shadow-[#004535]/20"
+            }`}
         >
           <ShoppingCart size={20} />
-          Thêm vào giỏ hàng
+          {isOutOfStock ? "Đã hết hàng" : "Thêm vào giỏ hàng"}
         </button>
 
         {/* Nút Yêu thích */}
@@ -110,12 +139,12 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
         </button>
       </div>
 
-       {/* Footer nhỏ */}
-       <div className="mt-6 flex items-center gap-4 text-xs text-gray-500 font-medium">
-            <button className="flex items-center gap-1 hover:text-[#004535]"><Share2 size={14}/> Chia sẻ</button>
-            <span>•</span>
-            <span>Cam kết chính hãng 100%</span>
-       </div>
+      {/* Footer nhỏ */}
+      <div className="mt-6 flex items-center gap-4 text-xs text-gray-500 font-medium">
+        <button className="flex items-center gap-1 hover:text-[#004535]"><Share2 size={14} /> Chia sẻ</button>
+        <span>•</span>
+        <span>Cam kết chính hãng 100%</span>
+      </div>
     </div>
   );
 };

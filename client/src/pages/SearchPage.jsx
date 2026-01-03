@@ -1,25 +1,42 @@
-import React, { useMemo } from 'react'; // 1. Import useMemo thay vì useState, useEffect
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import ProductCard from '../components/ProductCard';
-import { PRODUCTS } from '../data/mockData';
+import ProductCard from '../components/product/ProductCard';
 import { SearchX } from 'lucide-react';
+import { productService } from '../services/api';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
 
-  // 2. Thay thế toàn bộ useState và useEffect bằng useMemo
-  // results sẽ được tính toán lại chỉ khi biến `query` thay đổi.
-  const results = useMemo(() => {
-    if (!query) {
-      return [];
-    }
-    const lowerQuery = query.toLowerCase();
-    return PRODUCTS.filter((p) =>
-      p.name.toLowerCase().includes(lowerQuery)
-    );
-  }, [query]); // Dependency array: chỉ chạy lại khi query đổi
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!query) {
+        setResults([]);
+        return;
+      }
+      try {
+        setLoading(true);
+        const res = await productService.getProducts({ search: query });
+        const productsData = res.data.data || [];
+
+        const mapped = productsData.map(p => ({
+          ...p,
+          price: p.min_price || "0"
+        }));
+        setResults(mapped);
+      } catch (err) {
+        console.error("Search failed", err);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResults();
+  }, [query]);
 
   return (
     <MainLayout>
@@ -29,11 +46,15 @@ const SearchPage = () => {
           <h1 className="text-2xl font-bold text-gray-800">
             Kết quả tìm kiếm cho: <span className="text-[#004535]">"{query}"</span>
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Tìm thấy {results.length} sản phẩm</p>
+          <p className="text-gray-500 text-sm mt-1">
+            {loading ? "Đang tìm kiếm..." : `Tìm thấy ${results.length} sản phẩm`}
+          </p>
         </div>
 
         {/* Phần hiển thị danh sách sản phẩm */}
-        {results.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-20">Đang tải...</div>
+        ) : results.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">
             {results.map((product) => (
               <ProductCard key={product.id} product={product} />

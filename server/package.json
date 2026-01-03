@@ -17,9 +17,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^7.0.11",
     "pg": "^8.16.3",
+    "puppeteer": "^24.34.0",
     "redis": "^5.10.0",
     "sonner": "^2.0.7"
   },

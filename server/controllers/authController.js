@@ -3,289 +3,231 @@ import User from "../models/User.js";
 import { generateToken } from "../utils/generateToken.js";
 import { sendOTP } from "../utils/emailService.js";
 import redisClient from "../config/redisClient.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import { ErrorResponse } from "../middleware/errorMiddleware.js";
 
-export const signUp = async (req, res) => {
-    try {
-        const { email, fullname, password, gender, phoneNumber } = req.body; 
+export const signUp = asyncHandler(async (req, res) => {
+    const { email, fullname, password, gender, phoneNumber } = req.body; 
 
-        if (!email || !fullname || !password) {
-            return res.status(400).json({message: "Vui lòng nhập đủ thông tin"});
-        }
-
-        // 1. check if email exists
-        const emailduplicate = await User.findByEmail(email); 
-        if (emailduplicate) {
-            return res.status(409).json({message: "Email này đã được sử dụng"});
-        }
-
-        const phoneDuplicate = await User.findByPhone(phoneNumber);
-        if (phoneDuplicate) {
-            return res.status(409).json({message: "Số điện thoại này đã được sử dụng"});
-        }
-
-        // 2. Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 3. Tạo OTP
-        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-        // 4. Gói dữ liệu đăng ký vào Object tạm
-        const tempUserData = {
-            email,
-            fullname,
-            password: hashedPassword,
-            gender,
-            phoneNumber,
-            otpCode,
-        };
-
-        // 5. LƯU TOÀN BỘ VÀO REDIS (Thay vì chỉ lưu mỗi OTP)
-        // Key: temp_registration:email
-        // Hết hạn: 5 phút (300s)
-        await redisClient.setEx(
-            `temp_register:${email}`, 
-            300, 
-            JSON.stringify(tempUserData) // Phải chuyển thành chuỗi JSON
-        );
-
-        // 6. Gửi mail
-        await sendOTP(email, otpCode);
-
-        res.status(200).json({message: "OTP sent. Please verify to complete registration.", email: email});
-
-    } catch (error) {
-        console.error("Error during sign up:", error);
-        res.status(500).json({message: "Server error"});
+    if (!email || !fullname || !password) {
+        throw new ErrorResponse("Vui lòng nhập đủ thông tin", 400);
     }
-}
 
-// Lấy dữ liệu từ Redis, so sánh OTP, nếu đúng thì lưu vào PostgreSQL
-export const verifyAccount = async (req, res) => {
-    try {
-        const { email, otp } = req.body;
-
-        // 1. Lấy dữ liệu tạm từ Redis
-        const dataString = await redisClient.get(`temp_register:${email}`);
-
-        if (!dataString) {
-            return res.status(400).json({message: "Mã OTP đã hết hạn hoặc bạn chưa đăng ký"});
-        }
-
-        // Parse chuỗi JSON thành Object
-        const tempData = JSON.parse(dataString);
-
-        // 2. So sánh OTP
-        if (tempData.otpCode !== otp) {
-            return res.status(400).json({message: "Mã OTP không chính xác"});
-        }
-
-        // 3. OTP Đúng THÌ LƯU VÀO POSTGRESQL
-        const newUser = await User.create(
-            tempData.email, 
-            tempData.fullname,
-            tempData.password, 
-            tempData.gender, 
-            tempData.phoneNumber
-        );
-
-        // Xóa dữ liệu tạm trong Redis
-        await redisClient.del(`temp_register:${email}`);
-
-        // Nếu thành công (Status 201)
-        res.status(201).json({message: "Tài khoản đã được xác thực và tạo thành công"});
-
-    } catch (error) {
-        console.error("Error verify:", error);
-        res.status(500).json({message: "Server error during verification"});
+    const emailduplicate = await User.findByEmail(email); 
+    if (emailduplicate) {
+        throw new ErrorResponse("Email này đã được sử dụng", 409);
     }
-}
-export const signIn = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        // Check null fields
-        if (!email || !password) {
-            return res.status(400).json({ message: "Điền thông tin còn thiếu" });
-        }
 
-        let user;
-        // Find user by email or phone
-        if (!email.includes('@')) {
-            // phone login
-            user = await User.findByPhone(email);
-        } else {
-            // email login
-            user =  await User.findByEmail(email);
-        } 
-
-        if (!user) {
-            return  res.status(401).json({ message: "Thông tin không hợp lệ" });
-        }
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Thông tin không hợp lệ" });
-        }
-        //generate token
-        const token = generateToken(user.user_id);
-        // Set token in HttpOnly cookie
-        res.cookie("token", token, {
-            httpOnly: true,  // Quan trọng: Chống XSS
-            secure: false,   // localhost để false
-            sameSite: "lax", // fe và be khác domain 
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
-        });
-        res.status(200).json({
-            message: "Đăng nhập thành công",
-            user: {
-                id: user.user_id,
-                email: user.email,
-                fullname: user.fullname,
-                phone_number: user.phone_number,
-            }
-        });
-        }
-    catch (error) {
-        console.error("Error during sign in:", error);
-        res.status(500).json({ message: "Server error" });
+    const phoneDuplicate = await User.findByPhone(phoneNumber);
+    if (phoneDuplicate) {
+        throw new ErrorResponse("Số điện thoại này đã được sử dụng", 409);
     }
-}
-export const signOut = async (req, res) => {
-        res.clearCookie("token", {
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const tempUserData = {
+        email,
+        fullname,
+        password: hashedPassword,
+        gender,
+        phoneNumber,
+        otpCode,
+    };
+
+    await redisClient.setEx(
+        `temp_register:${email}`, 
+        300, 
+        JSON.stringify(tempUserData)
+    );
+
+    await sendOTP(email, otpCode);
+
+    res.status(200).json({
+        success: true,
+        message: "OTP sent. Please verify to complete registration.", 
+        data: { email: email }
+    });
+});
+
+export const verifyAccount = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    const dataString = await redisClient.get(`temp_register:${email}`);
+
+    if (!dataString) {
+        throw new ErrorResponse("Mã OTP đã hết hạn hoặc bạn chưa đăng ký", 400);
+    }
+
+    const tempData = JSON.parse(dataString);
+
+    if (tempData.otpCode !== otp) {
+        throw new ErrorResponse("Mã OTP không chính xác", 400);
+    }
+
+    const newUser = await User.create(
+        tempData.email, 
+        tempData.fullname,
+        tempData.password, 
+        tempData.gender, 
+        tempData.phoneNumber
+    );
+
+    await redisClient.del(`temp_register:${email}`);
+
+    res.status(201).json({
+        success: true,
+        message: "Tài khoản đã được xác thực và tạo thành công"
+    });
+});
+
+export const signIn = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        throw new ErrorResponse("Điền thông tin còn thiếu", 400);
+    }
+
+    let user;
+    if (!email.includes('@')) {
+        user = await User.findByPhone(email);
+    } else {
+        user =  await User.findByEmail(email);
+    } 
+
+    if (!user) {
+        throw new ErrorResponse("Thông tin không hợp lệ", 401);
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new ErrorResponse("Thông tin không hợp lệ", 401);
+    }
+
+    const token = generateToken(user.user_id, user.role);
+    res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "strict",
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(200).json({
+        success: true,
+        message: "Đăng nhập thành công",
+        data: {
+            id: user.user_id,
+            email: user.email,
+            fullname: user.fullname,
+            phone_number: user.phone_number,
+            gender: user.gender,
+            role: user.role
+        }
+    });
+});
+
+export const signOut = asyncHandler(async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "lax",
         secure: false
     });
-    res.status(200).json({ message: "Đăng xuất thành công" });
-}
-export const getMe = async (req, res) => {
-    try {
-        const userId = req.userId;
-        const user = await User.findByIdNoPassword(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.status(200).json({
-            user: { 
-                id: user.user_id,
-                email: user.email,
-                fullname: user.fullname,
-                phone_number: user.phone_number,
-                gender: user.gender,
-                // Thêm các trường khác nếu cần
-            }
-        });
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-        res.status(500).json({ message: "Server error" });
+    res.status(200).json({
+        success: true,
+        message: "Đăng xuất thành công"
+    });
+});
+
+export const getMe = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const user = await User.findByIdNoPassword(userId);
+    if (!user) {
+        throw new ErrorResponse("User not found", 404);
     }
-}
-
-
-
-// Gửi OTP quên mật khẩu
-export const sendForgotPasswordOTP = async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (!email) return res.status(400).json({ message: "Vui lòng nhập email" });
-
-        // Kiểm tra email có tồn tại trong DB không
-        const user = await User.findByEmail(email);
-        if (!user) {
-            return res.status(404).json({ message: "Email này chưa được đăng ký" });
+    res.status(200).json({
+        success: true,
+        data: { 
+            id: user.user_id,
+            email: user.email,
+            fullname: user.fullname,
+            phone_number: user.phone_number,
+            gender: user.gender,
+            role: user.role
         }
+    });
+});
 
-        // Tạo OTP
-        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+export const sendForgotPasswordOTP = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) throw new ErrorResponse("Vui lòng nhập email", 400);
 
-        // Lưu OTP vào Redis (Hết hạn 5 phút)
-        // Key: forgot_pass:email
-        await redisClient.setEx(`forgot_pass:${email}`, 300, otpCode);
-
-        // Gửi mail
-        await sendOTP(email, otpCode);
-
-        res.status(200).json({ message: "Mã OTP đã được gửi đến email của bạn" });
-
-    } catch (error) {
-        console.error("Forgot Password Error:", error);
-        res.status(500).json({ message: "Server error" });
+    const user = await User.findByEmail(email);
+    if (!user) {
+        throw new ErrorResponse("Email này chưa được đăng ký", 404);
     }
-};
 
-// Xác nhận OTP
-export const verifyForgotOTP = async (req, res) => {
-    try {
-        const { email, otp } = req.body;
-        const storedOtp = await redisClient.get(`forgot_pass:${email}`);
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    await redisClient.setEx(`forgot_pass:${email}`, 300, otpCode);
+    await sendOTP(email, otpCode);
 
-        if (!storedOtp) return res.status(400).json({ message: "OTP hết hạn hoặc không tồn tại" });
-        if (storedOtp !== otp) return res.status(400).json({ message: "Mã OTP không chính xác" });
+    res.status(200).json({
+        success: true,
+        message: "Mã OTP đã được gửi đến email của bạn"
+    });
+});
 
-        res.status(200).json({ message: "OTP hợp lệ" });
-    } catch (error) {
-        res.status(500).json({ message: "Server error" });
+export const verifyForgotOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+    const storedOtp = await redisClient.get(`forgot_pass:${email}`);
+
+    if (!storedOtp) throw new ErrorResponse("OTP hết hạn hoặc không tồn tại", 400);
+    if (storedOtp !== otp) throw new ErrorResponse("Mã OTP không chính xác", 400);
+
+    res.status(200).json({
+        success: true,
+        message: "OTP hợp lệ"
+    });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    const storedOtp = await redisClient.get(`forgot_pass:${email}`);
+    if (!storedOtp || storedOtp !== otp) {
+        throw new ErrorResponse("Phiên xác thực hết hạn hoặc không hợp lệ", 400);
     }
-};
 
-// 3. Đặt lại mật khẩu mới
-
-export const resetPassword = async (req, res) => {
-    try {
-        const { email, otp, newPassword } = req.body;
-
-        //  Kiểm tra OTP trong Redis trước
-        const storedOtp = await redisClient.get(`forgot_pass:${email}`);
-        if (!storedOtp || storedOtp !== otp) {
-            return res.status(400).json({ message: "Phiên xác thực hết hạn hoặc không hợp lệ" });
-        }
-
-        //  Lấy thông tin user để kiểm tra mật khẩu cũ
-        // Hàm findByEmail trả về user có chứa trường password (hash)
-        const user = await User.findByEmail(email);
-        if (!user) {
-             return res.status(404).json({ message: "Email không tồn tại trong hệ thống" });
-        }
-
-        //  SO SÁNH MẬT KHẨU MỚI VÀ CŨ
-        // bcrypt.compare trả về true nếu mật khẩu khớp (tức là trùng nhau)
-        const isSamePassword = await bcrypt.compare(newPassword, user.password);
-        
-        if (isSamePassword) {
-            return res.status(400).json({ message: "Mật khẩu mới không được trùng với mật khẩu cũ" });
-        }
-
-        // Hash mật khẩu mới (nếu không trùng)
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        // Cập nhật vào Database
-        await User.updatePassword(email, hashedPassword);
-
-        // Xóa OTP sau khi đổi thành công để tránh dùng lại
-        await redisClient.del(`forgot_pass:${email}`);
-
-        res.status(200).json({ message: "Đổi mật khẩu thành công" });
-
-    } catch (error) {
-        console.error("Reset Password Error:", error);
-        res.status(500).json({ message: "Lỗi server khi đổi mật khẩu" });
+    const user = await User.findByEmail(email);
+    if (!user) {
+        throw new ErrorResponse("Email không tồn tại trong hệ thống", 404);
     }
-};
 
-export const updateProfile = async (req, res) => {
-    try {
-        const userId = req.userId;
-        const { fullname } = req.body;
-
-        const updatedUser = await User.updateProfile(userId, fullname);
-        if (!updatedUser) {
-            return res.status(404).json({ message: "Không tìm thấy người dùng" });
-        }
-        res.status(200).json({
-            message: "Cập nhật hồ sơ thành công",
-            user: updatedUser
-        });
-    } catch (error) {
-        console.error("Error updating profile:", error);
-        res.status(500).json({ message: "Lỗi server khi cập nhật hồ sơ" });
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    
+    if (isSamePassword) {
+        throw new ErrorResponse("Mật khẩu mới không được trùng với mật khẩu cũ", 400);
     }
-};
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.updatePassword(email, hashedPassword);
+    await redisClient.del(`forgot_pass:${email}`);
+
+    res.status(200).json({
+        success: true,
+        message: "Đổi mật khẩu thành công"
+    });
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+    const { fullname } = req.body;
+
+    const updatedUserNoPassword = await User.findByIdNoPassword(userId);
+    if (!updatedUserNoPassword) {
+        throw new ErrorResponse("Không tìm thấy người dùng", 404);
+    }
+    res.status(200).json({
+        success: true,
+        message: "Cập nhật hồ sơ thành công",
+        data: updatedUserNoPassword
+    });
+});

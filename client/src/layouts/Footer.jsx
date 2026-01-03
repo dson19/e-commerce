@@ -7,24 +7,6 @@ const Footer = () => {
     <footer className="bg-white pt-20 pb-10 border-t border-gray-100 mt-auto">
       <div className="container mx-auto px-4 max-w-[1200px]">
 
-        {/* --- PHẦN 1: NEWSLETTER (Đăng ký nhận tin) --- */}
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Đăng ký nhận tin</h3>
-          <p className="text-gray-500 mb-8 leading-relaxed">
-            Đăng ký để nhận những ưu đãi độc quyền, sản phẩm mới và cập nhật nội bộ gửi thẳng vào hộp thư của bạn hàng tuần.
-          </p>
-          <div className="relative max-w-lg mx-auto">
-            <input 
-              type="email" 
-              placeholder="Nhập email của bạn" 
-              className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-6 pr-36 outline-none focus:ring-1 focus:ring-[#004535] transition-all"
-            />
-            <button className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#004535] text-white px-8 rounded-full font-medium hover:bg-[#003528] transition-colors shadow-lg shadow-[#004535]/20">
-              Đăng ký
-            </button>
-          </div>
-        </div>
-
         {/* --- PHẦN 2: MAIN FOOTER (4 Cột) --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           
