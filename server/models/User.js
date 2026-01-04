@@ -153,4 +153,4 @@ const getDefaultAddress = async (userId) => {
   }
   return res.rows[0];
 }
-export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword, updateProfile, getAddresses, addAddress, deleteAddress, updateAddress }; // Nhớ export thêm updatePassword
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword, updateProfile, getAddresses, addAddress, deleteAddress, updateAddress }; 
