@@ -71,8 +71,8 @@ const addAddress = async (userId, data, isDefault = false) => {
     if (isDefault){
       await client.query('UPDATE addresses SET is_default = false WHERE user_id = $1', [userId]);
     }
-    const query = 'INSERT INTO addresses (user_id, city, district, ward, street, is_default) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-    const values = [userId, data.city, data.district, data.ward, data.street, isDefault];
+    const query = 'INSERT INTO addresses (user_id, city, district, ward, street, is_default, name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+    const values = [userId, data.city, data.district, data.ward, data.street, isDefault, data.name];
     const res = await client.query(query, values);
     await client.query('COMMIT');
     return res.rows[0];
@@ -123,15 +123,15 @@ const updateAddress = async (user_id, address_id, data, isDefault = false) => {
     if (isDefault){
       // set tat ca con lai ve false 
       await client.query('UPDATE addresses SET is_default = false WHERE user_id = $1', [user_id]);
-      const query = 'UPDATE addresses SET city = $1, district = $2, ward = $3, street = $4, is_default = true WHERE address_id = $5 AND user_id = $6 RETURNING *';
-      const values = [data.city, data.district, data.ward, data.street, address_id, user_id];
+      const query = 'UPDATE addresses SET city = $1, district = $2, ward = $3, street = $4, is_default = true, name = $7 WHERE address_id = $5 AND user_id = $6 RETURNING *';
+      const values = [data.city, data.district, data.ward, data.street, address_id, user_id, data.name];
       const res = await client.query(query, values);
       await client.query('COMMIT');
       return res.rows[0];
     }
     else {
-      const query = 'UPDATE addresses SET city = $1, district = $2, ward = $3, street = $4 WHERE address_id = $5 AND user_id = $6 RETURNING *';
-      const values = [data.city, data.district, data.ward, data.street, address_id, user_id];
+      const query = 'UPDATE addresses SET city = $1, district = $2, ward = $3, street = $4, name = $7 WHERE address_id = $5 AND user_id = $6 RETURNING *';
+      const values = [data.city, data.district, data.ward, data.street, address_id, user_id, data.name];
       const res = await client.query(query, values);
       await client.query('COMMIT');
       return res.rows[0];

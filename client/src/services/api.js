@@ -29,7 +29,7 @@ export const productService = {
 };
 
 export const adminService = {
-  getDashboardStats: () => api.get('/admin/dashboard-stats'),
+  getDashboardStats: () => api.get('/admin/stats'),
   getUsers: (params) => api.get('/admin/users', { params }),
   updateInventory: (variantId, data) => api.put(`/admin/inventory/${variantId}`, data),
 };

@@ -242,11 +242,11 @@ export const getAddresses = asyncHandler(async (req, res) => {
 
 export const addAddress = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { city, district, ward, street, is_default } = req.body;
+    const { name, city, district, ward, street, is_default } = req.body;
     if (!city || !district || !ward || !street) {
         throw new ErrorResponse("Vui lòng điền đầy đủ thông tin địa chỉ", 400);
     }
-    const data = { city, district, ward, street };
+    const data = { name, city, district, ward, street };
     const newAddress = await User.addAddress(userId, data, is_default);
     res.status(201).json({
         success: true,
@@ -270,8 +270,8 @@ export const deleteAddress = asyncHandler(async (req, res) => {
 export const updateAddress = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const address_id = req.params.addressId;
-    const { city, district, ward, street, is_default } = req.body;
-    const data = { city, district, ward, street };
+    const { name, city, district, ward, street, is_default } = req.body;
+    const data = { name, city, district, ward, street };
     const updatedAddress = await User.updateAddress(userId, address_id, data, is_default);
     res.status(200).json({
         success: true,
