@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
+import { adminService } from '../../services/api';
 import { Loader2, TrendingUp } from 'lucide-react';
 
 const DashboardView = () => {
   const [stats, setStats] = useState({ revenue: 0, newOrders: 0, totalUsers: 0, totalProducts: 0 });
   const [loading, setLoading] = useState(true);
 
-  // Cấu hình API ngay tại đây
-  const api = axios.create({
-    baseURL: 'https://e-commerce-6gc6.onrender.com/api',
-    withCredentials: true,
-  });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await api.get('/admin/stats');
+        const res = await adminService.getDashboardStats();
         setStats(res.data);
       } catch (error) {
         console.warn("Chưa kết nối được API stats, dùng dữ liệu mẫu");
@@ -47,7 +42,7 @@ const DashboardView = () => {
         ))}
       </div>
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 h-80 flex flex-col items-center justify-center text-gray-400">
-        <TrendingUp size={48} className="mb-2 opacity-50"/>
+        <TrendingUp size={48} className="mb-2 opacity-50" />
         <p>Biểu đồ doanh thu sẽ hiển thị ở đây</p>
       </div>
     </div>

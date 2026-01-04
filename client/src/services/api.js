@@ -18,14 +18,20 @@ export const authService = {
   sendForgotOTP: (email) => api.post('/auth/forgot-password', { email }),
   verifyForgotOTP: (data) => api.post('/auth/verify-forgot-otp', data),
   resetPassword: (data) => api.post('/auth/reset-password', data),
+  getAddresses: () => api.get('/auth/addresses'),
+  addAddress: (data) => api.post('/auth/addresses', data),
+  updateAddress: (id, data) => api.put(`/auth/addresses/${id}`, data),
+  deleteAddress: (id) => api.delete(`/auth/addresses/${id}`),
+  getDefaultAddress: () => api.get('/auth/addresses/default'),
 };
 
 export const productService = {
   getProducts: (params) => api.get('/products', { params }),
   getProductById: (id) => api.get(`/products/${id}`),
-  getProduct: (id) => api.get(`/products/${id}`), 
+  getProduct: (id) => api.get(`/products/${id}`),
   getBrands: () => api.get('/products/brands'),
   getParentCategories: () => api.get('/products/categories/parents'),
+  createProduct: (data) => api.post('/products', data),
 };
 
 export const adminService = {
@@ -40,6 +46,12 @@ export const cartService = {
   removeFromCart: (id) => api.delete(`/cart/remove/${id}`),
   updateQuantity: (data) => api.put('/cart/update', data),
   clearCart: () => api.delete('/cart/clear'),
+};
+
+export const orderService = {
+  createOrder: (data) => api.post('/orders', data),
+  getUserOrderHistory: () => api.get('/orders/orderHistory'),
+  getOrderById: (id) => api.get(`/orders/${id}`),
 };
 
 export default api;
