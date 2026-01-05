@@ -48,7 +48,7 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
         {product.name}
       </h1>
 
-      <div className="flex flex-wrap items-center gap-4 mb-6">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="flex items-center gap-1">
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
@@ -68,7 +68,7 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
           </span>
         )}
         <div className="h-4 w-px bg-gray-300 hidden sm:block"></div>
-        <span className="text-sm text-gray-500">SKU: {product.sku || `SP-${product.id}`}</span>
+        <span className="text-sm text-gray-500">SKU: {activeVariant?.sku}</span>
       </div>
 
       {/* Giá tiền */}

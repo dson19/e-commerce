@@ -1,4 +1,5 @@
 import React from 'react';
+import ProductReviews from './ProductReviews';
 
 const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
   return (
@@ -9,8 +10,8 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
           <button
             onClick={() => setActiveTab('specs')}
             className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${activeTab === 'specs'
-                ? 'border-[#004535] text-[#004535]'
-                : 'border-transparent text-gray-500 hover:text-gray-800'
+              ? 'border-[#004535] text-[#004535]'
+              : 'border-transparent text-gray-500 hover:text-gray-800'
               }`}
           >
             Thông số kỹ thuật
@@ -19,8 +20,8 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
         <button
           onClick={() => setActiveTab('reviews')}
           className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${activeTab === 'reviews'
-              ? 'border-[#004535] text-[#004535]'
-              : 'border-transparent text-gray-500 hover:text-gray-800'
+            ? 'border-[#004535] text-[#004535]'
+            : 'border-transparent text-gray-500 hover:text-gray-800'
             }`}
         >
           Đánh giá ({reviewsCount})
@@ -28,8 +29,8 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
         <button
           onClick={() => setActiveTab('policy')}
           className={`pb-4 px-6 text-sm font-bold uppercase tracking-wide whitespace-nowrap transition-colors border-b-2 ${activeTab === 'policy'
-              ? 'border-[#004535] text-[#004535]'
-              : 'border-transparent text-gray-500 hover:text-gray-800'
+            ? 'border-[#004535] text-[#004535]'
+            : 'border-transparent text-gray-500 hover:text-gray-800'
             }`}
         >
           Chính sách bảo hành
@@ -54,14 +55,7 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
         )}
 
         {activeTab === 'reviews' && (
-          <div className="animate-in fade-in duration-300">
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <p className="text-gray-500 mb-4">Chưa có đánh giá nào cho sản phẩm này.</p>
-              <button className="px-6 py-2 border border-[#004535] text-[#004535] rounded-full hover:bg-[#004535] hover:text-white transition-all font-medium text-sm">
-                Viết đánh giá ngay
-              </button>
-            </div>
-          </div>
+          <ProductReviews />
         )}
 
         {activeTab === 'policy' && (
