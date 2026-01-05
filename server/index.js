@@ -8,7 +8,7 @@ import productRoutes from './routes/productRoutes.js';
 import adminRoute from './routes/adminRoutes.js';
 import orderRoute from './routes/orderRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
-
+import reviewRoutes from './routes/reviewRoutes.js';
 //đọc file .env
 dotenv.config();
 
