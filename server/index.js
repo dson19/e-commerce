@@ -33,5 +33,3 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server đang chạy ở http://localhost:${PORT}`);
 });
-
-

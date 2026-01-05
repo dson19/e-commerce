@@ -41,6 +41,32 @@ const CheckoutSuccessPage = () => {
         });
     };
 
+    const isPendingPayment = order?.payment_method === 'VIETQR' && (order?.status === 'Pending' || order?.status === 'pending');
+
+    useEffect(() => {
+        let intervalId;
+
+        if (order && isPendingPayment) {
+            intervalId = setInterval(async () => {
+                try {
+                    const res = await orderService.getOrderById(orderId);
+                    if (res.data.success) {
+                        const updatedOrder = res.data.data;
+                        if (updatedOrder.status !== 'Pending' && updatedOrder.status !== 'pending') {
+                            setOrder(updatedOrder);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error polling order status:", error);
+                }
+            }, 3000);
+        }
+
+        return () => {
+            if (intervalId) clearInterval(intervalId);
+        };
+    }, [order, isPendingPayment, orderId]);
+
     if (loading) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
@@ -65,7 +91,7 @@ const CheckoutSuccessPage = () => {
         );
     }
 
-    const isPendingPayment = order.payment_method === 'VIETQR' && (order.status === 'Pending' || order.status === 'pending');
+
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-12 md:py-20">
