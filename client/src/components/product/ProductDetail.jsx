@@ -45,12 +45,36 @@ const ProductDetail = () => {
 
         // 1. Map Variants -> Options (Màu sắc) & Gallery
         if (product.variants && product.variants.length > 0) {
-          const colors = product.variants.map(v => v.color).filter(Boolean);
+          // Color Option
+          const colors = [...new Set(product.variants.map(v => v.color).filter(Boolean))];
           if (colors.length > 0) {
             mappedOptions.push({
               name: "Màu sắc",
               variants: colors,
               key: 'color'
+            });
+          }
+
+          // Storage (ROM) Option
+          const roms = [...new Set(product.variants.map(v => v.rom).filter(Boolean))];
+          if (roms.length > 0) {
+            // Sort ROMs numerically if possible (e.g. 128GB < 256GB)
+            roms.sort((a, b) => parseInt(a) - parseInt(b));
+            mappedOptions.push({
+              name: "Dung lượng",
+              variants: roms,
+              key: 'rom'
+            });
+          }
+
+          // RAM Option
+          const rams = [...new Set(product.variants.map(v => v.ram).filter(Boolean))];
+          if (rams.length > 0) {
+            rams.sort((a, b) => parseInt(a) - parseInt(b));
+            mappedOptions.push({
+              name: "RAM",
+              variants: rams,
+              key: 'ram'
             });
           }
 
@@ -61,7 +85,8 @@ const ProductDetail = () => {
             if (vImg) {
               galleryImages.push({
                 id: `var-${index}`,
-                url: vImg.split(';')[0] // Clean if multiple
+                url: vImg.split(';')[0], // Clean if multiple
+                color: v.color // Attach color for syncing
               });
             }
           });
@@ -107,11 +132,16 @@ const ProductDetail = () => {
             extendedProduct.options.forEach(opt => {
               // Assumes simple mapping where variant has keys matching option names or mapped keys
               // Our options are constructed from variants, e.g. "Màu sắc" -> v.color
-              if (opt.name === "Màu sắc" && variantBySku.color) {
-                initialOptions["Màu sắc"] = variantBySku.color;
-                // Also update main image
-                const vImg = variantBySku.img || variantBySku.image_url;
-                if (vImg) setMainImage(vImg.split(';')[0]);
+              // Generic matcher for SKU pre-selection
+              const key = opt.key; // e.g., 'color', 'rom', 'ram'
+              if (key && variantBySku[key]) {
+                initialOptions[opt.name] = variantBySku[key];
+
+                // If color, update image
+                if (key === 'color') {
+                  const vImg = variantBySku.img || variantBySku.image_url;
+                  if (vImg) setMainImage(vImg.split(';')[0]);
+                }
               }
             });
           }
@@ -120,8 +150,15 @@ const ProductDetail = () => {
         // Fallback: If no SKU matched (or no SKU provided), select the first variant by default
         if (Object.keys(initialOptions).length === 0 && extendedProduct.variants && extendedProduct.variants.length > 0) {
           const firstVariant = extendedProduct.variants[0];
+          // Auto-select first available options
+          extendedProduct.options.forEach(opt => {
+            const key = opt.key;
+            if (firstVariant[key]) {
+              initialOptions[opt.name] = firstVariant[key];
+            }
+          });
+
           if (firstVariant.color) {
-            initialOptions["Màu sắc"] = firstVariant.color;
             // Also update main image
             const vImg = firstVariant.img || firstVariant.image_url;
             if (vImg) setMainImage(vImg.split(';')[0]);
@@ -184,6 +221,13 @@ const ProductDetail = () => {
           setMainImage(vImg.split(';')[0]);
         }
       }
+    }
+  };
+
+  const handleGalleryImageSelect = (imgObj) => {
+    setMainImage(imgObj.url);
+    if (imgObj.color) {
+      handleOptionSelect("Màu sắc", imgObj.color);
     }
   };
 
@@ -254,6 +298,7 @@ const ProductDetail = () => {
                 gallery={productData.gallery}
                 mainImage={mainImage}
                 setMainImage={setMainImage}
+                onImageSelect={handleGalleryImageSelect}
               />
             </div>
             <div className="lg:col-span-5">

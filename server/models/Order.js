@@ -145,16 +145,51 @@ const updateOrderStatusToPaid = async (orderId) => {
     const values = [orderId];
     await pool.query(query, values);
 }
-const checkOrderStatus = async (orderId) => {
-    const query = `
-        SELECT status
-        FROM orders
-        WHERE order_id = $1`;
-    const values = [orderId];
-    const res = await pool.query(query, values);
-    if (res.rows.length === 0) {
-        return null;
+const cancelOrder = async (orderId) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // 1. Check current status
+        const checkQuery = 'SELECT status FROM orders WHERE order_id = $1';
+        const checkRes = await client.query(checkQuery, [orderId]);
+        if (checkRes.rows.length === 0) {
+            throw new Error('Đơn hàng không tồn tại');
+        }
+        const currentStatus = checkRes.rows[0].status;
+        if (currentStatus !== 'Pending') {
+            throw new Error('Chỉ có thể hủy đơn hàng đang chờ thanh toán');
+        }
+
+        // 2. Update status to Cancelled
+        const updateQuery = `
+            UPDATE orders
+            SET status = 'Cancelled'
+            WHERE order_id = $1`;
+        await client.query(updateQuery, [orderId]);
+
+        // 3. Restore reserved stock
+        // Get items in the order
+        const itemsQuery = 'SELECT variant_id, quantity FROM order_items WHERE order_id = $1';
+        const itemsRes = await client.query(itemsQuery, [orderId]);
+        const items = itemsRes.rows;
+
+        for (const item of items) {
+            const restoreStockQuery = `
+                UPDATE inventory
+                SET reserved_stock = reserved_stock - $1
+                WHERE variant_id = $2`;
+            await client.query(restoreStockQuery, [item.quantity, item.variant_id]);
+        }
+
+        await client.query('COMMIT');
+        return true;
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
     }
-    return res.rows[0].status;
-}
-export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid };
+};
+
+export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid, cancelOrder };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle, ShoppingBag, ArrowRight } from 'lucide-react';
+import { CheckCircle, ShoppingBag, ArrowRight, XCircle } from 'lucide-react';
 import { orderService } from '@/services/api';
 import PaymentPendingSection from '@/components/checkout/PaymentPendingSection';
 import OrderItemsList from '@/components/checkout/OrderItemsList';
@@ -27,6 +27,16 @@ const CheckoutSuccessPage = () => {
         };
         fetchOrder();
     }, [orderId]);
+
+    const handleCancelOrder = async () => {
+        if (!order) return;
+        try {
+            await orderService.cancelOrder(order.order_id);
+            setOrder(prev => ({ ...prev, status: 'Cancelled' }));
+        } catch (error) {
+            console.error("Failed to auto-cancel order:", error);
+        }
+    };
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Đang cập nhật...';
@@ -66,6 +76,8 @@ const CheckoutSuccessPage = () => {
             if (intervalId) clearInterval(intervalId);
         };
     }, [order, isPendingPayment, orderId]);
+
+    const isCancelled = order?.status === 'Cancelled' || order?.status === 'cancelled';
 
     if (loading) {
         return (
@@ -125,24 +137,43 @@ const CheckoutSuccessPage = () => {
                 {/* Order Details & Payment Area */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* VIETQR Payment Section */}
-                    {isPendingPayment && <PaymentPendingSection order={order} />}
+                    {isPendingPayment && <PaymentPendingSection order={order} onTimeout={handleCancelOrder} />}
+
+                    {/* Cancelled Message */}
+                    {isCancelled && (
+                        <div className="bg-red-50 border-2 border-red-100 rounded-2xl p-8 text-center">
+                            <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <XCircle size={32} />
+                            </div>
+                            <h3 className="text-xl font-bold text-red-700 mb-2">Đơn hàng đã bị hủy</h3>
+                            <p className="text-gray-600 mb-6">
+                                Rất tiếc, thời gian thanh toán đã hết (10 phút). <br />
+                                Vui lòng đặt lại đơn hàng mới nếu bạn vẫn muốn mua sản phẩm này.
+                            </p>
+                            <Link to="/" className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-600/20">
+                                Tiếp tục mua sắm <ArrowRight size={18} />
+                            </Link>
+                        </div>
+                    )}
 
                     {/* Items List */}
-                    <OrderItemsList order={order} isPendingPayment={isPendingPayment} />
+                    {!isCancelled && <OrderItemsList order={order} isPendingPayment={isPendingPayment} />}
 
                     {/* Navigation Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                        <Link to="/" className="flex-1 bg-white border-2 border-gray-100 text-gray-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all">
-                            {isPendingPayment ? 'Mua thêm sản phẩm khác' : 'Tiếp tục mua sắm'}
-                        </Link>
-                        <Link to="/profile/orders" className={`flex-1 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all ${isPendingPayment ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20' : 'bg-[#004535] hover:bg-[#003528] shadow-[#004535]/20'}`}>
-                            {isPendingPayment ? (
-                                <>Kiểm tra trạng thái <ArrowRight size={18} /></>
-                            ) : (
-                                <>Theo dõi đơn hàng <ArrowRight size={18} /></>
-                            )}
-                        </Link>
-                    </div>
+                    {!isCancelled && (
+                        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                            <Link to="/" className="flex-1 bg-white border-2 border-gray-100 text-gray-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all">
+                                {isPendingPayment ? 'Mua thêm sản phẩm khác' : 'Tiếp tục mua sắm'}
+                            </Link>
+                            <Link to="/profile/orders" className={`flex-1 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all ${isPendingPayment ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20' : 'bg-[#004535] hover:bg-[#003528] shadow-[#004535]/20'}`}>
+                                {isPendingPayment ? (
+                                    <>Kiểm tra trạng thái <ArrowRight size={18} /></>
+                                ) : (
+                                    <>Theo dõi đơn hàng <ArrowRight size={18} /></>
+                                )}
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 {/* Info Sidebar */}

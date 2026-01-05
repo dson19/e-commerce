@@ -11,9 +11,21 @@ const ProductInfo = ({ product, selectedOptions, handleOptionSelect, handleAddTo
   let availableStock = 0;
   let activeVariant = null;
 
-  // Handle "Màu sắc" selection specifically since ProductDetail is currently mapping it simply
-  if (selectedOptions["Màu sắc"] && product.variants) {
-    activeVariant = product.variants.find(v => v.color === selectedOptions["Màu sắc"]);
+  // Handle selection based on mapped options
+  if (product.options && product.variants) {
+    // Find variant that matches ALL selected options
+    activeVariant = product.variants.find(v => {
+      return product.options.every(opt => {
+        const selectedVal = selectedOptions[opt.name];
+        if (!selectedVal) return true; // Ignore if option not selected? Or false? 
+        // Better to only match if selected. If not selected, we can't be sure, but usually we auto-select.
+
+        const key = opt.key || 'color';
+        // Check loose equality for numbers/strings safety
+        return v[key] == selectedVal;
+      });
+    });
+
     if (activeVariant) {
       // Use bestPrice/lastPrice from API (camelCase)
       displayPrice = activeVariant.bestPrice || activeVariant.price || displayPrice;
