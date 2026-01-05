@@ -8,7 +8,39 @@ import ShippingInfo from '@/components/checkout/ShippingInfo';
 
 const CheckoutSuccessPage = () => {
     const { orderId } = useParams();
-    const { order, loading, error } = useOrderDetail(orderId);
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+            if (!orderId) return;
+            try {
+                const res = await orderService.getOrderById(orderId);
+                if (res.data.success) {
+                    setOrder(res.data.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch order:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrder();
+    }, [orderId]);
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Đang cập nhật...';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Đang cập nhật...';
+        return date.toLocaleString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     if (loading) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
