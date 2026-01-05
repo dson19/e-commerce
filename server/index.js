@@ -26,6 +26,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/payment', paymentRoute);
+app.use('/api', reviewRoutes);
 // Error Handler Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
 import startOrderCleanupTask from './utils/orderScheduler.js';
