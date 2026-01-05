@@ -27,15 +27,27 @@ const CheckoutSuccessPage = () => {
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Đang cập nhật...';
-        const date = new Date(dateString);
+
+        // Input: "2026-01-05 07:21:00.235626+00"
+        
+        // Bước 1: Chỉ thay thế dấu cách bằng chữ 'T' để đúng chuẩn ISO
+        // Kết quả sẽ là: "2026-01-05T07:21:00.235626+00"
+        // (Không được cộng thêm chữ 'Z' nữa vì đuôi '+00' đã là ký hiệu múi giờ rồi)
+        const standardizedDate = dateString.replace(' ', 'T');
+
+        const date = new Date(standardizedDate);
+
         if (isNaN(date.getTime())) return 'Đang cập nhật...';
-        return date.toLocaleString('vi-VN', {
+
+        // Bước 2: Ép hiển thị theo giờ Việt Nam
+        return new Intl.DateTimeFormat('vi-VN', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
-        });
+            minute: '2-digit',
+            timeZone: 'Asia/Ho_Chi_Minh' // Quan trọng: Convert từ +00 sang +7
+        }).format(date);
     };
 
     if (loading) {
