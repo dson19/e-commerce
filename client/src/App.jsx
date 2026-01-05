@@ -42,7 +42,7 @@ function App() {
             <Route path="/:parentCategory/:category/:slug" element={<ProductDetailPage />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/:tab?" element={<ProfilePage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout/success/:orderId" element={<CheckoutSuccessPage />} />
               <Route path="/orders" element={<OrderPage />} />

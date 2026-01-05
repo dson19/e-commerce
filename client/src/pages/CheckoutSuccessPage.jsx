@@ -125,7 +125,7 @@ const CheckoutSuccessPage = () => {
                         <Link to="/" className="flex-1 bg-white border-2 border-gray-100 text-gray-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all">
                             Tiếp tục mua sắm
                         </Link>
-                        <Link to="/orders" className="flex-1 bg-[#004535] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#004535]/20 hover:bg-[#003528] transition-all">
+                        <Link to="/profile/orders" className="flex-1 bg-[#004535] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#004535]/20 hover:bg-[#003528] transition-all">
                             Theo dõi đơn hàng <ArrowRight size={18} />
                         </Link>
                     </div>

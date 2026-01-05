@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -14,7 +14,8 @@ import OrderHistory from '../components/profile/OrderHistory';
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile');
+  const { tab } = useParams();
+  const activeTab = tab || 'profile'; // Default tab
 
   const menuItems = [
     { id: 'overview', label: 'Tổng quan', icon: <LayoutDashboard size={20} /> },
@@ -53,7 +54,6 @@ const ProfilePage = () => {
         <ProfileSidebar
           user={user}
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
           menuItems={menuItems}
         />
 

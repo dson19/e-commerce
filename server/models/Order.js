@@ -93,9 +93,21 @@ const getOrderById = async (userId, orderId) => {
 };
 const getUserOrderHistory = async (userId) => {
     const ordersQuery = `
-        SELECT *, order_date as created_at FROM orders
-        WHERE user_id = $1
-        ORDER BY order_date DESC`;
+        SELECT o.*, o.order_date as created_at,
+        json_agg(json_build_object(
+            'product_name', p.name,
+            'color', pv.color,
+            'price', oi.price,
+            'quantity', oi.quantity,
+            'img', pv.image_url
+        )) AS items
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        LEFT JOIN product_variants pv ON oi.variant_id = pv.variant_id
+        LEFT JOIN products p ON pv.product_id = p.id
+        WHERE o.user_id = $1
+        GROUP BY o.order_id
+        ORDER BY o.order_date DESC`;
     const ordersValues = [userId];
     const ordersRes = await pool.query(ordersQuery, ordersValues);
     return ordersRes.rows;

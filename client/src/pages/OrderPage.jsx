@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import {
@@ -15,64 +15,40 @@ import {
 } from "lucide-react";
 import { useAuth } from '@/context/AuthContext';
 
+import { orderService } from '@/services/api';
+import { formatCurrency } from '@/utils/currency';
+
 const OrderPage = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("ALL");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // --- MOCK DATA ---
-  const MOCK_ORDERS = [
-    {
-      id: "DH00123",
-      date: "24/12/2024",
-      status: "DELIVERED",
-      total: "37.190.000 ₫",
-      items: [
-        {
-          name: "iPhone 15 Pro Max 256GB - Titan Tự Nhiên",
-          img: "https://cdn.hoanghamobile.com/i/productlist/dsp/Uploads/2023/09/13/iphone-15-pro-max-natural-titanium-pure-back-iphone-15-pro-max-natural-titanium-pure-front-2up-screen-usen.png",
-          qty: 1,
-          price: "34.990.000 ₫",
-        },
-        {
-          name: "Ốp lưng MagSafe trong suốt",
-          img: "https://cdn.hoanghamobile.com/i/productlist/dsp/Uploads/2023/09/13/op-lung-magsafe.png",
-          qty: 1,
-          price: "2.200.000 ₫",
-        },
-      ],
-    },
-    {
-      id: "DH00124",
-      date: "25/12/2024",
-      status: "SHIPPING",
-      total: "26.990.000 ₫",
-      items: [
-        {
-          name: "Samsung Galaxy S24 Ultra 256GB - Xám Titan",
-          img: "https://cdn.hoanghamobile.com/i/home/Uploads/2024/01/19/web-s24-ultra-01.jpg",
-          qty: 1,
-          price: "26.990.000 ₫",
-        },
-      ],
-    },
-    {
-      id: "DH00125",
-      date: "20/12/2024",
-      status: "CANCELLED",
-      total: "18.490.000 ₫",
-      items: [
-        {
-          name: "Xiaomi 14 5G 12GB/256GB",
-          img: "https://cdn.hoanghamobile.vn/Uploads/2024/03/13/xiaomi-14-black.png",
-          qty: 1,
-          price: "18.490.000 ₫",
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await orderService.getUserOrderHistory();
+        if (res.data.success) {
+          setOrders(res.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('vi-VN');
+  };
 
   const getStatusInfo = (status) => {
-    switch (status) {
+    // Determine status key regardless of case
+    const statusKey = status?.toUpperCase() || 'UNKNOWN';
+
+    switch (statusKey) {
       case "PENDING":
         return {
           label: "Chờ xác nhận",
@@ -88,6 +64,7 @@ const OrderPage = () => {
           icon: <Truck size={16} />,
         };
       case "DELIVERED":
+      case "PAID": // Handle 'paid' status as well if needed or map it
         return {
           label: "Giao thành công",
           color: "text-green-600",
@@ -103,17 +80,18 @@ const OrderPage = () => {
         };
       default:
         return {
-          label: "Không xác định",
+          label: status, // Fallback to raw status if unknown
           color: "text-gray-500",
           bg: "bg-gray-50",
+          icon: <Clock size={16} />,
         };
     }
   };
 
   const filteredOrders =
     activeTab === "ALL"
-      ? MOCK_ORDERS
-      : MOCK_ORDERS.filter((o) => o.status === activeTab);
+      ? orders
+      : orders.filter((o) => o.status?.toUpperCase() === activeTab);
 
   const TABS = [
     { id: "ALL", label: "Tất cả" },
@@ -211,23 +189,28 @@ const OrderPage = () => {
 
               {/* LIST ORDERS */}
               <div className="space-y-4">
-                {filteredOrders.length > 0 ? (
+                {loading ? (
+                  <div className="py-12 text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004535] mx-auto mb-4"></div>
+                    <p className="text-gray-500">Đang tải đơn hàng...</p>
+                  </div>
+                ) : filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => {
                     const statusInfo = getStatusInfo(order.status);
 
                     return (
                       <div
-                        key={order.id}
+                        key={order.order_id}
                         className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                       >
                         <div className="p-4 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-gray-50/30">
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-gray-800 text-sm">
-                              #{order.id}
+                              #{order.order_id}
                             </span>
                             <span className="text-gray-400 text-xs">•</span>
                             <span className="text-gray-500 text-xs">
-                              {order.date}
+                              {formatDate(order.created_at)}
                             </span>
                           </div>
                           <div
@@ -239,34 +222,39 @@ const OrderPage = () => {
                         </div>
 
                         <div className="p-4">
-                          {order.items.map((item, index) => (
+                          {order.items?.map((item, index) => (
                             <div
                               key={index}
                               className="flex gap-4 mb-4 last:mb-0"
                             >
-                              <div className="w-20 h-20 border border-gray-100 rounded-lg shrink-0 p-1">
-                                <img
-                                  src={item.img}
-                                  alt={item.name}
-                                  className="w-full h-full object-contain mix-blend-multiply"
-                                />
+                              <div className="w-20 h-20 border border-gray-100 rounded-lg shrink-0 p-1 flex items-center justify-center bg-gray-50 overflow-hidden">
+                                {item.img ? (
+                                  <img
+                                    src={item.img}
+                                    alt={item.product_name}
+                                    className="w-full h-full object-contain mix-blend-multiply"
+                                  />
+                                ) : (
+                                  <Package size={24} className="text-gray-300" />
+                                )}
                               </div>
                               <div className="flex-1">
                                 <h4 className="font-medium text-gray-800 text-sm line-clamp-2">
-                                  {item.name}
+                                  {item.product_name}
                                 </h4>
+                                <p className="text-xs text-gray-500 mt-1">Màu: {item.color}</p>
                                 <div className="flex items-center justify-between mt-1">
                                   <p className="text-gray-500 text-xs">
-                                    x{item.qty}
+                                    x{item.quantity}
                                   </p>
                                   <span className="text-[#004535] text-sm font-semibold sm:hidden">
-                                    {item.price}
+                                    {formatCurrency(item.price)}
                                   </span>
                                 </div>
                               </div>
                               <div className="hidden sm:block text-right">
                                 <span className="text-[#004535] text-sm font-semibold">
-                                  {item.price}
+                                  {formatCurrency(item.price)}
                                 </span>
                               </div>
                             </div>
@@ -279,12 +267,12 @@ const OrderPage = () => {
                               Thành tiền:
                             </span>
                             <span className="text-lg font-bold text-[#E11D48]">
-                              {order.total}
+                              {formatCurrency(order.grand_total)}
                             </span>
                           </div>
 
                           <div className="flex gap-2 w-full sm:w-auto">
-                            {order.status === "DELIVERED" ? (
+                            {order.status === "DELIVERED" || order.status === 'paid' ? (
                               <>
                                 <button className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">
                                   Đánh giá
@@ -294,9 +282,9 @@ const OrderPage = () => {
                                 </button>
                               </>
                             ) : (
-                              <button className="flex-1 sm:flex-none px-6 py-2 border border-[#004535] text-[#004535] rounded-lg text-sm font-medium hover:bg-[#004535] hover:text-white transition-colors">
+                              <Link to={`/checkout/success/${order.order_id}`} className="flex-1 sm:flex-none px-6 py-2 border border-[#004535] text-[#004535] rounded-lg text-sm font-medium hover:bg-[#004535] hover:text-white transition-colors text-center">
                                 Xem chi tiết
-                              </button>
+                              </Link>
                             )}
                           </div>
                         </div>

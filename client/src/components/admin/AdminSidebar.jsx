@@ -26,9 +26,6 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
         <button onClick={() => setActiveTab('users')} className={menuClass('users')}>
           <Users size={20} /> Người dùng
         </button>
-        <button onClick={() => setActiveTab('user-analytics')} className={menuClass('user-analytics')}>
-          <PieChart size={20} /> Phân tích User
-        </button>
         <button onClick={() => setActiveTab('products')} className={menuClass('products')}>
           <ShoppingBag size={20} /> Sản phẩm
         </button>

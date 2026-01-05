@@ -28,7 +28,7 @@ export const useCheckout = () => {
                     quantity: item.quantity
                 })),
                 address_id: selectedAddress.address_id,
-                paymentMethod: 'COD', // Currently hardcoded as per previous code
+                paymentMethod: 'Thanh toán khi nhận hàng', // Currently hardcoded as per previous code
                 phone_number: selectedAddress.phone,
                 name: selectedAddress.name
             };
