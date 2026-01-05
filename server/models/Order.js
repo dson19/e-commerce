@@ -74,7 +74,8 @@ const getOrderById = async (userId, orderId) => {
             'product_name', p.name,
             'color', pv.color,
             'price', oi.price,
-            'quantity', oi.quantity
+            'quantity', oi.quantity,
+            'img', pv.image_url
         )) AS items
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
@@ -107,7 +108,8 @@ const getOrderByIdNoUserId = async (orderId) => {
             'product_name', p.name,
             'color', pv.color,
             'price', oi.price,
-            'quantity', oi.quantity
+            'quantity', oi.quantity,
+            'img', pv.image_url
         )) AS items
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
