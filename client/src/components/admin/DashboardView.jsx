@@ -3,7 +3,7 @@ import { adminService } from '../../services/api';
 import { Loader2, TrendingUp } from 'lucide-react';
 
 const DashboardView = () => {
-  const [stats, setStats] = useState({ revenue: 0, newOrders: 0, totalUsers: 0, totalProducts: 0 });
+  const [stats, setStats] = useState({ totalUsers: 0, totalOrders: 0, totalRevenue: 0 });
   const [loading, setLoading] = useState(true);
 
 
@@ -11,7 +11,10 @@ const DashboardView = () => {
     const fetchStats = async () => {
       try {
         const res = await adminService.getDashboardStats();
-        setStats(res.data);
+        // Backend returns { success: true, data: { ... } }
+        if (res.data && res.data.success) {
+          setStats(res.data.data);
+        }
       } catch (error) {
         console.warn("Chưa kết nối được API stats, dùng dữ liệu mẫu");
       } finally {
@@ -24,16 +27,15 @@ const DashboardView = () => {
   if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-[#004535]" /></div>;
 
   const cards = [
-    { label: 'Tổng doanh thu', value: `${stats.revenue?.toLocaleString() || 0}₫`, color: 'bg-green-100 text-green-700' },
-    { label: 'Đơn hàng mới', value: stats.newOrders || 0, color: 'bg-blue-100 text-blue-700' },
+    { label: 'Tổng doanh thu', value: `${stats.totalRevenue?.toLocaleString() || 0}₫`, color: 'bg-green-100 text-green-700' },
+    { label: 'Tổng đơn hàng', value: stats.totalOrders || 0, color: 'bg-blue-100 text-blue-700' },
     { label: 'Khách hàng', value: stats.totalUsers || 0, color: 'bg-purple-100 text-purple-700' },
-    { label: 'Sản phẩm', value: stats.totalProducts || 0, color: 'bg-orange-100 text-orange-700' },
   ];
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800">Tổng quan hệ thống</h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {cards.map((item, idx) => (
           <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <p className="text-gray-500 text-sm font-medium">{item.label}</p>

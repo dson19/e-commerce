@@ -15,7 +15,7 @@ import ProductTabs from "./detail/ProductTabs";
 
 const ProductDetail = () => {
   const { productId, slug } = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const sku = searchParams.get('sku');
 
   const navigate = useNavigate();
@@ -30,6 +30,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+
+  // 1. Fetch Data Effect (Runs only on ID/Slug change)
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -95,14 +97,37 @@ const ProductDetail = () => {
         // Add main product image to gallery if not present
         const mainImgUrl = product.img ? product.img.split(';')[0] : null;
         if (mainImgUrl) {
+          // Check if this image matches any variant to retrieve color
+          const matchingVariant = product.variants.find(v => {
+            const vUrl = v.img || v.image_url;
+            return vUrl && vUrl.split(';')[0] === mainImgUrl;
+          });
+
           // Insert at beginning
-          galleryImages.unshift({ id: 'main', url: mainImgUrl });
+          galleryImages.unshift({
+            id: 'main',
+            url: mainImgUrl,
+            color: matchingVariant ? matchingVariant.color : null
+          });
         }
 
         // Deduplicate gallery
-        galleryImages = galleryImages.filter((img, index, self) =>
-          index === self.findIndex((t) => t.url === img.url)
-        );
+        const myUniqueGallery = [];
+        const seenUrls = new Set();
+
+        galleryImages.forEach(img => {
+          if (!seenUrls.has(img.url)) {
+            seenUrls.add(img.url);
+            myUniqueGallery.push(img);
+          } else {
+            // If we've seen this URL, check if the NEW item has a color but the EXISTING one doesn't
+            const existingIndex = myUniqueGallery.findIndex(g => g.url === img.url);
+            if (existingIndex !== -1 && !myUniqueGallery[existingIndex].color && img.color) {
+              myUniqueGallery[existingIndex].color = img.color;
+            }
+          }
+        });
+        galleryImages = myUniqueGallery;
 
         // Fallback gallery
         if (galleryImages.length === 0) {
@@ -124,47 +149,34 @@ const ProductDetail = () => {
         setProductData(extendedProduct);
         setMainImage(galleryImages[0].url);
 
-        // Pre-select options based on SKU from URL
-        let initialOptions = {};
-        if (sku && extendedProduct.variants) {
-          const variantBySku = extendedProduct.variants.find(v => v.sku === sku || `SP-${v.id}` === sku);
-          if (variantBySku) {
-            extendedProduct.options.forEach(opt => {
-              // Assumes simple mapping where variant has keys matching option names or mapped keys
-              // Our options are constructed from variants, e.g. "Màu sắc" -> v.color
-              // Generic matcher for SKU pre-selection
-              const key = opt.key; // e.g., 'color', 'rom', 'ram'
-              if (key && variantBySku[key]) {
-                initialOptions[opt.name] = variantBySku[key];
+        // Fallback: If no SKU provided, select the variant that matches the main image, otherwise the first variant
+        if (extendedProduct.variants && extendedProduct.variants.length > 0) {
+          let defaultVariant = extendedProduct.variants[0];
 
-                // If color, update image
-                if (key === 'color') {
-                  const vImg = variantBySku.img || variantBySku.image_url;
-                  if (vImg) setMainImage(vImg.split(';')[0]);
-                }
-              }
+          // Try to find variant matching the main image
+          const mainImg = product.img ? product.img.split(';')[0] : null;
+          if (mainImg) {
+            const match = extendedProduct.variants.find(v => {
+              const vImg = v.img || v.image_url;
+              return vImg && vImg.split(';')[0] === mainImg;
             });
+            if (match) defaultVariant = match;
           }
-        }
 
-        // Fallback: If no SKU matched (or no SKU provided), select the first variant by default
-        if (Object.keys(initialOptions).length === 0 && extendedProduct.variants && extendedProduct.variants.length > 0) {
-          const firstVariant = extendedProduct.variants[0];
-          // Auto-select first available options
+          let initialOptions = {};
           extendedProduct.options.forEach(opt => {
             const key = opt.key;
-            if (firstVariant[key]) {
-              initialOptions[opt.name] = firstVariant[key];
+            if (defaultVariant[key]) {
+              initialOptions[opt.name] = defaultVariant[key];
             }
           });
 
-          if (firstVariant.color) {
-            // Also update main image
-            const vImg = firstVariant.img || firstVariant.image_url;
+          if (defaultVariant.color) {
+            const vImg = defaultVariant.img || defaultVariant.image_url;
             if (vImg) setMainImage(vImg.split(';')[0]);
           }
+          setSelectedOptions(initialOptions);
         }
-        setSelectedOptions(initialOptions);
 
         setActiveTab("specs");
 
@@ -180,8 +192,6 @@ const ProductDetail = () => {
     };
 
     // Quick helper to fetch related (limit 5)
-    // We don't have a dedicated related endpoint, so strictly we might skip or just fetch some.
-    // Let's try to fetch list and filter client side for now as partial solution
     const fetchRelatedProducts = async (cateId, currentId) => {
       try {
         const res = await productService.getProducts();
@@ -206,7 +216,65 @@ const ProductDetail = () => {
       fetchProduct();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [productId, slug, sku]);
+  }, [productId, slug]); // Only fetch data on ID/Slug change
+
+  // 2. SKU Sync Effect (URL -> Options)
+  useEffect(() => {
+    if (!productData || !sku) return;
+
+    // Find variant by SKU
+    // Match by sku field OR by id pattern if we used that (SP-ID)
+    let variantBySku = productData.variants?.find(v => v.sku === sku || `SP-${v.id}` === sku);
+
+    if (variantBySku) {
+      const newOptions = {};
+
+      // Map variant props to options
+      productData.options.forEach(opt => {
+        const key = opt.key || 'color';
+        if (variantBySku[key]) {
+          newOptions[opt.name] = variantBySku[key];
+        }
+      });
+
+      // Only update if different to avoid loop/re-render
+      // Simple JSON stringify comparison for flat objects
+      if (JSON.stringify(newOptions) !== JSON.stringify(selectedOptions)) {
+        setSelectedOptions(newOptions);
+
+        // Also update image
+        const vImg = variantBySku.img || variantBySku.image_url;
+        if (vImg) setMainImage(vImg.split(';')[0]);
+      }
+    }
+  }, [sku, productData]); // Run when SKU or Data changes
+
+  // 3. Option Sync Effect (Selection -> URL)
+  useEffect(() => {
+    // Wait until productData is loaded and options are selected
+    if (!productData || !productData.variants || Object.keys(selectedOptions).length === 0) return;
+
+    // Find variant matching ALL current selectedOptions
+    const matchedVariant = productData.variants.find(v => {
+      return productData.options.every(opt => {
+        const selectedVal = selectedOptions[opt.name];
+        if (!selectedVal) return true; // Loose match? Or strict? 
+
+        const key = opt.key || 'color';
+        return v[key] == selectedVal;
+      });
+    });
+
+    // If we found a specific variant AND it's different from current SKU in URL
+    if (matchedVariant) {
+      const variantSku = matchedVariant.sku || `SP-${matchedVariant.id}`;
+      // Only update if URL is different
+      if (variantSku !== sku) {
+        // Update URL without reloading state (replace: true creates new history entry or replaces current)
+        setSearchParams({ sku: variantSku }, { replace: true });
+      }
+    }
+  }, [selectedOptions, productData]); // Run when options change
 
   const handleOptionSelect = (optionName, variant) => {
     setSelectedOptions((prev) => ({ ...prev, [optionName]: variant }));

@@ -6,6 +6,7 @@ const handleCassoWebhook = asyncHandler(async (req, res) => {
     if (secure_token !== process.env.CASSO_SECURE_TOKEN){
         return res.status(401).json({ message: "Unauthorized" });  
     }
+    console.log(req.body);
     const {data} = req.body;
     if (!data || data.length ===0){
         return res.status(200).json({message: "No data"});
