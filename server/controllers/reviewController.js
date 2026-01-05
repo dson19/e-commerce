@@ -1,10 +1,12 @@
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
+import UserModel from "../models/User.js";
+import { getReviewsByProductId } from "../models/Product.js";
 
 const createReview = asyncHandler(async (req, res) => {
     const { productId } = req.params;
     const { rating, comment } = req.body;
     const userId = req.user.id;
-    const newReview = await addReview(userId, productId, rating, comment);
+    const newReview = await UserModel.addReview(userId, productId, rating, comment);
     res.status(201).json({
         success: true,
         data: newReview
@@ -22,7 +24,7 @@ const getReviews = asyncHandler(async (req, res) => {
 const deleteReviewController = asyncHandler(async (req, res) => {
     const { reviewId } = req.params;
     const userId = req.user.id;
-    const deletedReview = await deleteReview(reviewId, userId);
+    const deletedReview = await UserModel.deleteReview(reviewId, userId);
     if (!deletedReview) {
         return res.status(404).json({
             success: false,
@@ -35,7 +37,7 @@ const deleteReviewController = asyncHandler(async (req, res) => {
     });
 });
 
-export default{
+export default {
     createReview,
     getReviews,
     deleteReviewController

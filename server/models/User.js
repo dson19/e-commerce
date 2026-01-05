@@ -165,4 +165,4 @@ const deleteReview = async (reviewId, userId) => {
   const res = await pool.query(query, values);
   return res.rows[0];
 }
-export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword, updateProfile, getAddresses, addAddress, deleteAddress, updateAddress }; 
+export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword, updateProfile, getAddresses, addAddress, deleteAddress, updateAddress, addReview, deleteReview }; 

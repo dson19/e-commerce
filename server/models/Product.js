@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-const getReviewsByProductId = async (productId) => {
+export const getReviewsByProductId = async (productId) => {
   const query = 'SELECT * FROM reviews WHERE product_id = $1';
   const values = [productId];
   const res = await pool.query(query, values);
