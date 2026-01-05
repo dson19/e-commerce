@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import pool from '../config/db.js';
 import { getStats } from '../models/Admin.js';
 export const getDashboardStats = asyncHandler(async (req, res) => {
-    const data = await getStats(req, res);
+    const data = await getStats();
     res.json({
         success: true,
         data: data
