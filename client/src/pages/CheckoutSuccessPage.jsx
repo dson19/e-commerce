@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, ShoppingBag, ArrowRight } from 'lucide-react';
-import { useOrderDetail } from '@/hooks/useOrderDetail';
+import { orderService } from '@/services/api';
 import PaymentPendingSection from '@/components/checkout/PaymentPendingSection';
 import OrderItemsList from '@/components/checkout/OrderItemsList';
 import ShippingInfo from '@/components/checkout/ShippingInfo';
@@ -10,7 +10,7 @@ const CheckoutSuccessPage = () => {
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [error, setError] = useState(null);
     useEffect(() => {
         const fetchOrder = async () => {
             if (!orderId) return;
@@ -20,7 +20,7 @@ const CheckoutSuccessPage = () => {
                     setOrder(res.data.data);
                 }
             } catch (error) {
-                console.error("Failed to fetch order:", error);
+                setError(error);
             } finally {
                 setLoading(false);
             }
