@@ -2,61 +2,60 @@ import React, { useState, useEffect } from "react"
 import { XIcon } from "lucide-react"
 import { toast } from "sonner"
 import { useDispatch } from "react-redux"
-import { addAddress, updateAddress } from "@/redux/addressSlice"
+import { addAddressThunk, updateAddressThunk } from "@/redux/addressSlice"
 
-const AddressModal = ({ setShowAddressModal, setSelectedAddress, editData = null }) => {
+const AddressModal = ({ setShowAddressModal, editData = null }) => {
     const dispatch = useDispatch()
 
     const [address, setAddress] = useState({
         name: '',
-        address: '',
+        street: '',
         city: '',
         district: '',
         ward: '',
-        phone: ''
+        phone: '',
+        is_default: false
     })
 
     useEffect(() => {
-        if (editData && editData.address) {
-            setAddress(editData.address)
+        if (editData) {
+            setAddress({
+                ...editData,
+                is_default: editData.is_default || false
+            })
         }
     }, [editData])
 
     const handleAddressChange = (e) => {
+        const { name, value, type, checked } = e.target;
         setAddress({
             ...address,
-            [e.target.name]: e.target.value
+            [name]: type === 'checkbox' ? checked : value
         })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        await new Promise(resolve => setTimeout(resolve, 800))
-
         try {
-            if (editData && editData.index !== undefined) {
-                dispatch(updateAddress({ index: editData.index, address }))
-                if (setSelectedAddress) setSelectedAddress(address)
+            if (editData && editData.address_id) {
+                await dispatch(updateAddressThunk({ id: editData.address_id, data: address })).unwrap()
+                toast.success('Cập nhật địa chỉ thành công!')
             } else {
-                dispatch(addAddress(address))
-                if (setSelectedAddress) setSelectedAddress(address)
+                await dispatch(addAddressThunk(address)).unwrap()
+                toast.success('Thêm địa chỉ thành công!')
             }
             setShowAddressModal(false)
         } catch (error) {
             console.error("Lỗi lưu địa chỉ:", error)
-            throw new Error("Không thể lưu địa chỉ")
+            toast.error(error || "Không thể lưu địa chỉ")
         }
     }
 
     return (
         <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm h-screen flex items-center justify-center p-4">
             <form
-                onSubmit={e => toast.promise(handleSubmit(e), {
-                    loading: 'Đang lưu địa chỉ...',
-                    success: editData ? 'Cập nhật thành công!' : 'Thêm địa chỉ thành công!',
-                    error: 'Có lỗi xảy ra!'
-                })}
+                onSubmit={handleSubmit}
                 className="bg-white relative flex flex-col gap-5 text-slate-700 w-full max-w-md p-8 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
             >
                 <button
@@ -75,7 +74,7 @@ const AddressModal = ({ setShowAddressModal, setSelectedAddress, editData = null
                 <div className="space-y-4">
                     <input name="name" onChange={handleAddressChange} value={address.name} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Họ và tên" required />
 
-                    <input name="address" onChange={handleAddressChange} value={address.address} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Địa chỉ (Số nhà, tên đường...)" required />
+                    <input name="street" onChange={handleAddressChange} value={address.street} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Địa chỉ (Số nhà, tên đường...)" required />
 
                     <div className="grid grid-cols-2 gap-4">
                         <input name="city" onChange={handleAddressChange} value={address.city} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Thành phố" required />
@@ -85,6 +84,21 @@ const AddressModal = ({ setShowAddressModal, setSelectedAddress, editData = null
                     <div className="grid grid-cols-2 gap-4">
                         <input name="ward" onChange={handleAddressChange} value={address.ward} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Phường/Xã" required />
                         <input name="phone" onChange={handleAddressChange} value={address.phone} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="tel" placeholder="Số điện thoại" required />
+                    </div>
+
+                    <div className="flex items-center gap-2 px-2">
+                        <input
+                            id="is_default"
+                            name="is_default"
+                            type="checkbox"
+                            onChange={handleAddressChange}
+                            checked={address.is_default}
+                            disabled={editData?.is_default}
+                            className={`w-4 h-4 text-slate-800 border-slate-300 rounded focus:ring-slate-800 ${editData?.is_default ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        />
+                        <label htmlFor="is_default" className={`text-sm text-slate-600 ${editData?.is_default ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                            {editData?.is_default ? 'Đây là địa chỉ mặc định' : 'Đặt làm địa chỉ mặc định'}
+                        </label>
                     </div>
                 </div>
 

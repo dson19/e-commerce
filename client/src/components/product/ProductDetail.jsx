@@ -49,7 +49,8 @@ const ProductDetail = () => {
           if (colors.length > 0) {
             mappedOptions.push({
               name: "Màu sắc",
-              variants: colors
+              variants: colors,
+              key: 'color'
             });
           }
 
@@ -199,9 +200,11 @@ const ProductDetail = () => {
         // Check if variant 'v' matches ALL selected options
         return productData.options.every(opt => {
           const selectedVal = selectedOptions[opt.name];
-          if (!selectedVal) return true; // User hasn't selected this yet, ignore (or strictly should return false if we enforce all?)
-          // strictly if unselected we can't pin point variant, so maybe lax
-          return v[opt.key] === selectedVal;
+          if (!selectedVal) return true;
+
+          // Match by key if exists, otherwise fallback to color property
+          const key = opt.key || 'color';
+          return v[key] === selectedVal;
         });
       });
     }
@@ -209,9 +212,12 @@ const ProductDetail = () => {
     // Construct cart item
     const cartItem = {
       ...productData,
+      variant_id: selectedVariantObj?.id || selectedVariantObj?.variant_id || productData.id,
       selectedVariant: selectedVariantObj || null,
-      // Override price if variant has specific price (Support 'bestPrice' (new) or 'price' (old))
+      // Override price if variant has specific price
       price: selectedVariantObj ? (selectedVariantObj.bestPrice || selectedVariantObj.price || productData.price) : productData.price,
+      // Override image if variant has specific image
+      img: selectedVariantObj ? (selectedVariantObj.img || selectedVariantObj.image_url || productData.img) : productData.img,
       options: selectedOptions
     };
 

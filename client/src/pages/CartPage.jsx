@@ -13,8 +13,11 @@ const CartPage = () => {
   // --- HÀM XỬ LÝ GIÁ TIỀN (FIX LỖI NaN) ---
   const parsePrice = (price) => {
     if (typeof price === 'number') return price;
+    if (!price) return 0;
+    const str = price.toString().trim();
+    if (!isNaN(str) && str !== '') return parseFloat(str);
     // Chuyển "22.090.000₫" -> thành số 22090000
-    return parseInt(price.toString().replace(/[^0-9]/g, ''), 10);
+    return parseInt(str.replace(/[^0-9]/g, ''), 10);
   };
 
   // Tính tổng tiền (Dùng hàm parsePrice bọc lấy item.price)
@@ -53,7 +56,7 @@ const CartPage = () => {
             <div className="divide-y divide-gray-100">
               {cartItems.map((item) => (
                 <CartItem
-                  key={item.id}
+                  key={item.variant_id || item.id}
                   item={item}
                   updateQuantity={updateQuantity}
                   removeItem={removeFromCart}

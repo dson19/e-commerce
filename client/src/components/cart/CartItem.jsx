@@ -15,14 +15,14 @@ const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {
             {/* 1. Hình ảnh & Tên */}
             <div className="col-span-12 md:col-span-6 flex items-center gap-4">
                 <button
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(item.variant_id || item.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors p-1"
                     title="Xóa sản phẩm"
                 >
                     <Trash2 size={18} />
                 </button>
-                <div className="w-20 h-20 bg-gray-50 rounded-lg p-2 border border-gray-100 shrink-0">
-                    <img src={item.image || item.img} alt={item.name} className="w-full h-full object-contain" />
+                <div className="w-20 h-20 bg-gray-50 rounded-lg p-2 border border-gray-100 shrink-0 flex items-center justify-center">
+                    <img src={item.img || item.image || item.image_url} alt={item.name} className="max-w-full max-h-full object-contain" />
                 </div>
                 <div>
                     <h3 className="font-medium text-gray-800 line-clamp-2 mb-1">
@@ -32,13 +32,13 @@ const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {
                     </h3>
                     {/* Hiển thị các tùy chọn màu sắc/bộ nhớ nếu có */}
                     {item.options && !Array.isArray(item.options) && (
-                        <p className="text-xs text-gray-500">
+                        <div className="flex flex-wrap gap-2 mt-1">
                             {Object.entries(item.options).map(([key, value]) => (
-                                <span key={key} className="mr-2">
+                                <span key={key} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-[#004535] border border-gray-200">
                                     {key}: {value}
                                 </span>
                             ))}
-                        </p>
+                        </div>
                     )}
                 </div>
             </div>
@@ -52,7 +52,7 @@ const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {
             <div className="col-span-6 md:col-span-2 flex justify-center">
                 <div className="flex items-center border border-gray-300 rounded-lg h-9">
                     <button
-                        onClick={() => updateQuantity(item.id, -1)}
+                        onClick={() => updateQuantity(item.variant_id || item.id, -1)}
                         className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-[#004535] hover:bg-gray-50 rounded-l-lg transition-colors"
                     >
                         <Minus size={14} />
@@ -64,7 +64,7 @@ const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {
                         className="w-10 h-full text-center text-sm font-semibold text-gray-800 focus:outline-none border-x border-gray-300"
                     />
                     <button
-                        onClick={() => updateQuantity(item.id, 1)}
+                        onClick={() => updateQuantity(item.variant_id || item.id, 1)}
                         className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-[#004535] hover:bg-gray-50 rounded-r-lg transition-colors"
                     >
                         <Plus size={14} />

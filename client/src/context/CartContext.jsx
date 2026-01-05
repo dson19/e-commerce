@@ -21,7 +21,10 @@ export const CartProvider = ({ children }) => {
       case 'SET_CART':
         return { ...state, items: action.payload, loading: false, error: null };
       case 'ADD_ITEM': {
-        const existingItemIndex = state.items.findIndex(item => item.id === action.payload.id);
+        const itemIdentifier = (item) => item.variant_id || item.selectedVariant?.id || item.variantId || item.id;
+        const newItemIdentifier = itemIdentifier(action.payload);
+        const existingItemIndex = state.items.findIndex(item => itemIdentifier(item) === newItemIdentifier);
+
         if (existingItemIndex > -1) {
           const newItems = [...state.items];
           newItems[existingItemIndex].quantity += action.payload.quantity;
@@ -30,12 +33,15 @@ export const CartProvider = ({ children }) => {
         return { ...state, items: [...state.items, action.payload] };
       }
       case 'REMOVE_ITEM':
-        return { ...state, items: state.items.filter(item => item.id !== action.payload) };
+        return {
+          ...state,
+          items: state.items.filter(item => (item.variant_id || item.selectedVariant?.id || item.variantId || item.id) !== action.payload)
+        };
       case 'UPDATE_QUANTITY':
         return {
           ...state,
           items: state.items.map(item =>
-            item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item
+            (item.variant_id || item.selectedVariant?.id || item.variantId || item.id) === action.payload.id ? { ...item, quantity: action.payload.quantity } : item
           )
         };
       case 'CLEAR_CART':
@@ -55,9 +61,11 @@ export const CartProvider = ({ children }) => {
   const sanitizeCartItem = (item) => ({
     ...item,
     id: Number(item.id),
+    variant_id: Number(item.variant_id || item.variantId),
     quantity: Number(item.quantity) || 1,
-    price: Number(item.price) || 0,
-    oldPrice: Number(item.oldPrice) || 0,
+    price: item.price, // Keep original type for internal parsing
+    oldPrice: item.oldPrice,
+    img: item.img || item.image_url || item.image,
     options: item.color ? { "Màu sắc": item.color } : (item.options || {})
   });
 
@@ -91,14 +99,16 @@ export const CartProvider = ({ children }) => {
       return false;
     }
 
+    const variantId = product.selectedVariant?.id || product.variantId || product.variant_id || product.id;
+
     try {
       // Optimistic Update
-      dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } });
+      dispatch({ type: 'ADD_ITEM', payload: { ...product, variant_id: variantId, quantity } });
 
       await cartService.addToCart({
         productId: product.id,
         quantity,
-        variantId: product.selectedVariant?.id || product.variantId
+        variantId: variantId
       });
 
       return true;
@@ -110,33 +120,30 @@ export const CartProvider = ({ children }) => {
   };
 
   // 2. Hàm xóa sản phẩm
-  const removeFromCart = async (id) => {
+  const removeFromCart = async (variantId) => {
     if (!user) return;
-
-    if (window.confirm('Bạn muốn xóa sản phẩm này?')) {
       try {
-        await cartService.removeFromCart(id);
-        dispatch({ type: 'REMOVE_ITEM', payload: id });
+        await cartService.removeFromCart(variantId);
+        dispatch({ type: 'REMOVE_ITEM', payload: variantId });
         toast.success('Đã xóa sản phẩm');
       } catch (error) {
         console.error(error);
         toast.error("Lỗi xóa sản phẩm");
       }
-    }
   };
 
   // 3. Hàm cập nhật số lượng
-  const updateQuantity = async (id, change) => {
+  const updateQuantity = async (variantId, change) => {
     if (!user) return;
 
-    const currentItem = state.items.find(item => item.id === id);
+    const currentItem = state.items.find(item => (item.variant_id || item.selectedVariant?.id || item.variantId || item.id) === variantId);
     if (!currentItem) return;
     const newQty = currentItem.quantity + change;
     if (newQty < 1) return;
 
     try {
-      await cartService.updateQuantity({ productId: id, quantity: newQty });
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
+      await cartService.updateQuantity({ variantId: variantId, quantity: newQty });
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { id: variantId, quantity: newQty } });
     } catch (error) {
       console.error(error);
       toast.error("Lỗi cập nhật số lượng");

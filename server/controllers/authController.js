@@ -7,13 +7,13 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { ErrorResponse } from "../middleware/errorMiddleware.js";
 
 export const signUp = asyncHandler(async (req, res) => {
-    const { email, fullname, password, gender, phoneNumber } = req.body; 
+    const { email, fullname, password, gender, phoneNumber } = req.body;
 
     if (!email || !fullname || !password) {
         throw new ErrorResponse("Vui lòng nhập đủ thông tin", 400);
     }
 
-    const emailduplicate = await User.findByEmail(email); 
+    const emailduplicate = await User.findByEmail(email);
     if (emailduplicate) {
         throw new ErrorResponse("Email này đã được sử dụng", 409);
     }
@@ -36,8 +36,8 @@ export const signUp = asyncHandler(async (req, res) => {
     };
 
     await redisClient.setEx(
-        `temp_register:${email}`, 
-        300, 
+        `temp_register:${email}`,
+        300,
         JSON.stringify(tempUserData)
     );
 
@@ -45,7 +45,7 @@ export const signUp = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         success: true,
-        message: "OTP sent. Please verify to complete registration.", 
+        message: "OTP sent. Please verify to complete registration.",
         data: { email: email }
     });
 });
@@ -66,10 +66,10 @@ export const verifyAccount = asyncHandler(async (req, res) => {
     }
 
     const newUser = await User.create(
-        tempData.email, 
+        tempData.email,
         tempData.fullname,
-        tempData.password, 
-        tempData.gender, 
+        tempData.password,
+        tempData.gender,
         tempData.phoneNumber
     );
 
@@ -91,8 +91,8 @@ export const signIn = asyncHandler(async (req, res) => {
     if (!email.includes('@')) {
         user = await User.findByPhone(email);
     } else {
-        user =  await User.findByEmail(email);
-    } 
+        user = await User.findByEmail(email);
+    }
 
     if (!user) {
         throw new ErrorResponse("Thông tin không hợp lệ", 401);
@@ -145,7 +145,7 @@ export const getMe = asyncHandler(async (req, res) => {
     }
     res.status(200).json({
         success: true,
-        data: { 
+        data: {
             id: user.user_id,
             email: user.email,
             fullname: user.fullname,
@@ -202,7 +202,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
     }
 
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
-    
+
     if (isSamePassword) {
         throw new ErrorResponse("Mật khẩu mới không được trùng với mật khẩu cũ", 400);
     }
@@ -219,16 +219,23 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
 export const updateProfile = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { fullname } = req.body;
+    const { fullname, gender } = req.body;
 
-    const updatedUserNoPassword = await User.findByIdNoPassword(userId);
-    if (!updatedUserNoPassword) {
+    const updatedUser = await User.updateProfile(userId, fullname, gender);
+    if (!updatedUser) {
         throw new ErrorResponse("Không tìm thấy người dùng", 404);
     }
     res.status(200).json({
         success: true,
         message: "Cập nhật hồ sơ thành công",
-        data: updatedUserNoPassword
+        data: {
+            id: updatedUser.user_id,
+            email: updatedUser.email,
+            fullname: updatedUser.fullname,
+            phone_number: updatedUser.phone_number,
+            gender: updatedUser.gender,
+            role: updatedUser.role
+        }
     });
 });
 export const getAddresses = asyncHandler(async (req, res) => {
@@ -257,7 +264,7 @@ export const addAddress = asyncHandler(async (req, res) => {
 export const deleteAddress = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const address_id = req.params.addressId;
-    const deleteAddress =await User.deleteAddress(userId, address_id);
+    const deleteAddress = await User.deleteAddress(userId, address_id);
     if (!deleteAddress) {
         throw new ErrorResponse("Địa chỉ không tồn tại", 404);
     }

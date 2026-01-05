@@ -14,6 +14,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import CartPage from './pages/CartPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 import { CartProvider } from '@/context/CartContext';
 import SearchPage from './pages/SearchPage';
 import OrderPage from './pages/OrderPage';
@@ -43,6 +44,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout/success/:orderId" element={<CheckoutSuccessPage />} />
               <Route path="/orders" element={<OrderPage />} />
             </Route>
             {/* Admin route để riêng */}

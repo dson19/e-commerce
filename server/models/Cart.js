@@ -39,7 +39,7 @@ const addToCart = async (userId, productId, quantity, variantId = null) => {
     // If no variantId provided, fallback to default (first variant)
     if (!targetVariantId) {
         const variantRes = await pool.query('SELECT variant_id FROM product_variants WHERE product_id = $1 LIMIT 1', [productId]);
-        
+
         if (variantRes.rows.length === 0) {
             throw new Error('Product not available (no variants found)');
         }
@@ -58,31 +58,21 @@ const addToCart = async (userId, productId, quantity, variantId = null) => {
     return res.rows[0];
 };
 
-const removeFromCart = async (userId, productId) => {
-    // Remove ALL items associated with this product ID (all variants)
-    // Or just the specific variant if we knwo it. 
-    // Since frontend sends productId, we remove all variants of this product for now to be safe/consistent.
+const removeFromCart = async (userId, variantId) => {
     const cartId = await getCartId(userId);
-    
-    // Find variants to remove
+
     const query = `
         DELETE FROM cart_items 
         WHERE cart_id = $1 
-        AND variant_id IN (SELECT variant_id FROM product_variants WHERE product_id = $2)
+        AND variant_id = $2
         RETURNING *
     `;
-    const res = await pool.query(query, [cartId, productId]);
+    const res = await pool.query(query, [cartId, variantId]);
     return res.rows;
 };
 
-const updateQuantity = async (userId, productId, quantity) => {
+const updateQuantity = async (userId, variantId, quantity) => {
     const cartId = await getCartId(userId);
-    
-    // Update quantity for the first variant found (simplistic)
-    // A better approach would be to pass variantId from frontend.
-    const variantRes = await pool.query('SELECT variant_id FROM product_variants WHERE product_id = $1 LIMIT 1', [productId]);
-    if (variantRes.rows.length === 0) return null;
-    const variantId = variantRes.rows[0].variant_id;
 
     const query = 'UPDATE cart_items SET quantity = $3 WHERE cart_id = $1 AND variant_id = $2 RETURNING *';
     const res = await pool.query(query, [cartId, variantId, quantity]);

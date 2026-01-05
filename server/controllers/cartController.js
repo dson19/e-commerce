@@ -22,40 +22,40 @@ const addToCart = asyncHandler(async (req, res) => {
 
     const item = await Cart.addToCart(userId, productId, quantity, variantId);
 
-    res.json({ 
-        success: true, 
+    res.json({
+        success: true,
         data: item,
-        message: "Item added to cart" 
+        message: "Item added to cart"
     });
 });
 
 const removeFromCart = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { productId } = req.params; // Route uses :productId
+    const { variantId } = req.params;
 
-    if (!productId) {
-        throw new ErrorResponse("Product ID is required", 400);
+    if (!variantId) {
+        throw new ErrorResponse("Variant ID is required", 400);
     }
 
-    await Cart.removeFromCart(userId, productId);
-    
+    await Cart.removeFromCart(userId, variantId);
+
     res.json({ success: true, message: "Item removed from cart" });
 });
 
 const updateQuantity = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
+    const { variantId, quantity } = req.body;
 
-    if (!productId || quantity === undefined) {
-        throw new ErrorResponse("Product ID and quantity are required", 400);
+    if (!variantId || quantity === undefined) {
+        throw new ErrorResponse("Variant ID and quantity are required", 400);
     }
 
-    const item = await Cart.updateQuantity(userId, productId, quantity);
-    
-    res.json({ 
-        success: true, 
+    const item = await Cart.updateQuantity(userId, variantId, quantity);
+
+    res.json({
+        success: true,
         data: item,
-        message: "Quantity updated" 
+        message: "Quantity updated"
     });
 });
 

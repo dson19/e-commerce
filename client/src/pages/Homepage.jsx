@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/product/ProductCard';
-import { CATEGORIES } from '../data/mockData';
 import {
   ChevronRight, Truck, ShieldCheck, RefreshCw, Zap, Menu,
   Smartphone, Laptop, Tablet, Headphones, Monitor, Grid

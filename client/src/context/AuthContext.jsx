@@ -39,9 +39,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // --- THÊM HÀM NÀY ---
-    // Hàm này giúp cập nhật state User mà không hiện thông báo "Đăng nhập thành công"
-    const updateUser = (userData) => {
+        const updateUser = (userData) => {
         setUser(prev => ({ ...prev, ...userData }));
     };
 
