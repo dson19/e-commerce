@@ -26,7 +26,10 @@ const CartItem = ({ item, updateQuantity, removeItem, parsePrice }) => {
                 </div>
                 <div>
                     <h3 className="font-medium text-gray-800 line-clamp-2 mb-1">
-                        <Link to={`/product/${item.id}`} className="hover:text-[#004535] transition-colors">
+                        <Link
+                            to={`/${item.parent_category_slug || 'dien-thoai'}/${item.category_slug || 'iphone'}/${item.slug}?sku=${item.selectedVariant?.sku || item.sku || ''}`}
+                            className="hover:text-[#004535] transition-colors"
+                        >
                             {item.name}
                         </Link>
                     </h3>

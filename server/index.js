@@ -28,7 +28,12 @@ app.use('/api/orders', orderRoute);
 app.use('/api/payment', paymentRoute);
 // Error Handler Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
+import startOrderCleanupTask from './utils/orderScheduler.js';
+
 app.use(errorHandler);
+
+// Start Scheduler
+startOrderCleanupTask();
 
 app.listen(PORT, () => {
   console.log(`Server đang chạy ở http://localhost:${PORT}`);
