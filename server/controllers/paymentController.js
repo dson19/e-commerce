@@ -48,5 +48,11 @@ const handleCassoWebhook = asyncHandler(async (req, res) => {
             success: true,
             message: "Webhook processed" });
 });
-
+const checkOrderStatus = async (orderId) => {
+    const status = await Order.checkOrderStatus(orderId);
+    return res.status;(200).json({
+        success: true,
+        status: status
+    });
+}
 export default { handleCassoWebhook };

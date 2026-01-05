@@ -145,4 +145,16 @@ const updateOrderStatusToPaid = async (orderId) => {
     const values = [orderId];
     await pool.query(query, values);
 }
+const checkOrderStatus = async (orderId) => {
+    const query = `
+        SELECT status
+        FROM orders
+        WHERE order_id = $1`;
+    const values = [orderId];
+    const res = await pool.query(query, values);
+    if (res.rows.length === 0) {
+        return null;
+    }
+    return res.rows[0].status;
+}
 export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid };
