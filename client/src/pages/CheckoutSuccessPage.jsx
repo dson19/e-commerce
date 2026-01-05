@@ -1,20 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Package, Truck, ShoppingBag, ArrowRight, MapPin, Phone, User } from 'lucide-react';
-import { fetchOrderDetail, clearCurrentOrder } from '@/redux/orderSlice';
+import { orderService } from '@/services/api';
 
 const CheckoutSuccessPage = () => {
     const { orderId } = useParams();
-    const dispatch = useDispatch();
-    const { currentOrder: order, loading } = useSelector((state) => state.order);
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (orderId) {
-            dispatch(fetchOrderDetail(orderId));
-        }
-        return () => dispatch(clearCurrentOrder());
-    }, [dispatch, orderId]);
+        const fetchOrder = async () => {
+            if (!orderId) return;
+            try {
+                const res = await orderService.getOrderById(orderId);
+                if (res.data.success) {
+                    setOrder(res.data.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch order:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrder();
+    }, [orderId]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Đang cập nhật...';

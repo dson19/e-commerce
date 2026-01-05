@@ -1,14 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createOrderThunk } from '@/redux/orderSlice';
+import { orderService } from '@/services/api';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 
 export const useCheckout = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { cartItems, clearCart } = useCart();
-    const { loading: orderLoading } = useSelector((state) =>state.order);
+    const [orderLoading, setOrderLoading] = useState(false);
 
     const handleCheckout = async (selectedAddress) => {
         if (!selectedAddress) {
@@ -21,28 +20,33 @@ export const useCheckout = () => {
             return;
         }
 
+        setOrderLoading(true);
         try {
             const orderData = {
                 items: cartItems.map(item => ({
-                    variant_id: item.variant_id || item.id, // Ensure we use variant_id
+                    variant_id: item.variant_id || item.id,
                     quantity: item.quantity
                 })),
                 address_id: selectedAddress.address_id,
-                paymentMethod: 'Thanh toán khi nhận hàng', // Currently hardcoded as per previous code
+                paymentMethod: 'COD', // Changed to COD as per previous context preferences
                 phone_number: selectedAddress.phone,
                 name: selectedAddress.name
             };
 
-            const resultAction = await dispatch(createOrderThunk(orderData)).unwrap();
-            toast.success('Tạo đơn hàng thành công');
+            const res = await orderService.createOrder(orderData);
 
-            // Clear cart
-            await clearCart();
-
-            // Navigate to success page
-            navigate(`/checkout/success/${resultAction.order_id}`);
+            if (res.data.success) {
+                toast.success('Tạo đơn hàng thành công');
+                await clearCart();
+                navigate(`/checkout/success/${res.data.order_id || res.data.data.order_id}`);
+            } else {
+                toast.error(res.data.message || 'Có lỗi xảy ra');
+            }
         } catch (error) {
-            toast.error(error || 'Có lỗi xảy ra khi tạo đơn hàng');
+            const msg = error.response?.data?.message || 'Có lỗi xảy ra khi tạo đơn hàng';
+            toast.error(msg);
+        } finally {
+            setOrderLoading(false);
         }
     };
 

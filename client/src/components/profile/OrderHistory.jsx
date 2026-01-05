@@ -103,19 +103,6 @@ const OrderHistory = () => {
                 </div>
             </div>
 
-            {/* Input tìm kiếm */}
-            <div className="relative mb-6">
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo Mã đơn hàng hoặc Tên sản phẩm..."
-                    className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-[#004535] shadow-sm"
-                />
-                <Search
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={18}
-                />
-            </div>
-
             <div className="space-y-4">
                 {loading ? (
                     <div className="py-12 text-center">

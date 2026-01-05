@@ -1,18 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Package, Truck, CreditCard, User, Phone, MapPin } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderDetail, clearCurrentOrder } from '@/redux/orderSlice';
+import { orderService } from '@/services/api';
 
 const OrderDetailModal = ({ orderId, onClose }) => {
-    const dispatch = useDispatch();
-    const { currentOrder, loading } = useSelector((state) => state.order);
+    const [currentOrder, setCurrentOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (orderId) {
-            dispatch(fetchOrderDetail(orderId));
-        }
-        return () => dispatch(clearCurrentOrder());
-    }, [dispatch, orderId]);
+        const fetchDetail = async () => {
+            if (!orderId) return;
+            setLoading(true);
+            try {
+                const res = await orderService.getOrderById(orderId);
+                if (res.data.success) {
+                    setCurrentOrder(res.data.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch order detail:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDetail();
+    }, [orderId]);
 
     if (!orderId) return null;
 
