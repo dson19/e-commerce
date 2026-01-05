@@ -83,8 +83,12 @@ const CheckoutSuccessPage = () => {
                         <div className="p-6 divide-y divide-gray-50">
                             {order.items?.map((item, idx) => (
                                 <div key={idx} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4">
-                                    <div className="w-16 h-16 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center shrink-0">
-                                        <Package size={24} className="text-gray-300" />
+                                    <div className="w-16 h-16 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+                                        {item.img ? (
+                                            <img src={item.img} alt={item.product_name} className="w-full h-full object-contain" />
+                                        ) : (
+                                            <Package size={24} className="text-gray-300" />
+                                        )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-bold text-gray-800 text-sm truncate">{item.product_name}</h4>

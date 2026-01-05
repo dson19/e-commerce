@@ -19,7 +19,7 @@ export const fetchOrderDetail = createAsyncThunk(
         try {
             const response = await orderService.getOrderById(orderId);
             return response.data.data;
-        } catch (error) {
+        } catch (error) { 
             return rejectWithValue(error.response?.data?.message || 'Không thể tải chi tiết đơn hàng');
         }
     }

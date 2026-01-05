@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { XIcon } from "lucide-react"
 import { toast } from "sonner"
-import { useDispatch } from "react-redux"
-import { addAddressThunk, updateAddressThunk } from "@/redux/addressSlice"
+import { authService } from "@/services/api"
 
-const AddressModal = ({ setShowAddressModal, editData = null }) => {
-    const dispatch = useDispatch()
-
+const AddressModal = ({ setShowAddressModal, editData = null, onSuccess }) => {
+    const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState({
         name: '',
         street: '',
@@ -36,19 +34,23 @@ const AddressModal = ({ setShowAddressModal, editData = null }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
 
         try {
             if (editData && editData.address_id) {
-                await dispatch(updateAddressThunk({ id: editData.address_id, data: address })).unwrap()
+                await authService.updateAddress(editData.address_id, address)
                 toast.success('Cập nhật địa chỉ thành công!')
             } else {
-                await dispatch(addAddressThunk(address)).unwrap()
+                await authService.addAddress(address)
                 toast.success('Thêm địa chỉ thành công!')
             }
+            if (onSuccess) onSuccess();
             setShowAddressModal(false)
         } catch (error) {
             console.error("Lỗi lưu địa chỉ:", error)
-            toast.error(error || "Không thể lưu địa chỉ")
+            toast.error(error.response?.data?.message || "Không thể lưu địa chỉ")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -104,13 +106,14 @@ const AddressModal = ({ setShowAddressModal, editData = null }) => {
 
                 <button
                     type="submit"
-                    className="mt-2 bg-slate-800 text-white text-sm font-bold py-4 rounded-xl hover:bg-slate-900 active:scale-95 transition-all shadow-lg shadow-slate-200 uppercase tracking-wider"
+                    disabled={loading}
+                    className={`mt-2 bg-slate-800 text-white text-sm font-bold py-4 rounded-xl hover:bg-slate-900 active:scale-95 transition-all shadow-lg shadow-slate-200 uppercase tracking-wider ${loading ? 'opacity-70 cursor-wait' : ''}`}
                 >
-                    {editData ? 'Cập nhật địa chỉ' : 'Lưu địa chỉ'}
+                    {loading ? 'Đang lưu...' : (editData ? 'Cập nhật địa chỉ' : 'Lưu địa chỉ')}
                 </button>
             </form>
         </div>
     )
 }
 
-export default AddressModal
+export default AddressModal;
