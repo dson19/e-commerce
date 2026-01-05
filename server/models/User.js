@@ -153,4 +153,16 @@ const getDefaultAddress = async (userId) => {
   }
   return res.rows[0];
 }
+const addReview = async (userId, productId, rating, comment) => {
+  const query = 'INSERT INTO reviews (user_id, product_id, rating, comment) VALUES ($1, $2, $3, $4) RETURNING *';
+  const values = [userId, productId, rating, comment];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
+const deleteReview = async (reviewId, userId) => {
+  const query = 'DELETE FROM reviews WHERE review_id = $1 AND user_id = $2 RETURNING *';
+  const values = [reviewId, userId];
+  const res = await pool.query(query, values);
+  return res.rows[0];
+}
 export default { create, findByEmail, findByPhone, findById, findByIdNoPassword, updatePassword, updateProfile, getAddresses, addAddress, deleteAddress, updateAddress }; 
