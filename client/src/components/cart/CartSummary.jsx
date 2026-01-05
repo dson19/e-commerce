@@ -7,6 +7,7 @@ import { useCheckout } from '@/hooks/useCheckout';
 
 const CartSummary = ({ subtotal, total }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('COD');
   const { handleCheckout, orderLoading } = useCheckout();
 
   return (
@@ -20,6 +21,34 @@ const CartSummary = ({ subtotal, total }) => {
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
         />
+
+        {/* Phương thức thanh toán */}
+        <div className="mb-6">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Phương thức thanh toán</h4>
+          <div className="space-y-3">
+            <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-[#004535] bg-[#E5F2F0]/30' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input
+                type="radio"
+                name="payment"
+                className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
+                checked={paymentMethod === 'COD'}
+                onChange={() => setPaymentMethod('COD')}
+              />
+              <span className="text-sm font-medium text-gray-700">Thanh toán khi nhận hàng (COD)</span>
+            </label>
+
+            <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${paymentMethod === 'VIETQR' ? 'border-[#004535] bg-[#E5F2F0]/30' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input
+                type="radio"
+                name="payment"
+                className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
+                checked={paymentMethod === 'VIETQR'}
+                onChange={() => setPaymentMethod('VIETQR')}
+              />
+              <span className="text-sm font-medium text-gray-700">Chuyển khoản Ngân hàng (VietQR)</span>
+            </label>
+          </div>
+        </div>
 
         {/* Thông tin thanh toán */}
         <div className="space-y-3 mb-6">
@@ -39,7 +68,7 @@ const CartSummary = ({ subtotal, total }) => {
         </div>
 
         <button
-          onClick={() => handleCheckout(selectedAddress)}
+          onClick={() => handleCheckout(selectedAddress, paymentMethod)}
           disabled={orderLoading}
           className={`w-full py-4 bg-[#004535] text-white rounded-xl font-bold text-sm uppercase tracking-widest shadow-lg shadow-[#004535]/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${orderLoading ? 'opacity-70 cursor-wait' : 'hover:bg-[#003528]'}`}
         >

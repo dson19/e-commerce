@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {  } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 
 const AccountPage = () => {

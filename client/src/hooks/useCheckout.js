@@ -9,7 +9,7 @@ export const useCheckout = () => {
     const { cartItems, clearCart } = useCart();
     const [orderLoading, setOrderLoading] = useState(false);
 
-    const handleCheckout = async (selectedAddress) => {
+    const handleCheckout = async (selectedAddress, paymentMethod = 'COD') => {
         if (!selectedAddress) {
             toast.error('Vui lòng chọn địa chỉ giao hàng');
             return;
@@ -28,7 +28,7 @@ export const useCheckout = () => {
                     quantity: item.quantity
                 })),
                 address_id: selectedAddress.address_id,
-                paymentMethod: 'COD', // Changed to COD as per previous context preferences
+                paymentMethod: paymentMethod,
                 phone_number: selectedAddress.phone,
                 name: selectedAddress.name
             };

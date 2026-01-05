@@ -9,7 +9,8 @@ const AddressManagement = () => {
     const [loading, setLoading] = useState(true);
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [editData, setEditData] = useState(null);
-
+    // hàm đếm số lượng địa chỉ
+    
     const fetchAddresses = async () => {
         setLoading(true);
         try {
@@ -42,15 +43,7 @@ const AddressManagement = () => {
     const handleDelete = async (e, id) => {
         e.stopPropagation();
         if (window.confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
-            try {
-                // Assuming authService has deleteAddress, otherwise might range to deleteAddress logic
-                // Checking AddressModal might give hint, but usually delete is simple.
-                // Wait, authService usually has generic update.
-                // Let's assume authService has deleteAddress or we need to add it?
-                // Step 338 summary said "authService trực tiếp để addAddress và updateAddress". Doesn't mention delete.
-                // But typically it should exist. I'll venture to use authService.deleteAddress if it exists, or check api.js
-                // To be safe, I'll check api.js later if this fails, but for now assuming standard naming.
-                // Actually, let's assume `authService.deleteAddress` exists.
+            try { 
                 await authService.deleteAddress(id);
                 toast.success('Đã xóa địa chỉ');
                 fetchAddresses();
