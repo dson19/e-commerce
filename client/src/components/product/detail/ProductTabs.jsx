@@ -1,10 +1,11 @@
 import React from 'react';
 import ProductReviews from './ProductReviews';
 
-const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
+const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId }) => {
   return (
     <div>
-      {/* Tab Headers */}
+      {/* ... (headers) */}
+
       <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
         {specs && Object.keys(specs).length > 0 && (
           <button
@@ -55,7 +56,7 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs }) => {
         )}
 
         {activeTab === 'reviews' && (
-          <ProductReviews />
+          <ProductReviews productId={productId} />
         )}
 
         {activeTab === 'policy' && (

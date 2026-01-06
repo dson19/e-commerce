@@ -387,6 +387,7 @@ const ProductDetail = () => {
             setActiveTab={setActiveTab}
             reviewsCount={productData.reviewsCount}
             specs={productData.specs} // Pass specs to tabs if needed
+            productId={productData.id}
           />
         </div>
 

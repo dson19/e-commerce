@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'https://e-commerce-6gc6.onrender.com/api';
+const baseURL = 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL,
@@ -55,6 +55,12 @@ export const orderService = {
   getUserOrderHistory: () => api.get('/orders/orderHistory'),
   getOrderById: (id) => api.get(`/orders/${id}`),
   cancelOrder: (id) => api.put(`/orders/${id}/cancel`),
+};
+
+export const reviewService = {
+  getReviews: (productId) => api.get(`/products/${productId}/reviews`),
+  addReview: (productId, data) => api.post(`/products/${productId}/reviews`, data),
+  deleteReview: (reviewId) => api.delete(`/reviews/${reviewId}`),
 };
 
 export default api;
