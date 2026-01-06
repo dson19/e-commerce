@@ -173,7 +173,7 @@ const ProductReviews = ({ productId: propProductId }) => {
                                 <div className="flex-1">
                                     <div className="flex justify-between items-center mb-1">
                                         <div>
-                                            <h4 className="font-bold text-gray-800 text-sm">{review.full_name || "Người dùng ẩn danh"}</h4>
+                                            <h4 className="font-bold text-gray-800 text-sm">{review.full_name || `Người dùng ẩn danh ${review.user_id}`}</h4>
                                             <div className="flex text-yellow-400 text-xs my-0.5">
                                                 {[...Array(5)].map((_, i) => (
                                                     <span key={i} className={i < review.rating ? "" : "text-gray-200"}>★</span>
