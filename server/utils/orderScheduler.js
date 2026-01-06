@@ -12,7 +12,7 @@ const startOrderCleanupTask = () => {
                 SELECT order_id 
                 FROM orders 
                 WHERE status = 'Pending' 
-                AND created_at < NOW() - INTERVAL '10 minutes'
+                AND order_date < NOW() - INTERVAL '10 minutes'
            `;
 
             const result = await pool.query(query);
