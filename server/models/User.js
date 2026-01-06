@@ -124,7 +124,7 @@ const updateAddress = async (user_id, address_id, data, isDefault = false) => {
       // set tat ca con lai ve false 
       await client.query('UPDATE addresses SET is_default = false WHERE user_id = $1', [user_id]);
       const query = 'UPDATE addresses SET city = $1, district = $2, ward = $3, street = $4, is_default = true, name = $7, phone_number = $8 WHERE address_id = $5 AND user_id = $6 RETURNING *';
-      const values = [data.city, data.district, data.ward, data.street, address_id, user_id, data.name];
+      const values = [data.city, data.district, data.ward, data.street, address_id, user_id, data.name, data.phone];
       const res = await client.query(query, values);
       await client.query('COMMIT');
       return res.rows[0];

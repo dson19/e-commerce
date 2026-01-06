@@ -29,7 +29,7 @@ export const useCheckout = () => {
                 })),
                 address_id: selectedAddress.address_id,
                 paymentMethod: paymentMethod,
-                phone_number: selectedAddress.phone,
+                phone_number: selectedAddress.phone_number || selectedAddress.phone,
                 name: selectedAddress.name
             };
 
