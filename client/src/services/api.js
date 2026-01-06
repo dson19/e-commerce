@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'https://e-commerce-6gc6.onrender.com/api';
-
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const api = axios.create({
   baseURL,
   withCredentials: true,
@@ -12,7 +11,7 @@ const api = axios.create({
 
 export const authService = {
   signIn: (credentials) => api.post('/auth/signin', credentials),
-  signUp: (data) => api.post('/auth/signup', data),
+  signUp: (data) => api.post('/auth/signUp', data),
   verifyOTP: (data) => api.post('/auth/verify-otp', data),
   signOut: () => api.post('/auth/signout'),
   getMe: () => api.get('/auth/me'),
@@ -55,6 +54,12 @@ export const orderService = {
   getUserOrderHistory: () => api.get('/orders/orderHistory'),
   getOrderById: (id) => api.get(`/orders/${id}`),
   cancelOrder: (id) => api.put(`/orders/${id}/cancel`),
+};
+
+export const reviewService = {
+  getReviews: (productId) => api.get(`/product/${productId}/reviews`),
+  createReview: (productId, data) => api.post(`/product/${productId}/review`, data),
+  deleteReview: (reviewId) => api.delete(`/reviews/${reviewId}`),
 };
 
 export default api;
