@@ -7,6 +7,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { ErrorResponse } from "../middleware/errorMiddleware.js";
 
 export const signUp = asyncHandler(async (req, res) => {
+    console.log("Lấy data ...");
     const { email, fullname, password, gender, phoneNumber } = req.body;
 
     if (!email || !fullname || !password) {
@@ -34,13 +35,12 @@ export const signUp = asyncHandler(async (req, res) => {
         phoneNumber,
         otpCode,
     };
-
     await redisClient.setEx(
         `temp_register:${email}`,
         300,
         JSON.stringify(tempUserData)
     );
-
+    
     await sendOTP(email, otpCode);
 
     res.status(200).json({
