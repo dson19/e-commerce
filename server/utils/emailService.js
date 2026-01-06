@@ -16,7 +16,8 @@ const transporter = nodemailer.createTransport({
   tls: {
     ciphers: 'SSLv3'
   },
-  connectionTimeout: 10000, // Timeout sau 10 giây nếu không kết nối được
+  family: 4,
+  connectionTimeout: 100000, // Timeout sau 10 giây nếu không kết nối được
 });
 
 export const sendOTP = async (email, otp) => {
