@@ -96,7 +96,7 @@ const AddressSelector = ({ selectedAddress, setSelectedAddress }) => {
                         <p className="text-xs text-gray-600 leading-relaxed pr-8">
                             {selectedAddress.street}, {selectedAddress.ward}, {selectedAddress.district}, {selectedAddress.city}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">{selectedAddress.phone}</p>
+                        <p className="text-xs text-gray-500 mt-1">{selectedAddress.phone_number || selectedAddress.phone}</p>
 
                         <button
                             onClick={() => handleEdit(selectedAddress)}

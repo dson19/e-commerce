@@ -57,8 +57,8 @@ export const orderService = {
 };
 
 export const reviewService = {
-  getReviews: (productId) => api.get(`/product/${productId}/reviews`),
-  createReview: (productId, data) => api.post(`/product/${productId}/review`, data),
+  getReviews: (productId) => api.get(`/products/${productId}/reviews`),
+  addReview: (productId, data) => api.post(`/products/${productId}/reviews`, data),
   deleteReview: (reviewId) => api.delete(`/reviews/${reviewId}`),
 };
 

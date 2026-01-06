@@ -10,7 +10,7 @@ const AddressManagement = () => {
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [editData, setEditData] = useState(null);
     // hàm đếm số lượng địa chỉ
-    
+
     const fetchAddresses = async () => {
         setLoading(true);
         try {
@@ -43,7 +43,7 @@ const AddressManagement = () => {
     const handleDelete = async (e, id) => {
         e.stopPropagation();
         if (window.confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
-            try { 
+            try {
                 await authService.deleteAddress(id);
                 toast.success('Đã xóa địa chỉ');
                 fetchAddresses();
@@ -120,7 +120,7 @@ const AddressManagement = () => {
                                 </p>
                                 <p className="text-sm text-gray-600 flex items-center gap-2">
                                     <span className="min-w-[70px] text-gray-400">Điện thoại:</span>
-                                    <span>{addr.phone}</span>
+                                    <span>{addr.phone_number || addr.phone}</span>
                                 </p>
                             </div>
 
@@ -150,6 +150,7 @@ const AddressManagement = () => {
                 <AddressModal
                     setShowAddressModal={setShowAddressModal}
                     editData={editData}
+                    onSuccess={fetchAddresses}
                 />
             )}
         </div>

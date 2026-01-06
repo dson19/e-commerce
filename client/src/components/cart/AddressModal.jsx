@@ -19,6 +19,7 @@ const AddressModal = ({ setShowAddressModal, editData = null, onSuccess }) => {
         if (editData) {
             setAddress({
                 ...editData,
+                phone: editData.phone_number || editData.phone || '', // Map phone_number to phone
                 is_default: editData.is_default || false
             })
         }
@@ -85,7 +86,7 @@ const AddressModal = ({ setShowAddressModal, editData = null, onSuccess }) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <input name="ward" onChange={handleAddressChange} value={address.ward} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" type="text" placeholder="Phường/Xã" required />
-                        <input type = 'number' name="phone" onChange={handleAddressChange} value={address.phone} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" placeholder="Số điện thoại" required />
+                        <input type='tel' name="phone" onChange={handleAddressChange} value={address.phone} className="p-2.5 px-4 outline-none border border-slate-200 rounded-xl w-full focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 transition-all text-sm" placeholder="Số điện thoại" required />
                     </div>
 
                     <div className="flex items-center gap-2 px-2">
