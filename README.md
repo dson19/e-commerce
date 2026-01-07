@@ -68,7 +68,15 @@ $npm install
 ```
 
 Create a `.env` file in the `server` directory with the necessary environment variables (e.g., PORT, DATABASE_URL, JWT_SECRET, etc.).
-
+Some essential env:
+DATABASE_URL= your DB link (or u can custom with ur local DB)
+REDIS_URL=your Redis URL
+JWT_SECRET= the key for the token 
+PORT=port for the BE local 
+EMAIL_USER= Your email account u want to send gmail
+EMAIL_PASS= Pass of the gmail application ( 16 digits )
+CASSO_SECURE_TOKEN=your casso secure token
+s
 Start the server:
 ```bash
 $npm run dev
