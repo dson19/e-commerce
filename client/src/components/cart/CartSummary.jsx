@@ -15,8 +15,6 @@ const CartSummary = ({ subtotal, total }) => {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Cộng giỏ hàng</h3>
 
-        <VoucherInput />
-
         <AddressSelector
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}

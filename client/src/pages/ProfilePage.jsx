@@ -20,7 +20,6 @@ const ProfilePage = () => {
   const menuItems = [
     { id: 'overview', label: 'Tổng quan', icon: <LayoutDashboard size={20} /> },
     { id: 'orders', label: 'Đơn hàng của bạn', icon: <Package size={20} /> },
-    { id: 'vouchers', label: 'Trung tâm voucher', icon: <TicketPercent size={20} /> },
     { id: 'history', label: 'Lịch sử mua hàng', icon: <History size={20} /> },
     { id: 'profile', label: 'Thông tin cá nhân', icon: <User size={20} /> },
     { id: 'addresses', label: 'Sổ địa chỉ', icon: <MapPin size={20} /> },
