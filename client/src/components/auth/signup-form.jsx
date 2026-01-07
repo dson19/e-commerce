@@ -20,6 +20,10 @@ const signupSchema = z.object({
   fullname: z.string().min(1, "Vui lòng nhập họ và tên"),
   phoneNumber: z.string().length(10, "Số điện thoại phải đủ 10 chữ số"),
   gender: z.string().optional(),
+  confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Mật khẩu xác nhận không khớp",
+  path: ["confirmPassword"],
 });
 
 export function SignupForm({ className, ...props }) {
@@ -119,7 +123,7 @@ export function SignupForm({ className, ...props }) {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@gmail.com"
+                  placeholder="example@gmail.com"
                   {...register("email")}
                 />
                 {errors.email && (
