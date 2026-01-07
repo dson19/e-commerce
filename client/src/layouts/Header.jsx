@@ -267,7 +267,6 @@ const Header = () => {
                       </Link>
                     )}
                     <Link to="/profile" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Settings size={18} className="text-gray-500" /> Quản lý tài khoản</Link>
-                    <Link to="/orders" className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"><Package size={18} className="text-gray-500" /> Đơn hàng của tôi</Link>
                     <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"><LogOut size={18} /> Đăng xuất</button>
                   </div>
                 </div>
