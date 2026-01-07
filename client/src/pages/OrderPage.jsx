@@ -66,7 +66,7 @@ const OrderPage = () => {
       case "DELIVERED":
       case "PAID": // Handle 'paid' status as well if needed or map it
         return {
-          label: "Giao thành công",
+          label: "Thanh toán thành công",
           color: "text-green-600",
           bg: "bg-green-50",
           icon: <CheckCircle size={16} />,

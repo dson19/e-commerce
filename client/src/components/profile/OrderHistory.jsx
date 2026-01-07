@@ -49,7 +49,7 @@ const OrderHistory = () => {
             case "DELIVERED":
             case "PAID":
                 return {
-                    label: "Giao thành công",
+                    label: "Thanh toán thành công",
                     color: "text-green-600",
                     bg: "bg-green-50",
                     icon: <CheckCircle size={16} />,
