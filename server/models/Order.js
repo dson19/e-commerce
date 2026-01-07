@@ -192,4 +192,77 @@ const cancelOrder = async (orderId) => {
     }
 };
 
-export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid, cancelOrder };
+const getAllOrders = async ({ limit, offset, search, status }) => {
+    let query = `
+        SELECT o.order_id, o.user_id, o.order_date, o.grand_total, o.status,
+               u.email, u.fullname
+        FROM orders o
+        LEFT JOIN users u ON o.user_id = u.user_id
+        WHERE 1=1
+    `;
+    const params = [];
+    let paramIndex = 1;
+
+    if (search) {
+        query += ` AND (CAST(o.order_id AS TEXT) ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex} OR u.fullname ILIKE $${paramIndex})`;
+        params.push(`%${search}%`);
+        paramIndex++;
+    }
+
+    if (status) {
+        // Case insensitive check for status
+        query += ` AND LOWER(o.status) = LOWER($${paramIndex})`;
+        params.push(status);
+        paramIndex++;
+    }
+
+    // Sort by date desc
+    query += ` ORDER BY o.order_date DESC`;
+
+    // Pagination
+    query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, offset);
+
+    // Count query
+    let countQuery = `
+        SELECT COUNT(*) 
+        FROM orders o 
+        LEFT JOIN users u ON o.user_id = u.user_id 
+        WHERE 1=1
+    `;
+    const countParams = [];
+    let countParamIndex = 1;
+
+    if (search) {
+        countQuery += ` AND (CAST(o.order_id AS TEXT) ILIKE $${countParamIndex} OR u.email ILIKE $${countParamIndex} OR u.fullname ILIKE $${countParamIndex})`;
+        countParams.push(`%${search}%`);
+        countParamIndex++;
+    }
+    if (status) {
+        countQuery += ` AND LOWER(o.status) = LOWER($${countParamIndex})`;
+        countParams.push(status);
+        countParamIndex++;
+    }
+
+    const [rowsRes, countRes] = await Promise.all([
+        pool.query(query, params),
+        pool.query(countQuery, countParams)
+    ]);
+
+    return {
+        orders: rowsRes.rows,
+        total: parseInt(countRes.rows[0].count)
+    };
+};
+
+const updateStatus = async (orderId, status) => {
+    const query = `
+        UPDATE orders
+        SET status = $1
+        WHERE order_id = $2
+        RETURNING *`;
+    const res = await pool.query(query, [status, orderId]);
+    return res.rows[0];
+};
+
+export default { createOrder, getOrderById, getUserOrderHistory, getOrderByIdNoUserId, updateOrderStatusToPaid, cancelOrder, getAllOrders, updateStatus };

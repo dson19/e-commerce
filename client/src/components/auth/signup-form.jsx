@@ -135,7 +135,7 @@ export function SignupForm({ className, ...props }) {
                 <Input
                   id="phoneNumber"
                   type="tel"
-                  placeholder="0123456789"
+                  placeholder="Số điện thoại của bạn"
                   {...register("phoneNumber")}
                 />
                 {errors.phoneNumber && (
@@ -171,6 +171,20 @@ export function SignupForm({ className, ...props }) {
                 />
                 {errors.password && (
                   <p className="text-sm text-red-500">{errors.password.message}</p>
+                )}
+              </div>
+              {/* Xác nhận mật khẩu */}
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="confirmPassword" className="block text-sm">
+                  Xác nhận mật khẩu
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  {...register("confirmPassword")}
+                />
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
                 )}
               </div>
               {/* KHU VỰC HIỂN THỊ LỖI API (Nếu có) */}

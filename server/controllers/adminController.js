@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import pool from '../config/db.js';
 import { getStats } from '../models/Admin.js';
+import Order from '../models/Order.js';
+
 export const getDashboardStats = asyncHandler(async (req, res) => {
     const data = await getStats();
     res.json({
@@ -8,6 +10,64 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
         data: data
     });
 });
+
+export const getOrders = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, search, status } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const offset = (pageNum - 1) * limitNum;
+
+    const result = await Order.getAllOrders({
+        limit: limitNum,
+        offset,
+        search,
+        status
+    });
+
+    res.json({
+        success: true,
+        data: result.orders,
+        pagination: {
+            total: result.total,
+            page: pageNum,
+            limit: limitNum,
+            totalPages: Math.ceil(result.total / limitNum)
+        }
+    });
+});
+
+export const updateOrderStatus = asyncHandler(async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+        res.status(400);
+        throw new Error('Status is required');
+    }
+
+    // Determine if we should use special logic (like cancelOrder)
+    // For now, simpler management: just update status via Order.updateStatus
+    // If status is 'Cancelled' and we want to restock, we should probably call Order.cancelOrder instead or within updateStatus.
+    // However, the admin might just want to flag it as cancelled without restock logic if it was a mistake or whatever.
+    // But usually 'Cancelled' implies restocking.
+    // Let's stick to simple update for now unless it is 'Cancelled'
+
+    let updatedOrder;
+    if (status.toLowerCase() === 'cancelled') {
+        // Use the cancel logic
+        await Order.cancelOrder(orderId);
+        updatedOrder = { order_id: orderId, status: 'Cancelled' }; // partial mock since cancelOrder returns void/boolean
+    } else {
+        updatedOrder = await Order.updateStatus(orderId, status);
+    }
+
+    res.json({
+        success: true,
+        message: 'Order updated successfully',
+        data: updatedOrder
+    });
+});
+
 export const getUsers = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const pageNum = parseInt(page);
@@ -59,7 +119,7 @@ export const updateInventory = asyncHandler(async (req, res) => {
             updated_at = CURRENT_TIMESTAMP
         RETURNING *
     `;
-    
+
     const result = await pool.query(query, [variantId, stock, reserved_stock || 0]);
 
     res.json({
@@ -69,4 +129,4 @@ export const updateInventory = asyncHandler(async (req, res) => {
     });
 });
 
-export default { getDashboardStats, getUsers, updateInventory };
+export default { getDashboardStats, getUsers, updateInventory, getOrders, updateOrderStatus };
