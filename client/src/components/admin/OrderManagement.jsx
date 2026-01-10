@@ -97,6 +97,7 @@ const OrderManagement = () => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'pending': return 'bg-yellow-100 text-yellow-700';
+            case 'paid': return 'bg-green-100 text-green-700';
             case 'processing': return 'bg-blue-100 text-blue-700';
             case 'shipped': return 'bg-purple-100 text-purple-700';
             case 'delivered': return 'bg-green-100 text-green-700';
@@ -107,6 +108,7 @@ const OrderManagement = () => {
 
     const getStatusIcon = (status) => {
         switch (status?.toLowerCase()) {
+            case 'paid': return <CheckCircle size={14} />;
             case 'pending': return <Clock size={14} />;
             case 'processing': return <Package size={14} />;
             case 'shipped': return <Truck size={14} />;
@@ -120,14 +122,14 @@ const OrderManagement = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h2 className="text-2xl font-bold text-gray-800">Quản lý đơn hàng</h2>
-                <div className="flex items-center gap-4">
-                    <div className="relative">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+                    <div className="relative w-full sm:w-auto">
                         <input
                             type="text"
                             placeholder="Tìm đơn hàng, khách hàng..."
-                            className="text-sm border border-gray-200 rounded-lg pl-9 pr-3 py-2 outline-none focus:border-[#004535] w-64 transition-all"
+                            className="text-sm border border-gray-200 rounded-lg pl-9 pr-3 py-2 outline-none focus:border-[#004535] w-full sm:w-64 transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -138,7 +140,7 @@ const OrderManagement = () => {
                     </div>
 
                     <select
-                        className="text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-[#004535]"
+                        className="text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-[#004535] w-full sm:w-auto"
                         value={statusFilter}
                         onChange={(e) => {
                             setStatusFilter(e.target.value);
@@ -152,7 +154,7 @@ const OrderManagement = () => {
                         <option value="Delivered">Hoàn thành (Delivered)</option>
                         <option value="Cancelled">Đã hủy (Cancelled)</option>
                     </select>
-                    <span className="text-sm text-gray-500">Tổng cộng: <strong>{totalItems}</strong> đơn hàng</span>
+                    <span className="text-sm text-gray-500 whitespace-nowrap">Tổng: <strong>{totalItems}</strong> đơn</span>
                 </div>
             </div>
 

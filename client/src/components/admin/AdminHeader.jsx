@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, Package, X } from 'lucide-react';
+import { Bell, Package, X, Menu } from 'lucide-react';
 import { adminService } from '../../services/api';
 import { Link } from 'react-router-dom';
 
-const AdminHeader = () => {
+const AdminHeader = ({ onToggleSidebar }) => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,16 @@ const AdminHeader = () => {
   }, []);
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm flex items-center justify-end px-8">
+    <header className="h-16 bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm flex items-center justify-between px-4 md:px-8">
+      <div className="flex items-center gap-4">
+        <button
+          onClick={onToggleSidebar}
+          className="p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg md:hidden"
+        >
+          <Menu size={24} />
+        </button>
+      </div>
+
       <div className="flex items-center gap-6">
 
         {/* Notification Bell */}

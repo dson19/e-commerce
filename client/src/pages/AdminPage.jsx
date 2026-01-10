@@ -9,6 +9,7 @@ import OrderManagement from '../components/admin/OrderManagement';
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -23,10 +24,24 @@ const AdminPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex font-sans text-gray-800">
-      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-1 ml-64 min-w-0">
-        <AdminHeader />
-        <div className="p-8">
+      <AdminSidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <main className="flex-1 ml-0 md:ml-64 min-w-0 transition-all duration-200">
+        <AdminHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <div className="p-4 md:p-8">
           {renderContent()}
         </div>
       </main>
