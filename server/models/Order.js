@@ -192,7 +192,7 @@ const cancelOrder = async (orderId) => {
     }
 };
 
-const getAllOrders = async ({ limit, offset, search, status }) => {
+const getAllOrders = async ({ limit, offset, search, status, sortBy, sortOrder }) => {
     let query = `
         SELECT o.order_id, o.user_id, o.order_date, o.grand_total, o.status,
                u.email, u.fullname
@@ -216,8 +216,13 @@ const getAllOrders = async ({ limit, offset, search, status }) => {
         paramIndex++;
     }
 
-    // Sort by date desc
-    query += ` ORDER BY o.order_date DESC`;
+    // Sort
+    let sortColumn = 'o.order_date';
+    if (sortBy === 'total') sortColumn = 'o.grand_total';
+    else if (sortBy === 'name') sortColumn = 'u.fullname';
+
+    const direction = sortOrder?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    query += ` ORDER BY ${sortColumn} ${direction}`;
 
     // Pagination
     query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;

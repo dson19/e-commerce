@@ -13,7 +13,7 @@ import reviewRoutes from './routes/reviewRoutes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT||5000;
+const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: ["http://localhost:5173", "https://e-commerce-two-rho-64.vercel.app"],
   credentials: true // Cho phép mang theo Cookie/Token
@@ -38,4 +38,5 @@ startOrderCleanupTask();
 
 app.listen(PORT, () => {
   console.log(`Server đang chạy ở http://localhost:${PORT}`);
+  console.log('Server restarted for stats update...');
 });

@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { adminService } from '../../services/api';
 import { Loader2, TrendingUp } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const DashboardView = () => {
-  const [stats, setStats] = useState({ totalUsers: 0, totalOrders: 0, totalRevenue: 0, todayRevenue: 0 });
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+    todayRevenue: 0,
+    revenueChart: []
+  });
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await adminService.getDashboardStats();
-        console.log("Dashboard Stats Response:", res);
-        // Backend returns { success: true, data: { ... } }
         if (res.data && res.data.success) {
-          setStats(res.data.data);
+          console.log("Dashboard Stats Data:", res.data.data);
+          // Format revenue to number just in case
+          const formattedData = {
+            ...res.data.data,
+            revenueChart: res.data.data.revenueChart?.map(item => ({
+              ...item,
+              revenue: Number(item.revenue)
+            })) || []
+          };
+          setStats(formattedData);
         } else if (res.success && res.data) {
-          // Fallback if interceptor unwraps it
           setStats(res.data);
         }
       } catch (error) {
@@ -48,9 +60,41 @@ const DashboardView = () => {
           </div>
         ))}
       </div>
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 h-80 flex flex-col items-center justify-center text-gray-400">
-        <TrendingUp size={48} className="mb-2 opacity-50" />
-        <p>Biểu đồ doanh thu sẽ hiển thị ở đây</p>
+
+      {/* Revenue Chart */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="p-2 bg-green-100 rounded-lg text-green-700">
+            <TrendingUp size={20} />
+          </div>
+          <h3 className="text-lg font-bold text-gray-800">Doanh thu 7 ngày gần nhất</h3>
+        </div>
+
+        <div className="w-full h-[400px]">
+          {stats.revenueChart && stats.revenueChart.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stats.revenueChart} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="display_date" axisLine={false} tickLine={false} />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  domain={[0, 'auto']}
+                  tickFormatter={(value) => `${(value / 1000000).toFixed(0)}tr`}
+                />
+                <Tooltip
+                  formatter={(value) => [`${Number(value).toLocaleString()}₫`, 'Doanh thu']}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="revenue" fill="#004535" radius={[4, 4, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-500">
+              {loading ? 'Đang tải biểu đồ...' : 'Chưa có dữ liệu thống kê'}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

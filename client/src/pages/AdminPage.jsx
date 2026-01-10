@@ -5,6 +5,7 @@ import DashboardView from '../components/admin/DashboardView';
 import UserManagement from '../components/admin/UserManagement';
 import ProductList from '../components/admin/ProductList';
 import AddProductForm from '../components/admin/AddProductForm';
+import OrderManagement from '../components/admin/OrderManagement';
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -13,6 +14,7 @@ const AdminPage = () => {
     switch (activeTab) {
       case 'dashboard': return <DashboardView />;
       case 'users': return <UserManagement />;
+      case 'orders': return <OrderManagement />;
       case 'products': return <ProductList setActiveTab={setActiveTab} />;
       case 'add-product': return <AddProductForm setActiveTab={setActiveTab} />;
       default: return <DashboardView />;

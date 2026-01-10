@@ -64,6 +64,12 @@ const OrderPage = () => {
           icon: <Truck size={16} />,
         };
       case "DELIVERED":
+        return {
+          label: "Đã giao",
+          color: "text-green-600",
+          bg: "bg-green-50",
+          icon: <CheckCircle size={16} />,
+        };
       case "PAID": // Handle 'paid' status as well if needed or map it
         return {
           label: "Thanh toán thành công",

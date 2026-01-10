@@ -5,6 +5,7 @@ import Order from '../models/Order.js';
 
 export const getDashboardStats = asyncHandler(async (req, res) => {
     const data = await getStats();
+    console.log("Backend Stats Data:", JSON.stringify(data, null, 2));
     res.json({
         success: true,
         data: data
@@ -12,7 +13,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
 });
 
 export const getOrders = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, search, status } = req.query;
+    const { page = 1, limit = 10, search, status, sortBy, sortOrder } = req.query;
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     const offset = (pageNum - 1) * limitNum;
@@ -21,7 +22,9 @@ export const getOrders = asyncHandler(async (req, res) => {
         limit: limitNum,
         offset,
         search,
-        status
+        status,
+        sortBy,
+        sortOrder
     });
 
     res.json({
@@ -65,6 +68,21 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
         success: true,
         message: 'Order updated successfully',
         data: updatedOrder
+    });
+});
+
+export const getOrderDetails = asyncHandler(async (req, res) => {
+    const { orderId } = req.params;
+    const order = await Order.getOrderByIdNoUserId(orderId);
+
+    if (!order) {
+        res.status(404);
+        throw new Error('Đơn hàng không tồn tại');
+    }
+
+    res.json({
+        success: true,
+        data: order
     });
 });
 
@@ -129,4 +147,4 @@ export const updateInventory = asyncHandler(async (req, res) => {
     });
 });
 
-export default { getDashboardStats, getUsers, updateInventory, getOrders, updateOrderStatus };
+export default { getDashboardStats, getUsers, updateInventory, getOrders, updateOrderStatus, getOrderDetails };

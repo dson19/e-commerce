@@ -39,6 +39,7 @@ export const adminService = {
   getDashboardStats: () => api.get('/admin/stats'),
   getUsers: (params) => api.get('/admin/users', { params }),
   getOrders: (params) => api.get('/admin/orders', { params }),
+  getOrderDetails: (id) => api.get(`/admin/orders/${id}`),
   updateOrderStatus: (orderId, status) => api.put(`/admin/orders/${orderId}`, { status }),
   updateInventory: (variantId, data) => api.put(`/admin/inventory/${variantId}`, data),
 };

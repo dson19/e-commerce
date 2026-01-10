@@ -3,13 +3,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const redisUrl = process.env.REDIS_URL;
+const isProduction = redisUrl?.startsWith('rediss://');
+
 const redisClient = createClient({
-    url: process.env.REDIS_URL,
-    // THÊM ĐOẠN NÀY ĐỂ KẾT NỐI ỔN ĐỊNH HƠN VỚI UPSTASH
-    socket: {
+    url: redisUrl,
+    socket: isProduction ? {
         tls: true,
         rejectUnauthorized: false
-    }
+    } : undefined
 });
 
 redisClient.on('error', (err) => console.log('❌ Redis Client Error', err));
