@@ -18,7 +18,6 @@ const DashboardView = () => {
       try {
         const res = await adminService.getDashboardStats();
         if (res.data && res.data.success) {
-          console.log("Dashboard Stats Data:", res.data.data);
           // Format revenue to number just in case
           const formattedData = {
             ...res.data.data,
@@ -31,7 +30,7 @@ const DashboardView = () => {
         } else if (res.success && res.data) {
           setStats(res.data);
         }
-      } catch (error) {
+      } catch {
         console.warn("Chưa kết nối được API stats, dùng dữ liệu mẫu");
       } finally {
         setLoading(false);
