@@ -62,7 +62,7 @@ const DashboardView = () => {
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
         <div className="flex items-center gap-2 mb-6">
           <div className="p-2 bg-green-100 rounded-lg text-green-700">
             <TrendingUp size={20} />
@@ -70,7 +70,7 @@ const DashboardView = () => {
           <h3 className="text-lg font-bold text-gray-800">Doanh thu 7 ngày gần nhất</h3>
         </div>
 
-        <div className="w-full h-[400px]">
+        <div className="w-full flex-1 min-h-[400px]">
           {stats.revenueChart && stats.revenueChart.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats.revenueChart} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -86,7 +86,7 @@ const DashboardView = () => {
                   formatter={(value) => [`${Number(value).toLocaleString()}₫`, 'Doanh thu']}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="revenue" fill="#004535" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar dataKey="revenue" fill="#004535" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
