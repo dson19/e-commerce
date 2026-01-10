@@ -1,40 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react'; // Bỏ useEffect và useCallback vì không fetch ở đây nữa
 import { ThumbsUp, MessageSquare, Send, Trash2 } from 'lucide-react';
-import { useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { reviewService } from '../../../services/api';
 import { toast } from 'sonner';
+import { Trash2 as TrashIcon } from 'lucide-react';
 
-const ProductReviews = ({ productId: propProductId }) => {
-    const { productId: paramProductId } = useParams();
-    const productId = propProductId || paramProductId;
+const ProductReviews = ({ productId, reviews = [], onReviewChange }) => {
     const { user, isAuthenticated } = useAuth();
-    const [reviews, setReviews] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-
-    const fetchReviews = useCallback(async () => {
-        try {
-            setLoading(true);
-            const response = await reviewService.getReviews(productId);
-            if (response.data.success) {
-                setReviews(response.data.data);
-            }
-        } catch (error) {
-            console.error("Error fetching reviews:", error);
-        } finally {
-            setLoading(false);
-        }
-    }, [productId]);
-
-    useEffect(() => {
-        if (productId) {
-            fetchReviews();
-        }
-    }, [productId, fetchReviews]);
 
     const handleSubmitReview = async () => {
         if (!comment.trim()) {
@@ -49,7 +25,9 @@ const ProductReviews = ({ productId: propProductId }) => {
                 toast.success("Đánh giá đã được gửi thành công!");
                 setComment("");
                 setShowForm(false);
-                fetchReviews(); // Refresh list
+                if (onReviewChange) {
+                    onReviewChange();
+                }
             }
         } catch (error) {
             console.error("Error submitting review:", error);
@@ -59,22 +37,36 @@ const ProductReviews = ({ productId: propProductId }) => {
         }
     };
 
-    const handleDeleteReview = async (reviewId) => {
-        if (!window.confirm("Bạn có chắc chắn muốn xóa đánh giá này?")) return;
-
-        try {
-            const response = await reviewService.deleteReview(reviewId);
-            if (response.data.success) {
-                toast.success("Đánh giá đã được xóa");
-                fetchReviews();
-            }
-        } catch (error) {
-            console.error("Error deleting review:", error);
-            toast.error("Không thể xóa đánh giá");
-        }
+const handleDeleteReview = (reviewId) => {
+        // 1. Hiện toast xác nhận (Thay thế cho window.confirm)
+        toast("Bạn có chắc chắn muốn xóa đánh giá này?", {
+            action: {
+                label: "Xóa ngay",
+                // 2. Chỉ chạy logic xóa khi người dùng bấm vào nút Action này
+                onClick: () => {
+                    toast.promise(
+                        reviewService.deleteReview(reviewId),
+                        {
+                            loading: "Đang xóa đánh giá...",
+                            success: () => {
+                                // Cập nhật lại danh sách sau khi xóa thành công
+                                if (onReviewChange) {
+                                    onReviewChange();
+                                }
+                                return "Đánh giá đã được xóa thành công!";
+                            },
+                            error: (error) => error.response?.data?.message || "Không thể xóa đánh giá"
+                        }
+                    );
+                },
+            },
+            cancel: {
+                label: "Hủy bỏ",
+            },
+            duration: 5000, // Thời gian chờ xác nhận
+        });
     };
 
-    // Helper to format date
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('vi-VN', {
             year: 'numeric',
@@ -107,12 +99,11 @@ const ProductReviews = ({ productId: propProductId }) => {
                 </button>
             </div>
 
-            {/* 2. Write Comment Form (Collapsible) */}
+            {/* 2. Write Comment Form */}
             {showForm && (
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                     <h3 className="font-bold text-gray-800 mb-4">Gửi đánh giá của bạn</h3>
 
-                    {/* Rating Selection */}
                     <div className="mb-4 flex items-center gap-2">
                         <span className="text-sm font-medium">Đánh giá:</span>
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -157,9 +148,7 @@ const ProductReviews = ({ productId: propProductId }) => {
 
             {/* 3. Comments List */}
             <div className="space-y-6">
-                {loading ? (
-                    <p className="text-center text-gray-500">Đang tải đánh giá...</p>
-                ) : reviews.length === 0 ? (
+                {reviews.length === 0 ? (
                     <p className="text-center text-gray-500 italic">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
                 ) : (
                     reviews.map((review) => (
@@ -192,7 +181,6 @@ const ProductReviews = ({ productId: propProductId }) => {
                                             <ThumbsUp size={14} /> Thích
                                         </button>
 
-                                        {/* Only show delete if user owns the review */}
                                         {isAuthenticated && user && user.id === review.user_id && (
                                             <button
                                                 onClick={() => handleDeleteReview(review.review_id)}
@@ -209,7 +197,6 @@ const ProductReviews = ({ productId: propProductId }) => {
                 )}
             </div>
 
-            {/* Pagination Dummy - Hide if no reviews or few reviews */}
             {reviews.length > 5 && (
                 <div className="flex justify-center pt-2">
                     <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">

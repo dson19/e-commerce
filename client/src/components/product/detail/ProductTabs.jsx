@@ -1,11 +1,9 @@
 import React from 'react';
 import ProductReviews from './ProductReviews';
 
-const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId }) => {
+const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId, reviews, onReviewChange }) => {
   return (
     <div>
-      {/* ... (headers) */}
-
       <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
         {specs && Object.keys(specs).length > 0 && (
           <button
@@ -25,6 +23,7 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId }
             : 'border-transparent text-gray-500 hover:text-gray-800'
             }`}
         >
+          {/* Số lượng review sẽ hiển thị chính xác nhờ props từ cha */}
           Đánh giá ({reviewsCount})
         </button>
         <button
@@ -38,7 +37,6 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId }
         </button>
       </div>
 
-      {/* Tab Content */}
       <div className="text-gray-700 leading-relaxed text-sm md:text-base min-h-[200px]">
         {activeTab === 'specs' && specs && (
           <div className="animate-in fade-in duration-300">
@@ -56,7 +54,12 @@ const ProductTabs = ({ activeTab, setActiveTab, reviewsCount, specs, productId }
         )}
 
         {activeTab === 'reviews' && (
-          <ProductReviews productId={productId} />
+          // Truyền tiếp props xuống ProductReviews
+          <ProductReviews 
+            productId={productId} 
+            reviews={reviews} 
+            onReviewChange={onReviewChange} 
+          />
         )}
 
         {activeTab === 'policy' && (
