@@ -97,6 +97,7 @@ const OrderManagement = () => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'pending': return 'bg-yellow-100 text-yellow-700';
+            case 'paid': return 'bg-green-100 text-green-700';
             case 'processing': return 'bg-blue-100 text-blue-700';
             case 'shipped': return 'bg-purple-100 text-purple-700';
             case 'delivered': return 'bg-green-100 text-green-700';
@@ -107,6 +108,7 @@ const OrderManagement = () => {
 
     const getStatusIcon = (status) => {
         switch (status?.toLowerCase()) {
+            case 'paid': return <CheckCircle size={14} />;
             case 'pending': return <Clock size={14} />;
             case 'processing': return <Package size={14} />;
             case 'shipped': return <Truck size={14} />;
