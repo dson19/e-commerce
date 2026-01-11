@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, Users, ShoppingBag, PieChart, LogOut, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Users, ShoppingBag, PieChart, LogOut, ClipboardList, TicketPercent } from 'lucide-react';
 
 const AdminSidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -35,6 +35,9 @@ const AdminSidebar = ({ activeTab, setActiveTab, isOpen, onClose }) => {
         </button>
         <button onClick={() => handleTabClick('orders')} className={menuClass('orders')}>
           <ClipboardList size={20} /> Đơn hàng
+        </button>
+        <button onClick={() => handleTabClick('promotions')} className={menuClass('promotions')}>
+          <TicketPercent size={20} /> Voucher
         </button>
       </nav>
 

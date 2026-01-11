@@ -1,71 +1,140 @@
 import pool from '../config/db.js';
 
-const createOrder = async (userId, items, address_id, paymentMethod, phone_number, name) => {
-    const client = await pool.connect();
+import pool from '../config/db.js';
+import Promotion from './Promotion.js'; 
 
+// BỎ tham số discount_amount ở đầu vào
+const createOrder = async (userId, items, address_id, paymentMethod, phone_number, name, promotion_id = null) => {
+    const client = await pool.connect();
     try {
         await client.query('BEGIN');
-
-        let calculatedGrandTotal = 0;
-
-        // 1. Tạo đơn hàng trước (Status Pending, Total tạm để 0)
-        const orderQuery = `
-            INSERT INTO orders (user_id, address_id, payment_method, shipping_phone, shipping_name, status, grand_total, subtotal)
-            VALUES ($1, $2, $3, $4, $5, 'Pending', 0, 0) 
-            RETURNING order_id`;
-        // grand_total và subtotal để tạm là 0, sau khi tính toán xong items sẽ update lại
-        const orderRes = await client.query(orderQuery, [userId, address_id, paymentMethod, phone_number, name]);
-        const orderId = orderRes.rows[0].order_id;
+        // 1. Tính Subtotal (Tổng tiền hàng gốc)
+        let subtotal = 0;
+        let orderItemsData = []; // Lưu tạm để đỡ query lại
 
         for (const item of items) {
-
-            const variantQuery = `
-                SELECT COALESCE(price, best_price, last_price, 0) as price, stock, reserved_stock 
-                FROM product_variants 
-                JOIN inventory ON product_variants.variant_id = inventory.variant_id
-                WHERE product_variants.variant_id = $1 
-                FOR UPDATE`;
+             const variantQuery = `
+                SELECT v.variant_id, COALESCE(v.price, v.best_price, v.last_price, 0) as price, 
+                       v.stock, v.reserved_stock,
+                       p.category_id, p.brand_id, p.id as product_id
+                FROM product_variants v
+                JOIN products p ON v.product_id = p.id
+                JOIN inventory i ON v.variant_id = i.variant_id
+                WHERE v.variant_id = $1 
+                FOR UPDATE`; 
 
             const variantRes = await client.query(variantQuery, [item.variant_id]);
+            if (variantRes.rows.length === 0) throw new Error(`Sản phẩm ${item.variant_id} không tồn tại`);
+            
+            const variant = variantRes.rows[0];
+            if (variant.stock - variant.reserved_stock < item.quantity) throw new Error(`Sản phẩm ${item.variant_id} hết hàng`);
 
-            if (variantRes.rows.length === 0) {
-                throw new Error(`Sản phẩm ID ${item.variant_id} không tồn tại`);
-            }
-
-            const productData = variantRes.rows[0];
-            const availableStock = (productData.stock || 0) - (productData.reserved_stock || 0);
-
-            if (availableStock < item.quantity) {
-                throw new Error(`Sản phẩm ${item.variant_id} không đủ hàng (Còn: ${availableStock})`);
-            }
-
-            const insertItemQuery = `
-                INSERT INTO order_items (order_id, variant_id, quantity, price)
-                VALUES ($1, $2, $3, $4)`;
-            await client.query(insertItemQuery, [orderId, item.variant_id, item.quantity, productData.price]);
-
-            const updateStockQuery = `
-                UPDATE inventory 
-                SET reserved_stock = reserved_stock + $1 
-                WHERE variant_id = $2`;
-            await client.query(updateStockQuery, [item.quantity, item.variant_id]);
-
-            calculatedGrandTotal += Number(productData.price) * item.quantity;
+            const itemTotal = Number(variant.price) * item.quantity;
+            subtotal += itemTotal;
+            
+            // Push vào mảng để tí nữa dùng tính voucher và insert
+            orderItemsData.push({
+                ...variant,
+                quantity: item.quantity,
+                itemTotal: itemTotal
+            });
         }
 
-        await client.query('UPDATE orders SET grand_total = $1, subtotal = $1 WHERE order_id = $2', [calculatedGrandTotal, orderId]);
+        // 2. [LOGIC MỚI] Tự tính toán Discount từ Promotion ID (Bảo mật)
+        let discount_amount = 0;
+        
+        if (promotion_id) {
+            const voucher = await Promotion.findById(promotion_id);
+            if (voucher) {
+                // Check lại điều kiện (Double check cho chắc chắn)
+                const now = new Date();
+                if (voucher.is_active && voucher.used_count < voucher.usage_limit && 
+                    new Date(voucher.start_date) <= now && new Date(voucher.end_date) >= now) {
+                    
+                    // Check Scope (Áp dụng cho sp nào)
+                    const scopes = await Promotion.getScopes(promotion_id);
+                    let eligibleAmount = 0;
+
+                    if (scopes.length === 0) {
+                        eligibleAmount = subtotal; // Toàn sàn
+                    } else {
+                        // Lọc sản phẩm khớp scope
+                        for (const item of orderItemsData) {
+                            const isMatch = scopes.some(s => 
+                                (s.target_type === 'product' && s.target_id === item.product_id) ||
+                                (s.target_type === 'category' && s.target_id === item.category_id) ||
+                                (s.target_type === 'brand' && s.target_id === item.brand_id)
+                            );
+                            if (isMatch) eligibleAmount += item.itemTotal;
+                        }
+                    }
+
+                    // Check Min Order
+                    if (subtotal >= Number(voucher.min_order_value) && eligibleAmount > 0) {
+                        // Tính tiền giảm
+                        if (voucher.discount_type === 'FIXED') {
+                            discount_amount = Number(voucher.discount_value);
+                        } else {
+                            discount_amount = (eligibleAmount * Number(voucher.discount_value)) / 100;
+                            if (voucher.max_discount_amount) {
+                                discount_amount = Math.min(discount_amount, Number(voucher.max_discount_amount));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. Tính Grand Total
+        let grand_total = subtotal - discount_amount;
+        if (grand_total < 0) grand_total = 0;
+
+        // 4. Tạo đơn hàng
+        const orderQuery = `
+            INSERT INTO orders (
+                user_id, address_id, payment_method, shipping_phone, shipping_name, 
+                status, grand_total, subtotal, promotion_id, discount_amount
+            )
+            VALUES ($1, $2, $3, $4, $5, 'Pending', $6, $7, $8, $9) 
+            RETURNING order_id`;
+        
+        const orderRes = await client.query(orderQuery, [
+            userId, address_id, paymentMethod, phone_number, name, 
+            grand_total, subtotal, promotion_id, discount_amount
+        ]);
+        const orderId = orderRes.rows[0].order_id;
+
+        // 5. Insert Order Items & Trừ kho
+        for (const item of orderItemsData) {
+            await client.query(
+                `INSERT INTO order_items (order_id, variant_id, quantity, price, total_price) 
+                 VALUES ($1, $2, $3, $4, $5)`,
+                [orderId, item.variant_id, item.quantity, item.price, item.itemTotal]
+            );
+
+            await client.query(
+                `UPDATE inventory SET stock = stock - $1 WHERE variant_id = $2`,
+                [item.quantity, item.variant_id]
+            );
+        }
+
+        // 6. Ghi nhận dùng Voucher
+        if (promotion_id && discount_amount > 0) {
+            await Promotion.recordUsage(client, userId, promotion_id, orderId, discount_amount);
+        }
 
         await client.query('COMMIT');
-        return { order_id: orderId, total: calculatedGrandTotal };
+        return { orderId, grand_total, discount_amount };
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error("Lỗi tạo đơn hàng:", error.message);
         throw error;
     } finally {
         client.release();
     }
 };
+
+
 const getOrderById = async (userId, orderId) => {
     const orderQuery = `
         SELECT o.*, o.order_date as created_at,

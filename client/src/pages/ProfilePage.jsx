@@ -11,6 +11,7 @@ import ProfileOverview from '../components/profile/ProfileOverview';
 import PersonalInfo from '../components/profile/PersonalInfo';
 import AddressManagement from '../components/profile/AddressManagement';
 import OrderHistory from '../components/profile/OrderHistory';
+import VoucherList from '../components/profile/VoucherList';
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
@@ -21,6 +22,7 @@ const ProfilePage = () => {
     { id: 'orders', label: 'Đơn hàng của bạn', icon: <Package size={20} /> },
     { id: 'profile', label: 'Thông tin cá nhân', icon: <User size={20} /> },
     { id: 'addresses', label: 'Sổ địa chỉ', icon: <MapPin size={20} /> },
+    { id: 'vouchers', label: 'Voucher của tôi', icon: <TicketPercent size={20} /> },
   ];
 
   // --- HÀM RENDER NỘI DUNG ---
@@ -34,6 +36,8 @@ const ProfilePage = () => {
         return <AddressManagement />;
       case 'orders':
         return <OrderHistory />;
+      case 'vouchers':
+        return <VoucherList />;
       default:
         return <div className="text-center py-20 text-gray-400">Chức năng đang phát triển</div>;
     }

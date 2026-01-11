@@ -107,12 +107,14 @@ const HomePage = () => {
               {/* Overlay Text (Làm tối góc ảnh để chữ nổi lên) */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent flex flex-col justify-center px-10">
                 <div className="text-white transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500">
-                  <span className="bg-[#004535] px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider mb-3 inline-block shadow-lg">Flagship 2024</span>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">iPhone 15 Pro Max</h2>
-                  <p className="text-gray-200 text-sm md:text-base max-w-md mb-6">Titanium bền bỉ. Chip A17 Pro định hình tương lai. Camera zoom quang 5x đỉnh cao.</p>
+                  <span className="bg-[#004535] px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider mb-3 inline-block shadow-lg">Flagship 2025</span>
+                  <h2 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">iPhone 16 Pro Max</h2>
+                  <p className="text-gray-200 text-sm md:text-base max-w-md mb-6">Titanium bền bỉ. Chip A18 Pro định hình tương lai. Camera zoom quang 5x đỉnh cao.</p>
+                  <Link to="/dien-thoai/iphone/iphone-16-pro-max-256gb-chinh-hang-vna?sku=MYWY3VN">
                   <button className="bg-white text-gray-900 px-6 py-3 rounded-full font-bold text-sm hover:bg-[#004535] hover:text-white transition-all shadow-lg">
                     Mua ngay
                   </button>
+                  </Link>
                 </div>
               </div>
             </div>

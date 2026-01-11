@@ -9,6 +9,7 @@ import adminRoute from './routes/adminRoutes.js';
 import orderRoute from './routes/orderRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import promotionRoutes from './routes/promotionRoutes.js';
 //đọc file .env
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/payment', paymentRoute);
 app.use('/api', reviewRoutes);
+app.use('/api/promotions', promotionRoutes);
 // Error Handler Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
 import startOrderCleanupTask from './utils/orderScheduler.js';

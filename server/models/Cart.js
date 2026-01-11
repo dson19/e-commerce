@@ -16,6 +16,8 @@ const getCart = async (userId) => {
             ci.quantity, 
             p.id, 
             p.name, 
+            p.category_id, 
+            p.brand_id,
             pv.price, 
             pv.image_url as img, 
             ci.variant_id,

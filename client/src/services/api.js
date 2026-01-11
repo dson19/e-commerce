@@ -65,4 +65,14 @@ export const reviewService = {
   deleteReview: (reviewId) => api.delete(`/reviews/${reviewId}`),
 };
 
+export const promotionService = {
+  getPromotions: () => api.get('/promotions'),
+  validatePromotion: (data) => api.post('/promotions/validate', data),
+  // Admin only
+  createPromotion: (data) => api.post('/admin/promotions', data),
+  getCategories: () => api.get('/promotions/admin/categories'),
+  getBrands: () => api.get('/promotions/admin/brands'),
+  searchProducts: (search) => api.get('/promotions/admin/products/search', { params: { search } }),
+};
+
 export default api;

@@ -4,11 +4,11 @@ import Order from "../models/Order.js";
 
 const createOrder = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { items, address_id, paymentMethod, phone_number, name } = req.body;
+    const { items, address_id, paymentMethod, phone_number, name, promotion_id } = req.body;
     if (!items || items.length === 0) {
         throw new ErrorResponse("Giỏ hàng trống", 400);
     }
-    const order = await Order.createOrder(userId, items, address_id, paymentMethod, phone_number, name);
+    const order = await Order.createOrder(userId, items, address_id, paymentMethod, phone_number, name, promotion_id);
     res.status(201).json({
         success: true,
         data: order

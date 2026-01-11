@@ -3,7 +3,6 @@ import { ThumbsUp, MessageSquare, Send, Trash2 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { reviewService } from '../../../services/api';
 import { toast } from 'sonner';
-import { Trash2 as TrashIcon } from 'lucide-react';
 
 const ProductReviews = ({ productId, reviews = [], onReviewChange }) => {
     const { user, isAuthenticated } = useAuth();
