@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 // Lay danh sach khuyen mai dang hoat dong
 const getAvailablePromotions = async (userId) => {
@@ -79,40 +79,33 @@ const findById = async (id) => {
   return res.rows[0];
 };
 
+// Lấy tất cả promotions cho admin (không filter)
+const getAllPromotions = async () => {
+  const query = 'SELECT * FROM promotions ORDER BY promotion_id DESC';
+  const res = await pool.query(query);
+  return res.rows;
+};
+
 // Tạo promotion mới
 const create = async (client, promotionData) => {
   const {
-    code,
-    description,
-    start_date,
-    end_date,
-    usage_limit,
-    discount_type,
-    discount_value,
-    max_discount_amount,
-    min_order_amount,
-    is_active = true
+    code, description, discount_type, discount_value,
+    max_discount_amount, min_order_value,
+    start_date, end_date, usage_limit, is_active
   } = promotionData;
 
   const query = `
     INSERT INTO promotions (
-      code, description, start_date, end_date, usage_limit,
-      discount_type, discount_value, max_discount_amount, min_order_amount, is_active
+      code, description, discount_type, discount_value,max_discount_amount,min_order_value,
+      start_date, end_date, usage_limit,  is_active
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING *
   `;
   
   const values = [
-    code,
-    description,
-    start_date,
-    end_date,
-    usage_limit,
-    discount_type,
-    discount_value,
-    max_discount_amount,
-    min_order_amount,
-    is_active
+    code, description, discount_type, discount_value,
+    max_discount_amount, min_order_value,
+    start_date, end_date, usage_limit, is_active
   ];
 
   const res = await client.query(query, values);
@@ -171,4 +164,5 @@ export default {
   getAllCategories,
   getAllBrands,
   searchProducts,
+  getAllPromotions,
 };

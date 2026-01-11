@@ -7,7 +7,7 @@ export const getReviewsByProductId = async (productId) => {
   return res.rows;
 };
 
-export const getBrandByProductId = async (brand_id) => {
+const getBrandByProductId = async (brand_id) => {
   const query = `
     SELECT b.brand_name FROM brands b
     WHERE b.brand_id = $1
@@ -17,7 +17,7 @@ export const getBrandByProductId = async (brand_id) => {
   return res.rows[0]; 
 };
 
-export const getCategoryByProductId = async (category_id) => {
+const getCategoryByProductId = async (category_id) => {
   const query = `
     SELECT c.category_name FROM categories c
     WHERE c.category_id = $1
@@ -25,4 +25,8 @@ export const getCategoryByProductId = async (category_id) => {
   const values = [category_id];
   const res = await pool.query(query, values);
   return res.rows[0]; 
+};
+export default { 
+  getBrandByProductId,
+  getCategoryByProductId
 };

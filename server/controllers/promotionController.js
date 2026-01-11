@@ -196,3 +196,12 @@ export const searchProductsForAdmin = asyncHandler(async (req, res) => {
     data: products
   });
 });
+
+// Lấy tất cả promotions cho admin
+export const getAllPromotionsForAdmin = asyncHandler(async (req, res) => {
+  const promotions = await Promotion.getAllPromotions();
+  res.json({
+    success: true,
+    data: promotions
+  });
+});

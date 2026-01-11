@@ -1,6 +1,4 @@
 import pool from '../config/db.js';
-
-import pool from '../config/db.js';
 import Promotion from './Promotion.js'; 
 
 // BỎ tham số discount_amount ở đầu vào

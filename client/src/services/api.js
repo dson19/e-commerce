@@ -33,6 +33,7 @@ export const productService = {
   getBrands: () => api.get('/products/brands'),
   getParentCategories: () => api.get('/products/categories/parents'),
   createProduct: (data) => api.post('/products', data),
+  searchProducts: (search) => api.get('/promotions/admin/products/search', { params: { search } }),
 };
 
 export const adminService = {
@@ -42,6 +43,8 @@ export const adminService = {
   getOrderDetails: (id) => api.get(`/admin/orders/${id}`),
   updateOrderStatus: (orderId, status) => api.put(`/admin/orders/${orderId}`, { status }),
   updateInventory: (variantId, data) => api.put(`/admin/inventory/${variantId}`, data),
+  createPromotion: (data) => api.post('/promotions/admin/create', data),
+  getAllPromotions: () => api.get('/promotions/admin/all'),
 };
 
 export const cartService = {
@@ -68,11 +71,6 @@ export const reviewService = {
 export const promotionService = {
   getPromotions: () => api.get('/promotions'),
   validatePromotion: (data) => api.post('/promotions/validate', data),
-  // Admin only
-  createPromotion: (data) => api.post('/admin/promotions', data),
-  getCategories: () => api.get('/promotions/admin/categories'),
-  getBrands: () => api.get('/promotions/admin/brands'),
-  searchProducts: (search) => api.get('/promotions/admin/products/search', { params: { search } }),
 };
 
 export default api;

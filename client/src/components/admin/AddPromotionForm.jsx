@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { promotionService } from '@/services/api';
+import { adminService, promotionService } from '@/services/api';
 import { toast } from 'sonner';
-import { X, Search, Check } from 'lucide-react';
+import { productService } from '@/services/api';
+import { X, Search } from 'lucide-react';
 
 const AddPromotionForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     code: '',
     description: '',
-    start_date: '',
-    end_date: '',
-    usage_limit: '',
     discount_type: 'percentage',
     discount_value: '',
     max_discount_amount: '',
     min_order_amount: '',
+    start_date: '',
+    end_date: '',
+    usage_limit: '',
     apply_type: 'all',
   });
 
-  const [scopes, setScopes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -47,21 +47,14 @@ const AddPromotionForm = ({ onSuccess }) => {
     try {
       setLoadingData(true);
       const [categoriesRes, brandsRes] = await Promise.all([
-        promotionService.getCategories(),
-        promotionService.getBrands(),
+        productService.getParentCategories(),
+        productService.getBrands(),
       ]);
-      
-      // Debug log để kiểm tra response structure
-      console.log('Categories response:', categoriesRes);
-      console.log('Brands response:', brandsRes);
-      
-      // Axios wrap response trong .data, backend trả về { success: true, data: [...] }
       setCategories(categoriesRes.data?.data || categoriesRes.data || []);
       setBrands(brandsRes.data?.data || brandsRes.data || []);
     } catch (error) {
       console.error('Error loading data:', error);
-      console.error('Error response:', error.response?.data);
-      toast.error(error.response?.data?.message || 'Không thể tải dữ liệu');
+      toast.error('Không thể tải dữ liệu');
     } finally {
       setLoadingData(false);
     }
@@ -69,8 +62,8 @@ const AddPromotionForm = ({ onSuccess }) => {
 
   const searchProducts = async () => {
     try {
-      const response = await promotionService.searchProducts(productSearch);
-      setProductResults(response.data.data || []);
+      const response = await productService.searchProducts(productSearch);
+      setProductResults(response.data?.data || response.data || []);
     } catch (error) {
       console.error('Error searching products:', error);
     }
@@ -94,14 +87,14 @@ const AddPromotionForm = ({ onSuccess }) => {
     });
   };
 
-  const handleBrandAdd = (brandName) => {
-    if (brandName.trim() && !selectedBrands.includes(brandName.trim())) {
-      setSelectedBrands((prev) => [...prev, brandName.trim()]);
-    }
-  };
-
-  const handleBrandRemove = (brandName) => {
-    setSelectedBrands((prev) => prev.filter((b) => b !== brandName));
+  const handleBrandToggle = (brandId) => {
+    setSelectedBrands((prev) => {
+      if (prev.includes(brandId)) {
+        return prev.filter((id) => id !== brandId);
+      } else {
+        return [...prev, brandId];
+      }
+    });
   };
 
   const handleProductSelect = (product) => {
@@ -127,8 +120,11 @@ const AddPromotionForm = ({ onSuccess }) => {
         }
       });
     } else if (formData.apply_type === 'brand') {
-      selectedBrands.forEach((brandName) => {
-        scopesArray.push({ type: 'brand', id: brandName });
+      selectedBrands.forEach((brandId) => {
+        const brand = brands.find((b) => b.brand_id === brandId);
+        if (brand) {
+          scopesArray.push({ type: 'brand', id: brand.brand_name });
+        }
       });
     } else if (formData.apply_type === 'product') {
       selectedProducts.forEach((product) => {
@@ -142,7 +138,7 @@ const AddPromotionForm = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
+    // 1. Validation cơ bản
     if (!formData.code || !formData.description || !formData.start_date || 
         !formData.end_date || !formData.usage_limit || !formData.discount_value || 
         !formData.min_order_amount) {
@@ -150,13 +146,14 @@ const AddPromotionForm = ({ onSuccess }) => {
       return;
     }
 
+    // 2. Validation Scope
     if (formData.apply_type !== 'all') {
       if (formData.apply_type === 'category' && selectedCategories.length === 0) {
         toast.error('Vui lòng chọn ít nhất một danh mục');
         return;
       }
       if (formData.apply_type === 'brand' && selectedBrands.length === 0) {
-        toast.error('Vui lòng thêm ít nhất một thương hiệu');
+        toast.error('Vui lòng chọn ít nhất một thương hiệu');
         return;
       }
       if (formData.apply_type === 'product' && selectedProducts.length === 0) {
@@ -167,49 +164,51 @@ const AddPromotionForm = ({ onSuccess }) => {
 
     try {
       setLoading(true);
-      const scopesArray = buildScopes();
+
+      // Chuẩn bị scope_ids (Mảng ID đơn giản)
+      let scopeIds = [];
+      if (formData.apply_type === 'category') {
+        scopeIds = selectedCategories; // Đây đã là mảng ID [1, 2]
+      } else if (formData.apply_type === 'brand') {
+        scopeIds = selectedBrands;     // Đây đã là mảng ID [1, 2]
+      } else if (formData.apply_type === 'product') {
+        scopeIds = selectedProducts.map(p => p.id); // Map ra mảng ID sản phẩm
+      }
       
       const payload = {
         ...formData,
         usage_limit: parseInt(formData.usage_limit),
         discount_value: parseFloat(formData.discount_value),
         max_discount_amount: formData.max_discount_amount ? parseFloat(formData.max_discount_amount) : null,
-        min_order_amount: parseFloat(formData.min_order_amount),
-        scopes: scopesArray,
+        min_order_value: parseFloat(formData.min_order_amount),
+        
+        // Mapping lại tên trường cho khớp Backend
+        scope_type: formData.apply_type === 'all' ? 'global' : formData.apply_type, 
+        scope_ids: scopeIds 
       };
 
-      await promotionService.createPromotion(payload);
+      await adminService.createPromotion(payload);
+      
       toast.success('Tạo voucher thành công!');
       
       // Reset form
       setFormData({
-        code: '',
-        description: '',
-        start_date: '',
-        end_date: '',
-        usage_limit: '',
-        discount_type: 'percentage',
-        discount_value: '',
-        max_discount_amount: '',
-        min_order_amount: '',
-        apply_type: 'all',
+        code: '', description: '', discount_type: 'percentage', discount_value: '',
+        max_discount_amount: '', min_order_amount: '', start_date: '', end_date: '',
+        usage_limit: '', apply_type: 'all',
       });
       setSelectedCategories([]);
       setSelectedBrands([]);
       setSelectedProducts([]);
-      setScopes([]);
       
       if (onSuccess) onSuccess();
+
     } catch (error) {
       console.error('Error creating promotion:', error);
       toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi tạo voucher');
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN').format(amount);
   };
 
   return (
@@ -437,48 +436,20 @@ const AddPromotionForm = ({ onSuccess }) => {
 
             {formData.apply_type === 'brand' && (
               <div className="ml-7 mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex gap-2 mb-3">
-                  <input
-                    type="text"
-                    placeholder="Nhập tên thương hiệu..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#004535] focus:border-transparent"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleBrandAdd(e.target.value);
-                        e.target.value = '';
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const input = e.target.previousElementSibling;
-                      handleBrandAdd(input.value);
-                      input.value = '';
-                    }}
-                    className="px-4 py-2 bg-[#004535] text-white rounded-lg text-sm hover:bg-[#003d2f] transition-colors"
-                  >
-                    Thêm
-                  </button>
-                </div>
-                {selectedBrands.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedBrands.map((brand) => (
-                      <span
-                        key={brand}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#004535] text-white rounded-full text-sm"
-                      >
-                        {brand}
-                        <button
-                          type="button"
-                          onClick={() => handleBrandRemove(brand)}
-                          className="hover:text-red-200"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </span>
+                {loadingData ? (
+                  <p className="text-sm text-gray-500">Đang tải...</p>
+                ) : (
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {brands.map((brand) => (
+                      <label key={brand.brand_id} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedBrands.includes(brand.brand_id)}
+                          onChange={() => handleBrandToggle(brand.brand_id)}
+                          className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
+                        />
+                        <span className="text-sm">{brand.brand_name}</span>
+                      </label>
                     ))}
                   </div>
                 )}
