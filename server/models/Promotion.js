@@ -164,6 +164,20 @@ const searchProducts = async (searchTerm, limit = 20) => {
   return res.rows;
 };
 
+const deleteById = async (client, id) => {
+  //  Xóa scope trước (nếu DB không set ON DELETE CASCADE)
+  await client.query('DELETE FROM promotion_scopes WHERE promotion_id = $1', [id]);
+  const query = 'DELETE FROM promotions WHERE promotion_id = $1 RETURNING *';
+  const res = await client.query(query, [id]);
+  return res.rows[0];
+};
+
+const toggleStatus = async (id, isActive) => {
+  const query = 'UPDATE promotions SET is_active = $1 WHERE promotion_id = $2 RETURNING *';
+  const res = await pool.query(query, [isActive, id]);
+  return res.rows[0];
+};
+
 export default { 
   getAvailablePromotions, 
   findByCode, 
@@ -177,4 +191,6 @@ export default {
   getAllBrands,
   searchProducts,
   getAllPromotions,
+  deleteById,
+  toggleStatus
 };

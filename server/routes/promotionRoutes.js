@@ -6,7 +6,9 @@ import {
   getCategoriesForAdmin,
   getBrandsForAdmin,
   searchProductsForAdmin,
-  getAllPromotionsForAdmin
+  getAllPromotionsForAdmin,
+  deletePromotion,
+  togglePromotionStatus
 } from '../controllers/promotionController.js';
 import { authenticateToken, authorizeAdmin } from '../middleware/middlewareAuth.js';
 
@@ -22,5 +24,6 @@ router.post('/admin/create', authenticateToken, authorizeAdmin, createPromotion)
 router.get('/admin/categories', authenticateToken, authorizeAdmin, getCategoriesForAdmin);
 router.get('/admin/brands', authenticateToken, authorizeAdmin, getBrandsForAdmin);
 router.get('/admin/products/search', authenticateToken, authorizeAdmin, searchProductsForAdmin);
-
+router.delete('/admin/:id', authenticateToken, authorizeAdmin, deletePromotion);
+router.patch('/admin/:id/status', authenticateToken, authorizeAdmin, togglePromotionStatus);
 export default router;

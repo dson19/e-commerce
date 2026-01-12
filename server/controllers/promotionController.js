@@ -210,3 +210,68 @@ export const getAllPromotionsForAdmin = asyncHandler(async (req, res) => {
     data: promotionScopes
   });
 });
+
+// Xóa voucher bởi admin
+export const deletePromotion = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // Gọi hàm xóa từ Model
+    const deletedVoucher = await Promotion.deleteById(client, id);
+
+    if (!deletedVoucher) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Voucher không tồn tại hoặc đã bị xóa' 
+      });
+    }
+
+    await client.query('COMMIT');
+    
+    res.json({
+      success: true,
+      message: 'Xóa voucher thành công',
+      data: deletedVoucher
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    
+    if (error.code === '23503') {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Không thể xóa voucher này vì đã có người sử dụng. Hãy thử vô hiệu hóa nó thay vì xóa.' 
+      });
+    }
+    
+    console.error("Error deleting promotion:", error);
+    throw new ErrorResponse('Lỗi server khi xóa voucher', 500);
+  } finally {
+    client.release();
+  }
+});
+
+// Thay đổi trạng thái kích hoạt/vô hiệu hóa voucher
+export const togglePromotionStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { is_active } = req.body; // true hoặc false
+
+  const updatedVoucher = await Promotion.toggleStatus(id, is_active);
+
+  if (!updatedVoucher) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Voucher không tồn tại' 
+    });
+  }
+
+  res.json({
+    success: true,
+    message: is_active ? 'Đã kích hoạt voucher' : 'Đã vô hiệu hóa voucher',
+    data: updatedVoucher
+  });
+});

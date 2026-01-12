@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = /*import.meta.env.VITE_API_URL ||*/ 'http://localhost:5000/api';
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const api = axios.create({
   baseURL,
   withCredentials: true,
@@ -45,6 +45,8 @@ export const adminService = {
   updateInventory: (variantId, data) => api.put(`/admin/inventory/${variantId}`, data),
   createPromotion: (data) => api.post('/promotions/admin/create', data),
   getAllPromotions: () => api.get('/promotions/admin/all'),
+  deletePromotion: (id) => api.delete(`/promotions/admin/${id}`),
+  togglePromotionStatus: (id, is_active) => api.patch(`/promotions/admin/${id}/status`, { is_active }),
 };
 
 export const cartService = {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { adminService, promotionService } from '@/services/api';
+import { adminService } from '@/services/api';
 import { toast } from 'sonner';
-import { Plus, TicketPercent, Calendar, Users, Tag, Layers } from 'lucide-react';
+import { Plus, TicketPercent, Calendar, Users, Tag, Trash2, Power, PowerOff } from 'lucide-react'; // [THÊM] Import Power icons
 import AddPromotionForm from './AddPromotionForm';
 
 const PromotionList = ({ setActiveTab }) => {
@@ -19,7 +19,6 @@ const PromotionList = ({ setActiveTab }) => {
     try {
       setLoading(true);
       const response = await adminService.getAllPromotions();
-      // API trả về data đã bao gồm scopes
       setPromotions(response.data?.data || response.data || []);
     } catch (error) {
       console.error('Error fetching promotions:', error);
@@ -57,25 +56,24 @@ const PromotionList = ({ setActiveTab }) => {
     const startDate = new Date(promotion.start_date);
     const endDate = new Date(promotion.end_date);
 
+    // Ưu tiên check trạng thái Active/Inactive trước
     if (!promotion.is_active) {
-      return <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">Đã vô hiệu</span>;
+      return <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">Đã vô hiệu</span>;
     }
     if (startDate > now) {
-      return <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Sắp diễn ra</span>;
+      return <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">Sắp diễn ra</span>;
     }
     if (endDate < now) {
-      return <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">Đã hết hạn</span>;
+      return <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">Đã hết hạn</span>;
     }
     if (promotion.used_count >= promotion.usage_limit) {
-      return <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">Hết lượt</span>;
+      return <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-medium">Hết lượt</span>;
     }
-    return <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Đang hoạt động</span>;
+    return <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">Đang hoạt động</span>;
   };
 
-  // Hàm render cột Phạm vi áp dụng
   const renderScope = (promotion) => {
     const scopes = promotion.scopes || [];
-    
     if (scopes.length === 0) {
       return (
         <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
@@ -83,7 +81,6 @@ const PromotionList = ({ setActiveTab }) => {
         </span>
       );
     }
-
     return (
       <div className="flex flex-col gap-1">
         {scopes.slice(0, 3).map((scope, index) => {
@@ -91,10 +88,7 @@ const PromotionList = ({ setActiveTab }) => {
             if (scope.target_type === 'category') typeLabel = 'Danh mục';
             else if (scope.target_type === 'brand') typeLabel = 'Thương hiệu';
             else if (scope.target_type === 'product') typeLabel = 'Sản phẩm';
-
-            // Ưu tiên hiển thị target_name (Tên), nếu không có mới hiện ID
             const displayText = scope.target_name || scope.target_id;
-
             return (
             <span key={index} className="text-xs text-gray-600 truncate max-w-[200px]" title={`${typeLabel}: ${displayText}`}>
               <span className="font-semibold">{typeLabel}:</span> {displayText}
@@ -106,6 +100,44 @@ const PromotionList = ({ setActiveTab }) => {
         )}
       </div>
     );
+  };
+  
+  // [THÊM MỚI] Hàm xử lý Toggle Status
+  const handleToggleStatus = async (promotion) => {
+    const newStatus = !promotion.is_active;
+    const actionName = newStatus ? 'kích hoạt' : 'vô hiệu hóa';
+
+    try {
+      // Gọi API
+      await adminService.togglePromotionStatus(promotion.promotion_id, newStatus);
+      
+      toast.success(`Đã ${actionName} voucher thành công`);
+      
+      // Cập nhật state cục bộ để không cần load lại trang
+      setPromotions(prev => prev.map(p => 
+        p.promotion_id === promotion.promotion_id 
+          ? { ...p, is_active: newStatus } 
+          : p
+      ));
+    } catch (error) {
+      console.error('Error toggling status:', error);
+      toast.error(`Lỗi khi ${actionName} voucher`);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa voucher này? Hành động này không thể hoàn tác.')) {
+      return;
+    }
+    try {
+      await adminService.deletePromotion(id);
+      toast.success('Xóa voucher thành công');
+      fetchPromotions(); 
+    } catch (error) {
+      console.error('Error deleting promotion:', error);
+      const message = error.response?.data?.message || 'Lỗi khi xóa voucher';
+      toast.error(message);
+    }
   };
 
   const handleAddSuccess = () => {
@@ -177,7 +209,6 @@ const PromotionList = ({ setActiveTab }) => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Mã Voucher
                   </th>
-                  {/* Cột mới: Phạm vi áp dụng */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Phạm vi áp dụng
                   </th>
@@ -196,26 +227,28 @@ const PromotionList = ({ setActiveTab }) => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Trạng thái
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Hành động
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {promotions.map((promotion) => (
-                  <tr key={promotion.promotion_id} className="hover:bg-gray-50">
+                  <tr key={promotion.promotion_id} className={`hover:bg-gray-50 ${!promotion.is_active ? 'bg-gray-50 opacity-75' : ''}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <Tag className="h-4 w-4 text-[#004535]" />
+                        <Tag className={`h-4 w-4 ${promotion.is_active ? 'text-[#004535]' : 'text-gray-400'}`} />
                         <span className="font-medium text-gray-900">{promotion.code}</span>
                       </div>
                       <p className="text-xs text-gray-500 mt-1 max-w-[150px] truncate">{promotion.description}</p>
                     </td>
                     
-                    {/* Render cột Phạm vi */}
                     <td className="px-6 py-4 align-top">
                       {renderScope(promotion)}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-[#004535]">
+                      <span className={`text-sm font-medium ${promotion.is_active ? 'text-[#004535]' : 'text-gray-600'}`}>
                         {getDiscountText(promotion)}
                       </span>
                       {promotion.discount_type === 'percentage' && promotion.max_discount_amount && (
@@ -246,6 +279,30 @@ const PromotionList = ({ setActiveTab }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(promotion)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {/* [THÊM MỚI] Nút Toggle Active */}
+                        <button
+                          onClick={() => handleToggleStatus(promotion)}
+                          className={`p-2 rounded-full transition-colors ${
+                            promotion.is_active 
+                              ? 'text-orange-500 hover:text-orange-700 hover:bg-orange-50' 
+                              : 'text-green-500 hover:text-green-700 hover:bg-green-50'
+                          }`}
+                          title={promotion.is_active ? "Vô hiệu hóa" : "Kích hoạt lại"}
+                        >
+                          {promotion.is_active ? <Power size={18} /> : <PowerOff size={18} />}
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(promotion.promotion_id)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-full transition-colors"
+                          title="Xóa voucher"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
