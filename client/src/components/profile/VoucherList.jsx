@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { promotionService } from '@/services/api';
-import { TicketPercent, Copy, CheckCircle2 } from 'lucide-react';
+import { TicketPercent, Copy, CheckCircle2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const VoucherList = () => {
@@ -65,7 +65,7 @@ const VoucherList = () => {
     return (
       <div className="text-center py-20">
         <TicketPercent className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-        <p className="text-gray-500 text-lg">Hiện tại không có voucher nào</p>
+        <p className="text-gray-500 text-lg">Hiện tại không có voucher khả dụng</p>
         <p className="text-gray-400 text-sm mt-2">Voucher mới sẽ được cập nhật sớm nhất</p>
       </div>
     );
@@ -75,66 +75,67 @@ const VoucherList = () => {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6">
         <TicketPercent className="h-6 w-6 text-[#004535]" />
-        <h2 className="text-xl font-bold text-gray-800">Voucher của tôi</h2>
+        <h2 className="text-xl font-bold text-gray-800">Kho Voucher</h2>
+        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
+          {vouchers.length} đang có hiệu lực
+        </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {vouchers.map((voucher) => (
           <div
             key={voucher.promotion_id}
-            className="bg-gradient-to-br from-[#004535] to-[#006b5a] rounded-xl p-5 text-white shadow-lg relative overflow-hidden"
+            className="group bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden"
           >
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+            {/* Banner màu bên trái */}
+            <div className="absolute left-0 top-0 bottom-0 w-2 bg-[#004535]"></div>
 
-            <div className="relative z-10">
-              <div className="flex items-start justify-between mb-4">
+            <div className="pl-4">
+              <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="text-lg font-bold mb-1">{voucher.code}</h3>
-                  <p className="text-white/80 text-sm">{voucher.description}</p>
+                  <h3 className="text-lg font-bold text-[#004535]">{voucher.code}</h3>
+                  <p className="text-gray-600 text-sm line-clamp-1">{voucher.description}</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(voucher.code)}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
                   title="Sao chép mã"
                 >
                   {copiedCode === voucher.code ? (
-                    <CheckCircle2 className="h-5 w-5 text-green-300" />
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
                   ) : (
                     <Copy className="h-5 w-5" />
                   )}
                 </button>
               </div>
 
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 mb-4">
-                <div className="text-2xl font-bold mb-1">
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="text-2xl font-bold text-gray-800">
                   {getDiscountText(voucher)}
-                </div>
+                </span>
                 {voucher.discount_type === 'percentage' && voucher.max_discount_amount && (
-                  <div className="text-sm text-white/80">
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
                     Tối đa {formatCurrency(voucher.max_discount_amount)}đ
-                  </div>
+                  </span>
                 )}
               </div>
 
-              <div className="space-y-2 text-sm">
+              <div className="pt-3 border-t border-dashed border-gray-200 space-y-2 text-sm text-gray-500">
                 <div className="flex items-center justify-between">
-                  <span className="text-white/80">Đơn tối thiểu:</span>
-                  <span className="font-semibold">{formatCurrency(voucher.min_order_amount)}đ</span>
+                  <span>Đơn tối thiểu:</span>
+                  <span className="font-medium text-gray-700">{formatCurrency(voucher.min_order_amount || voucher.min_order_value)}đ</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-white/80">Hạn sử dụng:</span>
-                  <span className="font-semibold">{formatDate(voucher.end_date)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Còn lại:</span>
-                  <span className="font-semibold">
-                    {voucher.usage_limit - voucher.used_count} lượt
+                  <span className="flex items-center gap-1">
+                    <Clock size={14} /> Hạn sử dụng:
                   </span>
+                  <span className="font-medium text-red-500">{formatDate(voucher.end_date)}</span>
                 </div>
               </div>
             </div>
+            
+            {/* Vòng tròn trang trí */}
+            <div className="absolute -right-6 -bottom-6 w-12 h-12 bg-green-50 rounded-full"></div>
           </div>
         ))}
       </div>

@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
-import { ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
 import VoucherInput from './VoucherInput';
 import AddressSelector from './AddressSelector';
 import { useCheckout } from '@/hooks/useCheckout';
+import { useCart } from '@/context/CartContext';
 
-const CartSummary = ({ subtotal, total }) => {
+const CartSummary = ({ subtotal }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  
   const { handleCheckout, orderLoading } = useCheckout();
+  const { cartItems } = useCart();
+  const discountAmount = appliedVoucher ? Number(appliedVoucher.discount_amount) : 0;
+  const total = Math.max(0, subtotal - discountAmount);
+
+  const onCheckoutClick = () => {
+    handleCheckout(
+        selectedAddress, 
+        paymentMethod, 
+        appliedVoucher ? appliedVoucher.promotion_id : null // Truyền ID voucher
+    );
+  };
+
+  const removeVoucher = () => {
+    setAppliedVoucher(null);
+  };
 
   return (
     <div className="w-full lg:w-[360px] shrink-0">
@@ -19,6 +37,26 @@ const CartSummary = ({ subtotal, total }) => {
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
         />
+
+        {/* Component Voucher Input */}
+        {!appliedVoucher ? (
+            <VoucherInput 
+                onApply={setAppliedVoucher} 
+                cartTotal={subtotal} 
+                cartItems={cartItems}
+                disabled={orderLoading}
+            />
+        ) : (
+            <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+                <div>
+                    <span className="text-green-700 font-medium text-sm block">Đã áp dụng mã: {appliedVoucher.code}</span>
+                    <span className="text-green-600 text-xs">Giảm {formatCurrency(appliedVoucher.discount_amount)}</span>
+                </div>
+                <button onClick={removeVoucher} className="text-gray-400 hover:text-red-500 transition-colors">
+                    <X size={18} />
+                </button>
+            </div>
+        )}
 
         {/* Phương thức thanh toán */}
         <div className="mb-6">
@@ -58,6 +96,15 @@ const CartSummary = ({ subtotal, total }) => {
             <span>Phí vận chuyển</span>
             <span className="text-green-600 font-medium">Miễn phí</span>
           </div>
+          
+          {/* Hiển thị dòng giảm giá nếu có */}
+          {appliedVoucher && (
+             <div className="flex justify-between text-green-600 text-sm">
+                <span>Giảm giá (Voucher)</span>
+                <span className="font-medium">-{formatCurrency(discountAmount)}</span>
+             </div>
+          )}
+
           <div className="flex justify-between text-lg font-bold text-gray-800 pt-3 border-t border-gray-100">
             <span>Tổng tiền</span>
             <span className="text-[#004535] text-xl">{formatCurrency(total)}</span>
@@ -66,7 +113,7 @@ const CartSummary = ({ subtotal, total }) => {
         </div>
 
         <button
-          onClick={() => handleCheckout(selectedAddress, paymentMethod)}
+          onClick={onCheckoutClick}
           disabled={orderLoading}
           className={`w-full py-4 bg-[#004535] text-white rounded-xl font-bold text-sm uppercase tracking-widest shadow-lg shadow-[#004535]/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${orderLoading ? 'opacity-70 cursor-wait' : 'hover:bg-[#003528]'}`}
         >

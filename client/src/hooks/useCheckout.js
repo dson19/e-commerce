@@ -9,7 +9,7 @@ export const useCheckout = () => {
     const { cartItems, clearCart } = useCart();
     const [orderLoading, setOrderLoading] = useState(false);
 
-    const handleCheckout = async (selectedAddress, paymentMethod = 'COD') => {
+    const handleCheckout = async (selectedAddress, paymentMethod = 'COD', promotionId = null) => {
         if (!selectedAddress) {
             toast.error('Vui lòng chọn địa chỉ giao hàng');
             return;
@@ -30,7 +30,8 @@ export const useCheckout = () => {
                 address_id: selectedAddress.address_id,
                 paymentMethod: paymentMethod,
                 phone_number: selectedAddress.phone_number || selectedAddress.phone,
-                name: selectedAddress.name
+                name: selectedAddress.name,
+                promotion_id: promotionId
             };
 
             const res = await orderService.createOrder(orderData);

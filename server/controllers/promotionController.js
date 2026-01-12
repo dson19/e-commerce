@@ -46,6 +46,7 @@ export const validatePromotion = asyncHandler(async (req, res) => {
             let isMatch = false;
             let brand = await Product.getBrandByProductId(item.brand_id);
             let category = await Product.getCategoryByProductId(item.category_id);
+            //console.log('Checking item:', item, 'with brand:', brand, 'and category:', category);
             for (const scope of scopes) {
                 if (scope.target_type === 'product' && scope.target_id === item.variant_id) isMatch = true;
                 if (scope.target_type === 'category' && scope.target_id === category.category_id) isMatch = true; // Cần chắc chắn cartItem có category_id
