@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { promotionService } from '@/services/api';
+import { adminService, promotionService } from '@/services/api';
 import { toast } from 'sonner';
-import { Plus, TicketPercent, Calendar, Users, Tag } from 'lucide-react';
+import { Plus, TicketPercent, Calendar, Users, Tag, Layers } from 'lucide-react';
 import AddPromotionForm from './AddPromotionForm';
 
 const PromotionList = ({ setActiveTab }) => {
@@ -18,7 +18,8 @@ const PromotionList = ({ setActiveTab }) => {
   const fetchPromotions = async () => {
     try {
       setLoading(true);
-      const response = await promotionService.getAllPromotions();
+      const response = await adminService.getAllPromotions();
+      // API trả về data đã bao gồm scopes
       setPromotions(response.data?.data || response.data || []);
     } catch (error) {
       console.error('Error fetching promotions:', error);
@@ -69,6 +70,42 @@ const PromotionList = ({ setActiveTab }) => {
       return <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">Hết lượt</span>;
     }
     return <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Đang hoạt động</span>;
+  };
+
+  // Hàm render cột Phạm vi áp dụng
+  const renderScope = (promotion) => {
+    const scopes = promotion.scopes || [];
+    
+    if (scopes.length === 0) {
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200">
+          Toàn bộ
+        </span>
+      );
+    }
+
+    return (
+      <div className="flex flex-col gap-1">
+        {scopes.slice(0, 3).map((scope, index) => {
+            let typeLabel = '';
+            if (scope.target_type === 'category') typeLabel = 'Danh mục';
+            else if (scope.target_type === 'brand') typeLabel = 'Thương hiệu';
+            else if (scope.target_type === 'product') typeLabel = 'Sản phẩm';
+
+            // Ưu tiên hiển thị target_name (Tên), nếu không có mới hiện ID
+            const displayText = scope.target_name || scope.target_id;
+
+            return (
+            <span key={index} className="text-xs text-gray-600 truncate max-w-[200px]" title={`${typeLabel}: ${displayText}`}>
+              <span className="font-semibold">{typeLabel}:</span> {displayText}
+            </span>
+            );
+        })}
+        {scopes.length > 3 && (
+            <span className="text-xs text-gray-400 italic">+{scopes.length - 3} khác...</span>
+        )}
+      </div>
+    );
   };
 
   const handleAddSuccess = () => {
@@ -140,8 +177,9 @@ const PromotionList = ({ setActiveTab }) => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Mã Voucher
                   </th>
+                  {/* Cột mới: Phạm vi áp dụng */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Mô tả
+                    Phạm vi áp dụng
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Giảm giá
@@ -168,10 +206,14 @@ const PromotionList = ({ setActiveTab }) => {
                         <Tag className="h-4 w-4 text-[#004535]" />
                         <span className="font-medium text-gray-900">{promotion.code}</span>
                       </div>
+                      <p className="text-xs text-gray-500 mt-1 max-w-[150px] truncate">{promotion.description}</p>
                     </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-900 max-w-xs truncate">{promotion.description}</p>
+                    
+                    {/* Render cột Phạm vi */}
+                    <td className="px-6 py-4 align-top">
+                      {renderScope(promotion)}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm font-medium text-[#004535]">
                         {getDiscountText(promotion)}
@@ -184,7 +226,7 @@ const PromotionList = ({ setActiveTab }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-gray-900">
-                        {formatCurrency(promotion.min_order_amount)}đ
+                        {formatCurrency(promotion.min_order_value)}đ
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

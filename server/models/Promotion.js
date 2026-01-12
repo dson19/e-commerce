@@ -45,7 +45,19 @@ const findByCode = async (code) => {
 
 // Lấy Scope của một Promotion (để biết áp dụng cho sản phẩm nào)
 const getScopes = async (promotionId) => {
-  const query = 'SELECT * FROM promotion_scopes WHERE promotion_id = $1';
+  const query = `
+    SELECT ps.*,
+      CASE 
+        WHEN ps.target_type = 'category' THEN c.category_name
+        WHEN ps.target_type = 'brand' THEN b.brand_name
+        WHEN ps.target_type = 'product' THEN p.name
+      END as target_name
+    FROM promotion_scopes ps
+    LEFT JOIN categories c ON ps.target_type = 'category' AND ps.target_id = c.category_id
+    LEFT JOIN brands b ON ps.target_type = 'brand' AND ps.target_id = b.brand_id
+    LEFT JOIN products p ON ps.target_type = 'product' AND ps.target_id = p.id
+    WHERE ps.promotion_id = $1
+  `;
   const res = await pool.query(query, [promotionId]);
   return res.rows; 
 };

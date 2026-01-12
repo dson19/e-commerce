@@ -11,11 +11,11 @@ const AddPromotionForm = ({ onSuccess }) => {
     discount_type: 'percentage',
     discount_value: '',
     max_discount_amount: '',
-    min_order_amount: '',
+    min_order_value: '',
     start_date: '',
     end_date: '',
     usage_limit: '',
-    apply_type: 'all',
+    target_type: 'all',
   });
 
   const [categories, setCategories] = useState([]);
@@ -112,23 +112,20 @@ const AddPromotionForm = ({ onSuccess }) => {
   const buildScopes = () => {
     const scopesArray = [];
     
-    if (formData.apply_type === 'category') {
+    if (formData.target_type === 'category') {
       selectedCategories.forEach((catId) => {
-        const category = categories.find((c) => c.category_id === catId);
-        if (category) {
-          scopesArray.push({ type: 'category', id: category.category_name });
-        }
+          // Gửi trực tiếp catId (là số)
+          scopesArray.push({ type: 'category', id: catId });
       });
-    } else if (formData.apply_type === 'brand') {
+    } else if (formData.target_type === 'brand') {
       selectedBrands.forEach((brandId) => {
-        const brand = brands.find((b) => b.brand_id === brandId);
-        if (brand) {
-          scopesArray.push({ type: 'brand', id: brand.brand_name });
-        }
+          // Gửi trực tiếp brandId (là số)
+          scopesArray.push({ type: 'brand', id: brandId });
       });
-    } else if (formData.apply_type === 'product') {
+    } else if (formData.target_type === 'product') {
       selectedProducts.forEach((product) => {
-        scopesArray.push({ type: 'product', id: product.id.toString() });
+        // Gửi product.id (là số)
+        scopesArray.push({ type: 'product', id: product.id });
       });
     }
 
@@ -141,22 +138,22 @@ const AddPromotionForm = ({ onSuccess }) => {
     // 1. Validation cơ bản
     if (!formData.code || !formData.description || !formData.start_date || 
         !formData.end_date || !formData.usage_limit || !formData.discount_value || 
-        !formData.min_order_amount) {
+        !formData.min_order_value) {
       toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
 
     // 2. Validation Scope
-    if (formData.apply_type !== 'all') {
-      if (formData.apply_type === 'category' && selectedCategories.length === 0) {
+    if (formData.target_type !== 'all') {
+      if (formData.target_type === 'category' && selectedCategories.length === 0) {
         toast.error('Vui lòng chọn ít nhất một danh mục');
         return;
       }
-      if (formData.apply_type === 'brand' && selectedBrands.length === 0) {
+      if (formData.target_type === 'brand' && selectedBrands.length === 0) {
         toast.error('Vui lòng chọn ít nhất một thương hiệu');
         return;
       }
-      if (formData.apply_type === 'product' && selectedProducts.length === 0) {
+      if (formData.target_type === 'product' && selectedProducts.length === 0) {
         toast.error('Vui lòng chọn ít nhất một sản phẩm');
         return;
       }
@@ -164,27 +161,14 @@ const AddPromotionForm = ({ onSuccess }) => {
 
     try {
       setLoading(true);
-
-      // Chuẩn bị scope_ids (Mảng ID đơn giản)
-      let scopeIds = [];
-      if (formData.apply_type === 'category') {
-        scopeIds = selectedCategories; // Đây đã là mảng ID [1, 2]
-      } else if (formData.apply_type === 'brand') {
-        scopeIds = selectedBrands;     // Đây đã là mảng ID [1, 2]
-      } else if (formData.apply_type === 'product') {
-        scopeIds = selectedProducts.map(p => p.id); // Map ra mảng ID sản phẩm
-      }
-      
+      const scopes = buildScopes();
       const payload = {
         ...formData,
         usage_limit: parseInt(formData.usage_limit),
         discount_value: parseFloat(formData.discount_value),
         max_discount_amount: formData.max_discount_amount ? parseFloat(formData.max_discount_amount) : null,
-        min_order_value: parseFloat(formData.min_order_amount),
-        
-        // Mapping lại tên trường cho khớp Backend
-        scope_type: formData.apply_type === 'all' ? 'global' : formData.apply_type, 
-        scope_ids: scopeIds 
+        min_order_value: parseFloat(formData.min_order_value),
+        scopes: scopes
       };
 
       await adminService.createPromotion(payload);
@@ -194,8 +178,8 @@ const AddPromotionForm = ({ onSuccess }) => {
       // Reset form
       setFormData({
         code: '', description: '', discount_type: 'percentage', discount_value: '',
-        max_discount_amount: '', min_order_amount: '', start_date: '', end_date: '',
-        usage_limit: '', apply_type: 'all',
+        max_discount_amount: '', min_order_value: '', start_date: '', end_date: '',
+        usage_limit: '', target_type_type: 'all',
       });
       setSelectedCategories([]);
       setSelectedBrands([]);
@@ -359,8 +343,8 @@ const AddPromotionForm = ({ onSuccess }) => {
           </label>
           <input
             type="number"
-            name="min_order_amount"
-            value={formData.min_order_amount}
+            name="min_order_value"
+            value={formData.min_order_value}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004535] focus:border-transparent"
             placeholder="100000"
@@ -379,9 +363,9 @@ const AddPromotionForm = ({ onSuccess }) => {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="radio"
-                name="apply_type"
+                name="target_type"
                 value="all"
-                checked={formData.apply_type === 'all'}
+                checked={formData.target_type === 'all'}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
               />
@@ -391,16 +375,16 @@ const AddPromotionForm = ({ onSuccess }) => {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="radio"
-                name="apply_type"
+                name="target_type"
                 value="category"
-                checked={formData.apply_type === 'category'}
+                checked={formData.target_type === 'category'}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
               />
               <span>Theo Danh mục</span>
             </label>
 
-            {formData.apply_type === 'category' && (
+            {formData.target_type === 'category' && (
               <div className="ml-7 mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 {loadingData ? (
                   <p className="text-sm text-gray-500">Đang tải...</p>
@@ -425,16 +409,16 @@ const AddPromotionForm = ({ onSuccess }) => {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="radio"
-                name="apply_type"
+                name="target_type"
                 value="brand"
-                checked={formData.apply_type === 'brand'}
+                checked={formData.target_type === 'brand'}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
               />
               <span>Theo Thương hiệu</span>
             </label>
 
-            {formData.apply_type === 'brand' && (
+            {formData.target_type === 'brand' && (
               <div className="ml-7 mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 {loadingData ? (
                   <p className="text-sm text-gray-500">Đang tải...</p>
@@ -459,16 +443,16 @@ const AddPromotionForm = ({ onSuccess }) => {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="radio"
-                name="apply_type"
+                name="target_type"
                 value="product"
-                checked={formData.apply_type === 'product'}
+                checked={formData.target_type === 'product'}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-[#004535] focus:ring-[#004535]"
               />
               <span>Sản phẩm cụ thể</span>
             </label>
 
-            {formData.apply_type === 'product' && (
+            {formData.target_type === 'product' && (
               <div className="ml-7 mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="relative mb-3">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />

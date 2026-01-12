@@ -48,8 +48,8 @@ export const validatePromotion = asyncHandler(async (req, res) => {
             let category = await Product.getCategoryByProductId(item.category_id);
             for (const scope of scopes) {
                 if (scope.target_type === 'product' && scope.target_id === item.variant_id) isMatch = true;
-                if (scope.target_type === 'category' && scope.target_id === category.category_name) isMatch = true; // Cần chắc chắn cartItem có category_id
-                if (scope.target_type === 'brand' && scope.target_id === brand.brand_name) isMatch = true;     
+                if (scope.target_type === 'category' && scope.target_id === category.category_id) isMatch = true; // Cần chắc chắn cartItem có category_id
+                if (scope.target_type === 'brand' && scope.target_id === brand.brand_id) isMatch = true;     
                 }
             if (isMatch) {
                 eligibleAmount += item.price * item.quantity;
@@ -59,8 +59,8 @@ export const validatePromotion = asyncHandler(async (req, res) => {
     }
 
     // kiem tra min don hang
-    if(Number(cartTotal) < Number(voucher.min_order_amount)) {
-        return res.status(400).json({ message: `Đơn hàng tối thiểu để áp dụng mã này là ${voucher.min_order_amount}đ` });
+    if(Number(cartTotal) < Number(voucher.min_order_value)) {
+        return res.status(400).json({ message: `Đơn hàng tối thiểu để áp dụng mã này là ${voucher.min_order_value}đ` });
     }
 
     if (eligibleAmount === 0) {
@@ -92,20 +92,20 @@ export const createPromotion = asyncHandler(async (req, res) => {
   const {
     code,
     description,
+    discount_type, 
+    discount_value,
+    max_discount_amount,
+    min_order_value,
     start_date,
     end_date,
     usage_limit,
-    discount_type,
-    discount_value,
-    max_discount_amount,
-    min_order_amount,
     apply_type, // 'all', 'category', 'brand', 'product'
     scopes // Array of { type: 'category'|'brand'|'product', id: string }
   } = req.body;
 
   // Validation
   if (!code || !description || !start_date || !end_date || !usage_limit || 
-      !discount_type || !discount_value || !min_order_amount) {
+      !discount_type || !discount_value || !min_order_value) {
     throw new ErrorResponse('Vui lòng điền đầy đủ thông tin', 400);
   }
 
@@ -131,13 +131,13 @@ export const createPromotion = asyncHandler(async (req, res) => {
     const promotion = await Promotion.create(client, {
       code,
       description,
+      discount_type,
+        discount_value,
+        max_discount_amount,
+        min_order_value,
       start_date,
       end_date,
-      usage_limit: parseInt(usage_limit),
-      discount_type,
-      discount_value: parseFloat(discount_value),
-      max_discount_amount: max_discount_amount ? parseFloat(max_discount_amount) : null,
-      min_order_amount: parseFloat(min_order_amount),
+      usage_limit,
       is_active: true
     });
 
@@ -200,8 +200,12 @@ export const searchProductsForAdmin = asyncHandler(async (req, res) => {
 // Lấy tất cả promotions cho admin
 export const getAllPromotionsForAdmin = asyncHandler(async (req, res) => {
   const promotions = await Promotion.getAllPromotions();
+  const promotionScopes = await Promise.all(promotions.map(async (promotion) => {
+    const scopes = await Promotion.getScopes(promotion.promotion_id);
+    return { ...promotion, scopes };
+  }));
   res.json({
     success: true,
-    data: promotions
+    data: promotionScopes
   });
 });
